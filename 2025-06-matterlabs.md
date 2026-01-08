@@ -156,3 +156,5 @@ The status of an issue can be one of the following:
 - <StatusText status="Notified" /> indicates that the client has been informed of the issue but has either not addressed it yet or has acknowledged the behavior without planning to remediate it soon. This inaction may stem from the client not viewing the behavior as problematic, lacking a feasible solution, or intending to address it at a later date.
 - <StatusText status="Addressed" /> is used when the client has made an effort to address the issue with partial success. In the case of complex issues, the provided fix may only resolve one of several points described.
 - <StatusText status="Fixed" /> means that the client has implemented a solution that completely resolves the described issue.
+
+# Test heading
