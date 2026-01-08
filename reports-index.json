@@ -1,0 +1,12 @@
+{
+    "reports": [
+        {
+            "slug": "2025-06-matterlabs",
+            "url": "https://raw.githubusercontent.com/meandrewandyou/webflow-reports-test/refs/heads/main/2025-06-matterlabs.md"
+        },
+        {
+            "slug": "2025-04-matterlabs",
+            "url": "https://raw.githubusercontent.com/meandrewandyou/webflow-reports-test/refs/heads/main/2025-04-matterlabs.md"
+        }
+    ]
+}
