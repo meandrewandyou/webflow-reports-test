@@ -5,12 +5,6 @@ created_at: "2025-08-04"
 updated_at: "2025-10-15"
 draft: false
 ---
-<script>
-  import Levels from '$lib/components/levels.svelte';
-  import LevelText from '$lib/components/colored-level.svelte';
-  import StatusText from '$lib/components/colored-status.svelte';
-</script>
-
 # Synopsis
 
 In March 2025, Matter Labs engaged Taran Space to conduct a security assessment of their new product, ZKsync OS. Given the extensive and complex codebase, the audit was carried out in multiple phases. An initial four-week phase was conducted in April 2025 and resulted in private report. Following the remediation of the issues, Matter Labs decided to continue with the updated codebase and longer duration in order to facilitate a more thorough examination, discover as many potential issues as possible and to produce the public audit report.
@@ -146,11 +140,11 @@ This factor is classified into one of three levels:
 
 Upon assessing the issue's likelihood and impact, its severity is determined using the table below:
 
-|                           | <Levels level="High" />     | <Levels level="Medium" />   | <Levels level="Low" />      |
+|                           | <span class="border rounded px-1">High</span>     | <span class="border rounded px-1">Medium</span>   | <span class="border rounded px-1">Low</span>      |
 | ------------------------- | --------------------------- | --------------------------- | --------------------------- |
-| <Levels level="High" />   | **<LevelText level={4} />** | **<LevelText level={3} />** | **<LevelText level={2} />** |
-| <Levels level="Medium" /> | **<LevelText level={3} />** | **<LevelText level={2} />** | **<LevelText level={1} />** |
-| <Levels level="Low" />    | **<LevelText level={2} />** | **<LevelText level={1} />** | **<LevelText level={0} />** |
+| <span class="border rounded px-1">High</span>   | **<span style="color: #ef4444; font-weight: 700;">Critical</span>** | **<span style="color: #f97316; font-weight: 700;">High</span>** | **<span style="color: #fbc02d; font-weight: 700;">Medium</span>** |
+| <span class="border rounded px-1">Medium</span> | **<span style="color: #f97316; font-weight: 700;">High</span>** | **<span style="color: #fbc02d; font-weight: 700;">Medium</span>** | **<span style="color: #84cc16; font-weight: 700;">Low</span>** |
+| <span class="border rounded px-1">Low</span>    | **<span style="color: #fbc02d; font-weight: 700;">Medium</span>** | **<span style="color: #84cc16; font-weight: 700;">Low</span>** | **<span style="color: #22c55e; font-weight: 700;">QA</span>** |
 
 In exceptional cases, the total severity may be elevated to highlight the significance of the issue. Whenever this occurs, the rationale for applying an increased severity level is detailed in the report.
 
@@ -158,9 +152,9 @@ In exceptional cases, the total severity may be elevated to highlight the signif
 
 The status of an issue can be one of the following:
 
-- <StatusText status="Notified" /> indicates that the client has been informed of the issue but has either not addressed it yet or has acknowledged the behavior without planning to remediate it soon. This inaction may stem from the client not viewing the behavior as problematic, lacking a feasible solution, or intending to address it at a later date.
-- <StatusText status="Addressed" /> is used when the client has made an effort to address the issue with partial success. In the case of complex issues, the provided fix may only resolve one of several points described.
-- <StatusText status="Fixed" /> means that the client has implemented a solution that completely resolves the described issue.
+- <span style="color: #fbc02d; margin: 0px;">Notified</span> indicates that the client has been informed of the issue but has either not addressed it yet or has acknowledged the behavior without planning to remediate it soon. This inaction may stem from the client not viewing the behavior as problematic, lacking a feasible solution, or intending to address it at a later date.
+- <span style="color: #00acc1; margin: 0px;">Addressed</span> is used when the client has made an effort to address the issue with partial success. In the case of complex issues, the provided fix may only resolve one of several points described.
+- <span style="color: #10b981; margin: 0px;">Fixed</span> means that the client has implemented a solution that completely resolves the described issue.
 
 # Access list decoding can be exploited to submit invalid transactions
 
