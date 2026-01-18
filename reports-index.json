@@ -7,6 +7,10 @@
         {
             "slug": "2025-04-matterlabs",
             "url": "https://raw.githubusercontent.com/meandrewandyou/webflow-reports-test/refs/heads/main/2025-04-matterlabs.md"
+        },
+        {
+            "slug": "2025-10-matterlabs.md",
+            "url": "https://raw.githubusercontent.com/meandrewandyou/webflow-reports-test/refs/heads/main/2025-10-matterlabs.md"
         }
     ]
 }
