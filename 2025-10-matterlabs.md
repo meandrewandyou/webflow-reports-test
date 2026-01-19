@@ -318,12 +318,13 @@ This means that both lines `110` and `217` check for the same condition, so ther
 In other words, the `unsafe` section on line `220` is always entered before the filtering on line `110` occurs.
 
 This `unsafe` section immediately triggers an Undefined Behavior, even if the field `ell_coeffs` is never accessed later, because the expression `MaybeUninit::uninit().assume_init()` creates an uninitialized array and treats it as initialized. This is confirmed to be an invalid use by the documentation of the `assume_init` function:
-<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">/// # Safety</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">///</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">/// It is up to the caller to guarantee that the `MaybeUninit&lt;T&gt;` really is in an initialized</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">/// state. Calling this when the content is not yet fully initialized causes immediate undefined</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">/// behavior. The [type-level documentation][inv] contains more information about</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">/// this initialization invariant.</span></span></code></pre>
+<pre class="language-rust"><code>/// # Safety
+///
+/// It is up to the caller to guarantee that the `MaybeUninit&lt;T&gt;` really is in an initialized
+/// state. Calling this when the content is not yet fully initialized causes immediate undefined
+/// behavior. The [type-level documentation][inv] contains more information about
+/// this initialization invariant.
+</code></pre>
 
 
 
@@ -422,10 +423,11 @@ Correct the magnitude update so that the resulting magnitude is computed as the 
 </div>
 
 During fuzzing test runs, an assertion failed:
-<pre><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">thread '&lt;unnamed&gt;' panicked at /zksync-os/basic_system/src/system_functions/modexp/delegation/bigint.rs:686:25:</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">assertion `left == right` failed</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">  left: 1</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;"> right: 0</span></span></code></pre>
+<pre><code>thread '&lt;unnamed&gt;' panicked at /zksync-os/basic_system/src/system_functions/modexp/delegation/bigint.rs:686:25:
+assertion `left == right` failed
+  left: 1
+ right: 0
+</code></pre>
 
 See the _Appendix_ section for details on how fuzzing was performed.
 
@@ -473,20 +475,23 @@ When running the tests specifically on the `crypto` crate, with overflow checks 
 ## Proof of concept
 
 After running `./dump_bin.sh` as usually, enable the extra checks using the `RUSTFLAGS` and build the project including the test code of the `crypto` crate:
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">export RUSTFLAGS="-C overflow-checks=on -C debug-assertions=on"</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">cargo build --release</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">cargo test --release -p crypto</span></span></code></pre>
+<pre class="language-sh"><code>export RUSTFLAGS="-C overflow-checks=on -C debug-assertions=on"
+cargo build --release
+cargo test --release -p crypto
+</code></pre>
 
 Then run the property tests multiple times, using a loop:
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">$ for i in `seq 1 1000`</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">do</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    cargo test --release -p crypto 2&gt;&amp;1 | grep FAILED | tee -a errors.txt</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">done</span></span></code></pre>
+<pre class="language-sh"><code>$ for i in `seq 1 1000`
+do
+    cargo test --release -p crypto 2&gt;&amp;1 | grep FAILED | tee -a errors.txt
+done
+</code></pre>
 
 During manual exploration, it is practical to limit scope of each pass to only one submodule or one test case, for easier interpretation of results. Additionally, parallelization should be enabled in order to save total computation time:
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">seq 1 1000 \</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">| xargs -n1 -P48 sh -c 'cargo test --release -p crypto secp256k1::field::field_10x26 2&gt;&amp;1 | grep FAILED || true' _ \</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">| tee -a errors.txt</span></span></code></pre>
+<pre class="language-sh"><code>seq 1 1000 \
+| xargs -n1 -P48 sh -c 'cargo test --release -p crypto secp256k1::field::field_10x26 2&gt;&amp;1 | grep FAILED || true' _ \
+| tee -a errors.txt
+</code></pre>
 
 
 
@@ -589,7 +594,8 @@ Thus, a magnitude of `2047` can never occur during legal operation, and using `2
 
 A normalized limb less than `2^52` corresponds to the magnitude of 1. The largest permitted limb before entering `mul_in_place` is less than `2^56`. Thus the true maximum magnitude allowed by the `mul_in_place` function is:
 
-<pre><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">(2^56) / (2^52) = 2^4 = 16</span></span></code></pre>
+<pre><code>(2^56) / (2^52) = 2^4 = 16
+</code></pre>
 
 Any magnitude above `16` cannot be produced by correct arithmetic and cannot be safely consumed by `mul_in_place`.
 
@@ -669,19 +675,20 @@ Additionally, no equivalent validations of wNAF table digits have been identifie
 
 Consider translating the [similar function in Bitcoin](https://github.com/bitcoin/bitcoin/blob/master/src/secp256k1/src/ecmult_impl.h#L117-L123) from C to Rust:
 
-<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">fn table_verify(n: i32, w: usize) -&gt; bool {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">    // `w` is constant, but this check makes the function future-proof</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    // it would underflow/overflow when `w` is out of range</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    debug_assert!((2..=31).contains(&amp;w));</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">    // n must be odd</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">    if (n &amp; 1) == 0 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">        return false;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">    let max: i32 = (1_i32 &lt;&lt; (w - 1)) - 1;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">    n &gt;= -max &amp;&amp; n &lt;= max</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<pre class="language-rust"><code>fn table_verify(n: i32, w: usize) -&gt; bool {
+    // `w` is constant, but this check makes the function future-proof
+    // it would underflow/overflow when `w` is out of range
+    debug_assert!((2..=31).contains(&amp;w));
+
+    // n must be odd
+    if (n &amp; 1) == 0 {
+        return false;
+    }
+
+    let max: i32 = (1_i32 &lt;&lt; (w - 1)) - 1;
+    n &gt;= -max &amp;&amp; n &lt;= max
+}
+</code></pre>
 
 Additionally, implement similar validation in `secp256r1`.
 
@@ -772,25 +779,26 @@ In the current version of the codebase, all callers respect the required bounds.
 
 Invoking the function `assert_unchecked` is immediate Undefined Behavior if the condition does not actually hold:
 
-<pre class="language-rust" data-attributes="filepath context highlight=[10]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/blake2s/delegated_extended.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">fn finalize_impl</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">unsafe {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    // write zeroes</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    let start = self</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">        .state</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">        .input_buffer</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">        .as_mut_ptr()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">        .cast::&lt;u8&gt;()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">        .add(self.buffer_filled_bytes);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">    let end = self.state.input_buffer.as_mut_ptr_range().end.cast::&lt;u8&gt;();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">    core::hint::assert_unchecked(start &lt;= end);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">    core::ptr::write_bytes(start, 0, end.offset_from_unsigned(start));</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">    // and run round function</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">14</span><span style="font-family: monospace !important;">    self.state</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">15</span><span style="font-family: monospace !important;">        .run_round_function_with_byte_len::&lt;false&gt;(self.buffer_filled_bytes, true);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">16</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">17</span><span style="font-family: monospace !important;">    core::mem::transmute_copy::&lt;_, [u8; 32]&gt;(self.state.read_state_for_output_ref())</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">18</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<pre class="language-rust" data-attributes="filepath context highlight=[10]"><code>crypto/src/blake2s/delegated_extended.rs
+fn finalize_impl
+unsafe {
+    // write zeroes
+    let start = self
+        .state
+        .input_buffer
+        .as_mut_ptr()
+        .cast::&lt;u8&gt;()
+        .add(self.buffer_filled_bytes);
+    let end = self.state.input_buffer.as_mut_ptr_range().end.cast::&lt;u8&gt;();
+    core::hint::assert_unchecked(start &lt;= end);
+    core::ptr::write_bytes(start, 0, end.offset_from_unsigned(start));
+    // and run round function
+    self.state
+        .run_round_function_with_byte_len::&lt;false&gt;(self.buffer_filled_bytes, true);
+
+    core::mem::transmute_copy::&lt;_, [u8; 32]&gt;(self.state.read_state_for_output_ref())
+}
+</code></pre>
 
 If `start <= end` is not guaranteed to hold and this can be influenced by user input, then `assert_unchecked` must be removed.
 
@@ -960,15 +968,16 @@ However, this condition has a minor logical flaw — it assumes that it is poten
 
 Replace this code with:
 
-<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">if self.normalized {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">    debug_assert!(self.magnitude == 1);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">} else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    debug_assert!(self.magnitude &gt; 1);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">    self.value.normalize_in_place();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">    self.magnitude = 1;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">    self.normalized = true;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<pre class="language-rust"><code>if self.normalized {
+    debug_assert!(self.magnitude == 1);
+} else {
+    debug_assert!(self.magnitude &gt; 1);
+
+    self.value.normalize_in_place();
+    self.magnitude = 1;
+    self.normalized = true;
+}
+</code></pre>
 
 <div id="issue-12-unit_tests" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">12. Unit tests issues</h2>
@@ -989,7 +998,8 @@ Examples of such test cases:
 - `fibish_sol`
 
 After inspecting the project’s CI workflows, we have discovered that the script `dump_bin.sh` should be executed with `--type for-tests` flag now, in order to include new test cases into the coverage:
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">./dump_bin.sh --type for-tests</span></span></code></pre>
+<pre class="language-sh"><code>./dump_bin.sh --type for-tests
+</code></pre>
 
 ### Some of the unit tests are not executed during CI
 
@@ -998,29 +1008,32 @@ The following modules are not executed during regular CI runs:
 - `secp256k1::scalars::scalar32_delegation`
 
 Additional workflow should be created that runs the test suite in single-threaded mode, filtering only those modules that require this:
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">cargo test --release -p crypto secp256k1::field::field_8x32 -- --test-threads=1 --ignored</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">cargo test --release -p crypto secp256k1::scalars::scalar32_delegation -- --test-threads=1 --ignored</span></span></code></pre>
+<pre class="language-sh"><code>cargo test --release -p crypto secp256k1::field::field_8x32 -- --test-threads=1 --ignored
+cargo test --release -p crypto secp256k1::scalars::scalar32_delegation -- --test-threads=1 --ignored
+</code></pre>
 
 
 
 ### Some of the unit tests require larger stack
 
 The test case `secp256k1::field::field_8x32::tests::test_invert` overflows the stack of standard size (8MB):
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">$ cargo test -p crypto secp256k1::field::field_8x32::tests::test_invert -- --test-threads=1 --ignored</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">test secp256k1::field::field_8x32::tests::test_invert ... </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">thread '&lt;unknown&gt;' has overflowed its stack</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">fatal runtime error: stack overflow, aborting</span></span></code></pre>
+<pre class="language-sh"><code>$ cargo test -p crypto secp256k1::field::field_8x32::tests::test_invert -- --test-threads=1 --ignored
+...
+test secp256k1::field::field_8x32::tests::test_invert ... 
+thread '&lt;unknown&gt;' has overflowed its stack
+fatal runtime error: stack overflow, aborting
+</code></pre>
 
 It does succeed in case of bigger stack:
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">$ RUST_MIN_STACK=33554432 cargo test -p crypto secp256k1::field::field_8x32::tests::test_invert -- --test-threads=1 --ignored</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">running 1 test</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">test secp256k1::field::field_8x32::tests::test_invert ... ok</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 110 filtered out; finished in 0.57s</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">     Running tests/secp256k1.rs</span></span></code></pre>
+<pre class="language-sh"><code>$ RUST_MIN_STACK=33554432 cargo test -p crypto secp256k1::field::field_8x32::tests::test_invert -- --test-threads=1 --ignored
+...
+running 1 test
+test secp256k1::field::field_8x32::tests::test_invert ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 110 filtered out; finished in 0.57s
+
+     Running tests/secp256k1.rs
+</code></pre>
 
 ### Insufficient Test Coverage in `callable_oracles` Crate
 
@@ -1780,18 +1793,19 @@ Generated using the command `./fuzz.sh coverage`.
 The unit test suite has been executed with the `e2e_proving` feature disabled since enabling it caused the suite to crash (see the description of this issue in the main part of the report). To collect coverage data, `llvm-cov` has been used.
 
 Since the test suite of the `crypto` crate is built in "property testing" fashion, each new pass can result in slightly different coverage. This means that to compute realistic coverage, it is necessary to aggregate results from multiple runs. Multiple `llvm-cov` passes have been performed in parallel, on same machine used for fuzzing (48 cores). Each pass has been performed in single-threaded mode since some of the test cases require it:
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;"># first, we ensure that all test code is compiled</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">cargo llvm-cov -p crypto --no-report -- --list</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;"># bigger stack is needed for `field_8x32::tests::test_invert`</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">export RUST_MIN_STACK=33554432</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">seq 1 96 \</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">| xargs -P48 -n1 sh -c '</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">  cargo llvm-cov -p crypto --no-report -- --test-threads=1 --ignored || true</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">'</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">cargo llvm-cov report -p crypto --html</span></span></code></pre>
+<pre class="language-sh"><code># first, we ensure that all test code is compiled
+cargo llvm-cov -p crypto --no-report -- --list
+
+# bigger stack is needed for `field_8x32::tests::test_invert`
+export RUST_MIN_STACK=33554432
+
+seq 1 96 \
+| xargs -P48 -n1 sh -c '
+  cargo llvm-cov -p crypto --no-report -- --test-threads=1 --ignored || true
+'
+
+cargo llvm-cov report -p crypto --html
+</code></pre>
 
 Following are the coverage statistics produced by the commands above.
 
