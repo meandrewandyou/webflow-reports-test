@@ -59,166 +59,167 @@ The following areas are outside the scope of this engagement:
 
 The Rust files included in the scope are:
 
-<pre class="language-text"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">basic_bootloader</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">└── src</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    ├── bootloader</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    │   ├── account_models</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">    │   │   ├── abstract_account.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">    │   │   ├── eoa.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">    │   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">    │   ├── constants.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">    │   ├── errors.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">    │   ├── gas_helpers.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">    │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">    │   ├── process_transaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">    │   ├── result_keeper.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">14</span><span style="font-family: monospace !important;">    │   ├── run_single_interaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">15</span><span style="font-family: monospace !important;">    │   ├── runner.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">16</span><span style="font-family: monospace !important;">    │   ├── supported_ees.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">17</span><span style="font-family: monospace !important;">    │   └── transaction</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">18</span><span style="font-family: monospace !important;">    │       ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">19</span><span style="font-family: monospace !important;">    │       ├── rlp.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">20</span><span style="font-family: monospace !important;">    │       └── u256be_ptr.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">21</span><span style="font-family: monospace !important;">    └── lib.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">22</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">23</span><span style="font-family: monospace !important;">system_hooks</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">24</span><span style="font-family: monospace !important;">└── src</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">25</span><span style="font-family: monospace !important;">    ├── addresses_constants.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">26</span><span style="font-family: monospace !important;">    ├── l1_messenger.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">27</span><span style="font-family: monospace !important;">    ├── lib.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">28</span><span style="font-family: monospace !important;">    ├── mock_precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">29</span><span style="font-family: monospace !important;">    └── precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">30</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">31</span><span style="font-family: monospace !important;">crypto</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">32</span><span style="font-family: monospace !important;">├── src</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">33</span><span style="font-family: monospace !important;">│   ├── bigint_riscv.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">34</span><span style="font-family: monospace !important;">│   ├── blake2s</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">35</span><span style="font-family: monospace !important;">│   │   ├── delegated.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">36</span><span style="font-family: monospace !important;">│   │   ├── delegated_extended.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">37</span><span style="font-family: monospace !important;">│   │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">38</span><span style="font-family: monospace !important;">│   │   ├── naive.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">39</span><span style="font-family: monospace !important;">│   │   ├── test.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">40</span><span style="font-family: monospace !important;">│   │   ├── test_program</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">41</span><span style="font-family: monospace !important;">│   │   │   └── src</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">42</span><span style="font-family: monospace !important;">│   │   │       └── main.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">43</span><span style="font-family: monospace !important;">│   │   └── unrolled_delegated.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">44</span><span style="font-family: monospace !important;">│   ├── bls12_381</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">45</span><span style="font-family: monospace !important;">│   │   ├── curves</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">46</span><span style="font-family: monospace !important;">│   │   │   ├── g1.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">47</span><span style="font-family: monospace !important;">│   │   │   ├── g1_swu_iso.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">48</span><span style="font-family: monospace !important;">│   │   │   ├── g2.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">49</span><span style="font-family: monospace !important;">│   │   │   ├── g2_swu_iso.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">50</span><span style="font-family: monospace !important;">│   │   │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">51</span><span style="font-family: monospace !important;">│   │   │   ├── pairing_impl.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">52</span><span style="font-family: monospace !important;">│   │   │   └── util.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">53</span><span style="font-family: monospace !important;">│   │   ├── fields</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">54</span><span style="font-family: monospace !important;">│   │   │   ├── fq.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">55</span><span style="font-family: monospace !important;">│   │   │   ├── fq12.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">56</span><span style="font-family: monospace !important;">│   │   │   ├── fq2.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">57</span><span style="font-family: monospace !important;">│   │   │   ├── fq6.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">58</span><span style="font-family: monospace !important;">│   │   │   ├── fq_alt.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">59</span><span style="font-family: monospace !important;">│   │   │   ├── fq_ext.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">60</span><span style="font-family: monospace !important;">│   │   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">61</span><span style="font-family: monospace !important;">│   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">62</span><span style="font-family: monospace !important;">│   ├── bn254</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">63</span><span style="font-family: monospace !important;">│   │   ├── curves</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">64</span><span style="font-family: monospace !important;">│   │   │   ├── g1.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">65</span><span style="font-family: monospace !important;">│   │   │   ├── g2.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">66</span><span style="font-family: monospace !important;">│   │   │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">67</span><span style="font-family: monospace !important;">│   │   │   └── pairing_impl.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">68</span><span style="font-family: monospace !important;">│   │   ├── fields</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">69</span><span style="font-family: monospace !important;">│   │   │   ├── fq.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">70</span><span style="font-family: monospace !important;">│   │   │   ├── fq12.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">71</span><span style="font-family: monospace !important;">│   │   │   ├── fq2.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">72</span><span style="font-family: monospace !important;">│   │   │   ├── fq6.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">73</span><span style="font-family: monospace !important;">│   │   │   ├── fq_alt.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">74</span><span style="font-family: monospace !important;">│   │   │   ├── fq_alt_full</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">75</span><span style="font-family: monospace !important;">│   │   │   │   ├── impls copy.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">76</span><span style="font-family: monospace !important;">│   │   │   │   ├── impls.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">77</span><span style="font-family: monospace !important;">│   │   │   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">78</span><span style="font-family: monospace !important;">│   │   │   ├── fr.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">79</span><span style="font-family: monospace !important;">│   │   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">80</span><span style="font-family: monospace !important;">│   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">81</span><span style="font-family: monospace !important;">│   ├── k256</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">82</span><span style="font-family: monospace !important;">│   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">83</span><span style="font-family: monospace !important;">│   ├── lib.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">84</span><span style="font-family: monospace !important;">│   ├── modexp</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">85</span><span style="font-family: monospace !important;">│   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">86</span><span style="font-family: monospace !important;">│   ├── p256</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">87</span><span style="font-family: monospace !important;">│   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">88</span><span style="font-family: monospace !important;">│   ├── ripemd160</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">89</span><span style="font-family: monospace !important;">│   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">90</span><span style="font-family: monospace !important;">│   ├── secp256k1</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">91</span><span style="font-family: monospace !important;">│   │   ├── context.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">92</span><span style="font-family: monospace !important;">│   │   ├── field</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">93</span><span style="font-family: monospace !important;">│   │   │   ├── field_10x26.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">94</span><span style="font-family: monospace !important;">│   │   │   ├── field_5x52.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">95</span><span style="font-family: monospace !important;">│   │   │   ├── field_8x32.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">96</span><span style="font-family: monospace !important;">│   │   │   ├── field_impl.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">97</span><span style="font-family: monospace !important;">│   │   │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">98</span><span style="font-family: monospace !important;">│   │   │   ├── mod_inv32.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">99</span><span style="font-family: monospace !important;">│   │   │   └── mod_inv64.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">100</span><span style="font-family: monospace !important;">│   │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">101</span><span style="font-family: monospace !important;">│   │   ├── points</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">102</span><span style="font-family: monospace !important;">│   │   │   ├── affine.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">103</span><span style="font-family: monospace !important;">│   │   │   ├── jacobian.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">104</span><span style="font-family: monospace !important;">│   │   │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">105</span><span style="font-family: monospace !important;">│   │   │   └── storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">106</span><span style="font-family: monospace !important;">│   │   ├── recover.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">107</span><span style="font-family: monospace !important;">│   │   ├── scalars</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">108</span><span style="font-family: monospace !important;">│   │   │   ├── invert.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">109</span><span style="font-family: monospace !important;">│   │   │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">110</span><span style="font-family: monospace !important;">│   │   │   ├── scalar32.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">111</span><span style="font-family: monospace !important;">│   │   │   ├── scalar32_delegation.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">112</span><span style="font-family: monospace !important;">│   │   │   └── scalar64.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">113</span><span style="font-family: monospace !important;">│   │   └── test_vectors.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">114</span><span style="font-family: monospace !important;">│   ├── sha256</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">115</span><span style="font-family: monospace !important;">│   │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">116</span><span style="font-family: monospace !important;">│   └── sha3</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">117</span><span style="font-family: monospace !important;">│       └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">118</span><span style="font-family: monospace !important;">└── tests</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">119</span><span style="font-family: monospace !important;">    └── secp256k1.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">120</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">121</span><span style="font-family: monospace !important;">basic_system</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">122</span><span style="font-family: monospace !important;">└── src</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">123</span><span style="font-family: monospace !important;">    ├── cost_constants.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">124</span><span style="font-family: monospace !important;">    ├── lib.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">125</span><span style="font-family: monospace !important;">    ├── system_functions</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">126</span><span style="font-family: monospace !important;">    │   ├── bn254_ecadd.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">127</span><span style="font-family: monospace !important;">    │   ├── bn254_ecmul.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">128</span><span style="font-family: monospace !important;">    │   ├── bn254_pairing_check.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">129</span><span style="font-family: monospace !important;">    │   ├── ecrecover.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">130</span><span style="font-family: monospace !important;">    │   ├── keccak256.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">131</span><span style="font-family: monospace !important;">    │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">132</span><span style="font-family: monospace !important;">    │   ├── modexp.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">133</span><span style="font-family: monospace !important;">    │   ├── p256_verify.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">134</span><span style="font-family: monospace !important;">    │   ├── ripemd160.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">135</span><span style="font-family: monospace !important;">    │   └── sha256.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">136</span><span style="font-family: monospace !important;">    └── system_implementation</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">137</span><span style="font-family: monospace !important;">        ├── io</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">138</span><span style="font-family: monospace !important;">        │   ├── account_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">139</span><span style="font-family: monospace !important;">        │   ├── account_cache_entry.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">140</span><span style="font-family: monospace !important;">        │   ├── history_map.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">141</span><span style="font-family: monospace !important;">        │   ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">142</span><span style="font-family: monospace !important;">        │   ├── preimage_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">143</span><span style="font-family: monospace !important;">        │   ├── rollbackable_stack.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">144</span><span style="font-family: monospace !important;">        │   ├── simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">145</span><span style="font-family: monospace !important;">        │   └── storage_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">146</span><span style="font-family: monospace !important;">        ├── memory</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">147</span><span style="font-family: monospace !important;">        │   ├── basic_memory.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">148</span><span style="font-family: monospace !important;">        │   └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">149</span><span style="font-family: monospace !important;">        ├── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">150</span><span style="font-family: monospace !important;">        └── system</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">151</span><span style="font-family: monospace !important;">            ├── basic_metadata.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">152</span><span style="font-family: monospace !important;">            ├── io_subsystem.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">153</span><span style="font-family: monospace !important;">            └── mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">154</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">155</span><span style="font-family: monospace !important;">supporting_crates</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">156</span><span style="font-family: monospace !important;">└── modexp</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">157</span><span style="font-family: monospace !important;">    └── src</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">158</span><span style="font-family: monospace !important;">        ├── arith.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">159</span><span style="font-family: monospace !important;">        ├── lib.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">160</span><span style="font-family: monospace !important;">        └── mpnat.rs</span></span></code></pre>
+<pre class="language-text"><code>basic_bootloader
+└── src
+    ├── bootloader
+    │   ├── account_models
+    │   │   ├── abstract_account.rs
+    │   │   ├── eoa.rs
+    │   │   └── mod.rs
+    │   ├── constants.rs
+    │   ├── errors.rs
+    │   ├── gas_helpers.rs
+    │   ├── mod.rs
+    │   ├── process_transaction.rs
+    │   ├── result_keeper.rs
+    │   ├── run_single_interaction.rs
+    │   ├── runner.rs
+    │   ├── supported_ees.rs
+    │   └── transaction
+    │       ├── mod.rs
+    │       ├── rlp.rs
+    │       └── u256be_ptr.rs
+    └── lib.rs
+
+system_hooks
+└── src
+    ├── addresses_constants.rs
+    ├── l1_messenger.rs
+    ├── lib.rs
+    ├── mock_precompiles.rs
+    └── precompiles.rs
+
+crypto
+├── src
+│   ├── bigint_riscv.rs
+│   ├── blake2s
+│   │   ├── delegated.rs
+│   │   ├── delegated_extended.rs
+│   │   ├── mod.rs
+│   │   ├── naive.rs
+│   │   ├── test.rs
+│   │   ├── test_program
+│   │   │   └── src
+│   │   │       └── main.rs
+│   │   └── unrolled_delegated.rs
+│   ├── bls12_381
+│   │   ├── curves
+│   │   │   ├── g1.rs
+│   │   │   ├── g1_swu_iso.rs
+│   │   │   ├── g2.rs
+│   │   │   ├── g2_swu_iso.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── pairing_impl.rs
+│   │   │   └── util.rs
+│   │   ├── fields
+│   │   │   ├── fq.rs
+│   │   │   ├── fq12.rs
+│   │   │   ├── fq2.rs
+│   │   │   ├── fq6.rs
+│   │   │   ├── fq_alt.rs
+│   │   │   ├── fq_ext.rs
+│   │   │   └── mod.rs
+│   │   └── mod.rs
+│   ├── bn254
+│   │   ├── curves
+│   │   │   ├── g1.rs
+│   │   │   ├── g2.rs
+│   │   │   ├── mod.rs
+│   │   │   └── pairing_impl.rs
+│   │   ├── fields
+│   │   │   ├── fq.rs
+│   │   │   ├── fq12.rs
+│   │   │   ├── fq2.rs
+│   │   │   ├── fq6.rs
+│   │   │   ├── fq_alt.rs
+│   │   │   ├── fq_alt_full
+│   │   │   │   ├── impls copy.rs
+│   │   │   │   ├── impls.rs
+│   │   │   │   └── mod.rs
+│   │   │   ├── fr.rs
+│   │   │   └── mod.rs
+│   │   └── mod.rs
+│   ├── k256
+│   │   └── mod.rs
+│   ├── lib.rs
+│   ├── modexp
+│   │   └── mod.rs
+│   ├── p256
+│   │   └── mod.rs
+│   ├── ripemd160
+│   │   └── mod.rs
+│   ├── secp256k1
+│   │   ├── context.rs
+│   │   ├── field
+│   │   │   ├── field_10x26.rs
+│   │   │   ├── field_5x52.rs
+│   │   │   ├── field_8x32.rs
+│   │   │   ├── field_impl.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── mod_inv32.rs
+│   │   │   └── mod_inv64.rs
+│   │   ├── mod.rs
+│   │   ├── points
+│   │   │   ├── affine.rs
+│   │   │   ├── jacobian.rs
+│   │   │   ├── mod.rs
+│   │   │   └── storage.rs
+│   │   ├── recover.rs
+│   │   ├── scalars
+│   │   │   ├── invert.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── scalar32.rs
+│   │   │   ├── scalar32_delegation.rs
+│   │   │   └── scalar64.rs
+│   │   └── test_vectors.rs
+│   ├── sha256
+│   │   └── mod.rs
+│   └── sha3
+│       └── mod.rs
+└── tests
+    └── secp256k1.rs
+
+basic_system
+└── src
+    ├── cost_constants.rs
+    ├── lib.rs
+    ├── system_functions
+    │   ├── bn254_ecadd.rs
+    │   ├── bn254_ecmul.rs
+    │   ├── bn254_pairing_check.rs
+    │   ├── ecrecover.rs
+    │   ├── keccak256.rs
+    │   ├── mod.rs
+    │   ├── modexp.rs
+    │   ├── p256_verify.rs
+    │   ├── ripemd160.rs
+    │   └── sha256.rs
+    └── system_implementation
+        ├── io
+        │   ├── account_cache.rs
+        │   ├── account_cache_entry.rs
+        │   ├── history_map.rs
+        │   ├── mod.rs
+        │   ├── preimage_cache.rs
+        │   ├── rollbackable_stack.rs
+        │   ├── simple_growable_storage.rs
+        │   └── storage_cache.rs
+        ├── memory
+        │   ├── basic_memory.rs
+        │   └── mod.rs
+        ├── mod.rs
+        └── system
+            ├── basic_metadata.rs
+            ├── io_subsystem.rs
+            └── mod.rs
+
+supporting_crates
+└── modexp
+    └── src
+        ├── arith.rs
+        ├── lib.rs
+        └── mpnat.rs
+</code></pre>
 
 ## Audit Team
 
@@ -709,10 +710,11 @@ The function `get_ergs_spent_for_pubdata` calls `system.net_pubdata_used()` agai
 
 If the historical values are not required, it is slightly more efficient to define one more auxiliary function that skips calls to `diff_operands_total`:
 
-<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">&amp;self.btree.iter().for_each(|(k, elem)| {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">    let r = unsafe { elem.head.as_ref() };</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    // use `k` and `r`</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">});</span></span></code></pre>
+<pre class="language-rust"><code>&amp;self.btree.iter().for_each(|(k, elem)| {
+    let r = unsafe { elem.head.as_ref() };
+    // use `k` and `r`
+});
+</code></pre>
 
 Similarly, the following snippet can be optimized:
 
@@ -729,11 +731,12 @@ Similarly, the following snippet can be optimized:
 
 The optimized code could simply filter only one type of `Appearance` and multiply number of such items by `32`:
 
-<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">&amp;self.btree.values().filter(|elem| {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">    let r = unsafe { elem.head.as_ref() };</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    r.value.appearance == Appearance::Updated</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">}).map(|_| 32)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">    .sum();</span></span></code></pre>
+<pre class="language-rust"><code>&amp;self.btree.values().filter(|elem| {
+    let r = unsafe { elem.head.as_ref() };
+    r.value.appearance == Appearance::Updated
+}).map(|_| 32)
+    .sum();
+</code></pre>
 
 <div id="issue-10-1-min1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">10. Using EOA account model as a fallback for smart contracts</h2>
@@ -872,15 +875,16 @@ Code duplication (about 30 lines) can be avoided by moving `assert_eq!` from ins
 
 Then there would be something like:
 
-<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">if PROOF_ENV {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">    assert_eq!({</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">        recompute_hash(preimage_type, buffered.clone()), *hash</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    });</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">} else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">    debug_assert_eq!({</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">        recompute_hash(preimage_type, buffered.clone()), *hash</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">    });</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<pre class="language-rust"><code>if PROOF_ENV {
+    assert_eq!({
+        recompute_hash(preimage_type, buffered.clone()), *hash
+    });
+} else {
+    debug_assert_eq!({
+        recompute_hash(preimage_type, buffered.clone()), *hash
+    });
+}
+</code></pre>
 
 <pre class="language-rust" data-attributes="filepath line=546"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/system/mod.rs</span></span>
 <span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">546</span><span style="font-family: monospace !important;">ergs: VALUE_TO_EMPTY_ACCOUNT_COST * ERGS_PER_GAS,</span></span></code></pre>
@@ -899,7 +903,8 @@ The constant `VALUE_TO_EMPTY_ACCOUNT_COST` is a duplicate of `NEWACCOUNT`. Both 
 
 Fuzzing has been performed for all targets, with 32 parallel jobs on a machine with 48 CPU cores. Each fuzzing session was configured with a timeout of 12 hours (43,200 seconds) per target:
 
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">./fuzz.sh parallel --jobs=32 --timeout=43200</span></span></code></pre>
+<pre class="language-sh"><code>./fuzz.sh parallel --jobs=32 --timeout=43200
+</code></pre>
 
 ## Failing assertion in `bootloader_process_transaction`
 
@@ -907,60 +912,62 @@ A crash in the `bootloader_process_transaction` fuzz target has been discovered,
 
 Here is the abridged output of this crash:
 
-<pre><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">$ ./fuzz.sh check</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">🚨 Crash detected! 🚨</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">./fuzz/artifacts/bootloader_process_transaction/crash-225795e7619398feb58be0939c44029a26cc60a5</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">root@fuzz:~/workspace/matter-labs-zk_ee/tests/fuzzer# cargo fuzz run -D bootloader_process_transaction fuzz/artifacts/bootloader_process_transaction/crash-225795e7619398feb58be0939c44029a26cc60a5</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">Running: fuzz/artifacts/bootloader_process_transaction/crash-225795e7619398feb58be0939c44029a26cc60a5</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">thread '&lt;unnamed&gt;' panicked at /root/workspace/matter-labs-zk_ee/basic_bootloader/src/bootloader/transaction/mod.rs:396:13:</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">assertion failed: v == 27 || v == 28</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">==66280== ERROR: libFuzzer: deadly signal</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">Error: Fuzz target exited with exit status: 77</span></span></code></pre>
+<pre><code>$ ./fuzz.sh check
+🚨 Crash detected! 🚨
+./fuzz/artifacts/bootloader_process_transaction/crash-225795e7619398feb58be0939c44029a26cc60a5
+root@fuzz:~/workspace/matter-labs-zk_ee/tests/fuzzer# cargo fuzz run -D bootloader_process_transaction fuzz/artifacts/bootloader_process_transaction/crash-225795e7619398feb58be0939c44029a26cc60a5
+...
+Running: fuzz/artifacts/bootloader_process_transaction/crash-225795e7619398feb58be0939c44029a26cc60a5
+
+thread '&lt;unnamed&gt;' panicked at /root/workspace/matter-labs-zk_ee/basic_bootloader/src/bootloader/transaction/mod.rs:396:13:
+assertion failed: v == 27 || v == 28
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+==66280== ERROR: libFuzzer: deadly signal
+...
+Error: Fuzz target exited with exit status: 77
+</code></pre>
 
 ## Failure of coverage analysis
 
 Running the fuzzing coverage analysis via `./fuzz.sh coverage` failed consistently with the error:
 
-<pre class="language-text"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">   Compiling fuzzer-fuzz v0.0.0 (/root/workspace/matter-labs-zk_ee/tests/fuzzer/fuzz)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">error[E0061]: this method takes 1 argument but 0 arguments were supplied</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:29:29</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    |</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">29  |         let _ = transaction.calculate_hash();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">    |                             ^^^^^^^^^^^^^^-- argument #1 of type `u64` is missing</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">    |</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">error[E0061]: this method takes 1 argument but 0 arguments were supplied</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:34:29</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">    |</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">34  |         let _ = transaction.calculate_hash();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">    |                             ^^^^^^^^^^^^^^-- argument #1 of type `u64` is missing</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">14</span><span style="font-family: monospace !important;">    |</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">15</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">16</span><span style="font-family: monospace !important;">error[E0599]: no method named `legacy_tx_calculate_signed_hash` found for struct `ZkSyncTransaction` in the current scope</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">17</span><span style="font-family: monospace !important;">  --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:47:29</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">18</span><span style="font-family: monospace !important;">   |</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">19</span><span style="font-family: monospace !important;">47 |                 transaction.legacy_tx_calculate_signed_hash(chain_id)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">20</span><span style="font-family: monospace !important;">   |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">21</span><span style="font-family: monospace !important;">   |</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">22</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">23</span><span style="font-family: monospace !important;">error[E0599]: no method named `eip2930_tx_calculate_signed_hash` found for struct `ZkSyncTransaction` in the current scope</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">24</span><span style="font-family: monospace !important;">   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:50:29</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">25</span><span style="font-family: monospace !important;">    |</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">26</span><span style="font-family: monospace !important;">50  |                 transaction.eip2930_tx_calculate_signed_hash(chain_id)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">27</span><span style="font-family: monospace !important;">    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">28</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">29</span><span style="font-family: monospace !important;">error[E0599]: no method named `eip1559_tx_calculate_signed_hash` found for struct `ZkSyncTransaction` in the current scope</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">30</span><span style="font-family: monospace !important;">   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:53:29</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">31</span><span style="font-family: monospace !important;">    |</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">32</span><span style="font-family: monospace !important;">53  |                 transaction.eip1559_tx_calculate_signed_hash(chain_id)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">33</span><span style="font-family: monospace !important;">    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">34</span><span style="font-family: monospace !important;">    |</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">35</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">36</span><span style="font-family: monospace !important;">⚠️ Failed to generate coverage data</span></span></code></pre>
+<pre class="language-text"><code>   Compiling fuzzer-fuzz v0.0.0 (/root/workspace/matter-labs-zk_ee/tests/fuzzer/fuzz)
+error[E0061]: this method takes 1 argument but 0 arguments were supplied
+   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:29:29
+    |
+29  |         let _ = transaction.calculate_hash();
+    |                             ^^^^^^^^^^^^^^-- argument #1 of type `u64` is missing
+    |
+...
+error[E0061]: this method takes 1 argument but 0 arguments were supplied
+   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:34:29
+    |
+34  |         let _ = transaction.calculate_hash();
+    |                             ^^^^^^^^^^^^^^-- argument #1 of type `u64` is missing
+    |
+...
+error[E0599]: no method named `legacy_tx_calculate_signed_hash` found for struct `ZkSyncTransaction` in the current scope
+  --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:47:29
+   |
+47 |                 transaction.legacy_tx_calculate_signed_hash(chain_id)
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+...
+error[E0599]: no method named `eip2930_tx_calculate_signed_hash` found for struct `ZkSyncTransaction` in the current scope
+   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:50:29
+    |
+50  |                 transaction.eip2930_tx_calculate_signed_hash(chain_id)
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+error[E0599]: no method named `eip1559_tx_calculate_signed_hash` found for struct `ZkSyncTransaction` in the current scope
+   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:53:29
+    |
+53  |                 transaction.eip1559_tx_calculate_signed_hash(chain_id)
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+...
+⚠️ Failed to generate coverage data
+</code></pre>
 
 <div id="issue-15-2-qa1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">15. Equalities with boolean constants</h2>
@@ -1217,33 +1224,36 @@ The name `PreimageRequest` seems to be perfectly suitable for something that is 
 
 ## Incomprehensible error messages
 
-<pre class="language-rust" data-attributes="filepath"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/process_transaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">.ok_or(InternalError("gp*gl"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">.ok_or(InternalError("td-pto"))</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">.ok_or(InternalError("v+tic"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">.ok_or(InternalError("gc*gp"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">.ok_or(InternalError("v+pto"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">.ok_or(InternalError("td-vpf"))</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">.ok_or(InternalError("gp*gl"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">.ok_or(InternalError("brf-rf"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">.ok_or(InternalError("bba-bbb"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">.ok_or(InternalError("tgf*gp"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">.ok_or(InternalError("fa+v"))</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">.ok_or(InternalError("mfpg*gl"))?;</span></span></code></pre>
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/process_transaction.rs
+.ok_or(InternalError("gp*gl"))?;
+.ok_or(InternalError("td-pto"))
+.ok_or(InternalError("v+tic"))?;
+.ok_or(InternalError("gc*gp"))?;
+.ok_or(InternalError("v+pto"))?;
+.ok_or(InternalError("td-vpf"))
+.ok_or(InternalError("gp*gl"))?;
+.ok_or(InternalError("brf-rf"))?;
+.ok_or(InternalError("bba-bbb"))?;
+.ok_or(InternalError("tgf*gp"))?;
+.ok_or(InternalError("fa+v"))
+.ok_or(InternalError("mfpg*gl"))?;
+</code></pre>
 
-<pre class="language-rust" data-attributes="filepath"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/account_models/eoa.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">.ok_or(InternalError("mfpg*gl"))?;</span></span></code></pre>
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/account_models/eoa.rs
+.ok_or(InternalError("mfpg*gl"))?;
+</code></pre>
 
-<pre class="language-rust" data-attributes="filepath"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/gas_helpers.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">.ok_or(InternalError("gpp*LTIP"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">.ok_or(InternalError("ipo+LTIG"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">.ok_or(InternalError("tuo+io"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">.ok_or(InternalError("glft*EPF"))?,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">.ok_or(InternalError("zb*CZBGC"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">.ok_or(InternalError("nzb*CNZBGC"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">.ok_or(InternalError("zc+nzc"))</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">.ok_or(InternalError("gc*gp"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">.ok_or(InternalError("cps*epp"))</span></span></code></pre>
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/gas_helpers.rs
+.ok_or(InternalError("gpp*LTIP"))?;
+.ok_or(InternalError("ipo+LTIG"))?;
+.ok_or(InternalError("tuo+io"))?;
+.ok_or(InternalError("glft*EPF"))?,
+.ok_or(InternalError("zb*CZBGC"))?;
+.ok_or(InternalError("nzb*CNZBGC"))?;
+.ok_or(InternalError("zc+nzc"))
+.ok_or(InternalError("gc*gp"))?;
+.ok_or(InternalError("cps*epp"))
+</code></pre>
 
 The type `InternalError` is intended to be used only with errors that must never actually happen, and it is not intended to be reported to users. The messages attached to such errors are strictly enough to locate them in case such errors happen.
 
@@ -1287,10 +1297,11 @@ Some of such comments represent significant features and should be tracked in a 
   </div>
 </div>
 
-<pre class="language-rust" data-attributes="filepath"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/runner.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">CS: Stack&lt;SupportedEEVMState&lt;S::UsermodeSystem&gt;, S::Allocator&gt;,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">callstack: &amp;mut CS,</span></span></code></pre>
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/runner.rs
+CS: Stack&lt;SupportedEEVMState&lt;S::UsermodeSystem&gt;, S::Allocator&gt;,
+...
+callstack: &amp;mut CS,
+</code></pre>
 
 In many functions, the `callstack` parameter is used only to query the frame at the top, i.e. as `callstack.top()`. It can be replaced by a minimalistic parameter `topframe: Option<&mut SupportedEEVMState<S::UsermodeSystem>>`. The type parameter `CS` can be removed from such functions, too. Such a refactoring would make code easier to review and maintain.
 
@@ -1405,20 +1416,22 @@ The unit test suite is intended to support both forward running and proof-runnin
 
 Running the test suite with the `e2e_proving` feature enabled should be possible using the command:
 
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">cargo +nightly llvm-cov --workspace --features e2e_proving --html</span></span></code></pre>
+<pre class="language-sh"><code>cargo +nightly llvm-cov --workspace --features e2e_proving --html
+</code></pre>
 
 However, this run has resulted in the failure of the `test_add` test case.
 
 After allowing it to run for 18 hours, it failed with the following output:
 
-<pre><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">---- secp256k1::field::field_10x26::tests::test_add stdout ----</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">thread 'secp256k1::field::field_10x26::tests::test_add' panicked at crypto/src/secp256k1/field/field_10x26.rs:566:9:</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">attempt to add with overflow</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">failures:</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">    secp256k1::field::field_10x26::tests::test_add</span></span></code></pre>
+<pre><code>---- secp256k1::field::field_10x26::tests::test_add stdout ----
+
+thread 'secp256k1::field::field_10x26::tests::test_add' panicked at crypto/src/secp256k1/field/field_10x26.rs:566:9:
+attempt to add with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+failures:
+    secp256k1::field::field_10x26::tests::test_add
+</code></pre>
 
 As a consequence, no coverage report has been produced in `e2e_proving` mode.
 
@@ -1526,17 +1539,18 @@ This structure is not used. Should it be used when a call or deployment is compl
 
 The following error messages are not utilized anywhere in the codebase. While no security issues related to these errors have been discovered, they could indicate unhandled errors.
 
-<pre class="language-rust" data-attributes="filepath"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/errors.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">InvalidStructure,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">GasPriceLessThanBasefee,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">CallGasCostMoreThanGasLimit,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">OverflowPaymentInTransaction,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">InvalidChainId,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">AccessListNotSupported,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">PaymasterReturnDataTooShort,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">PaymasterInvalidMagic,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">PaymasterContextInvalid,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">PaymasterContextOffsetTooLong,</span></span></code></pre>
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/errors.rs
+InvalidStructure,
+GasPriceLessThanBasefee,
+CallGasCostMoreThanGasLimit,
+OverflowPaymentInTransaction,
+InvalidChainId,
+AccessListNotSupported,
+PaymasterReturnDataTooShort,
+PaymasterInvalidMagic,
+PaymasterContextInvalid,
+PaymasterContextOffsetTooLong,
+</code></pre>
 
 <div id="issue-27-1-qa3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">27. Variable can be declared in a more specific scope</h2>
@@ -2021,7 +2035,8 @@ This run includes the fix for the `bootloader_tx_parser` fuzzing target.
 ## Unit tests coverage
 
 The unit test suite has been executed with the `e2e_proving` feature disabled since enabling it caused the suite to crash (see the description of this issue in the main part of the report). To collect coverage data, `llvm-cov` has been used:
-<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">cargo llvm-cov --workspace --html</span></span></code></pre>
+<pre class="language-sh"><code>cargo llvm-cov --workspace --html
+</code></pre>
 
 ### Module `basic_bootloader`
 
