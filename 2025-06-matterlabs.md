@@ -192,143 +192,143 @@ The status of an issue can be one of the following:
 </tr>
 </thead>
 <tbody>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-1-HIGH-access-list').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">1. Access list decoding can be exploited to submit invalid transactions</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-1-HIGH-access-list" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">1. Access list decoding can be exploited to submit invalid transactions</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #f97316;">High</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-2-HIGH-returndata-buffer').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">2. Returndata buffer overflow can cause DoS or exploitable memory corruption</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-2-HIGH-returndata-buffer" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">2. Returndata buffer overflow can cause DoS or exploitable memory corruption</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #f97316;">High</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-3-HIGH-incorrect-native-cost').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">3. Incorrect native cost calculation causes DoS</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-3-HIGH-incorrect-native-cost" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">3. Incorrect native cost calculation causes DoS</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #f97316;">High</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-4-HIGH-non-deterministic-decoding').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">4. Non-deterministic decoding allows effective DoS attacks</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-4-HIGH-non-deterministic-decoding" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">4. Non-deterministic decoding allows effective DoS attacks</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #f97316;">High</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-5-MEDIUM-validation-of-12').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">5. Flawed addresses validation can lead to token loss</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-5-MEDIUM-validation-of-12" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">5. Flawed addresses validation can lead to token loss</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Medium</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-6-MEDIUM-incorrect-implementation').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">6. Merkle proofs serialization can produce malformed data</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-6-MEDIUM-incorrect-implementation" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">6. Merkle proofs serialization can produce malformed data</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Medium</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-7-FP-opcode-selfbalance').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">7. Opcode `SELFBALANCE` is not guaranteed to succeed</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-7-FP-opcode-selfbalance" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">7. Opcode `SELFBALANCE` is not guaranteed to succeed</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Medium</td>
   <td style="border: 1px solid white; padding: 8px; color: #ef4444;">Invalid</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-8-MEDIUM-overflow-in-grow-heap').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">8. Overflow during memory heap expansion</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-8-MEDIUM-overflow-in-grow-heap" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">8. Overflow during memory heap expansion</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Medium</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-9-LOW-potential-use-after-free').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">9. Potential "Use-After-Free" issues in the preimage cache</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-9-LOW-potential-use-after-free" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">9. Potential "Use-After-Free" issues in the preimage cache</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-10-LOW-invalid-safety-assumption').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">10. Invalid safety assumption when deserializing data from oracle</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-10-LOW-invalid-safety-assumption" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">10. Invalid safety assumption when deserializing data from oracle</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-11-LOW-l1-transactions').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">11. L1 transactions can pose strong DoS potential</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-11-LOW-l1-transactions" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">11. L1 transactions can pose strong DoS potential</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-12-LOW-merkle-tree').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">12. Merkle tree implementation concerns</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-12-LOW-merkle-tree" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">12. Merkle tree implementation concerns</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-13-LOW-missing-validation-of-token').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">13. Missing validation of token transfer during tokens burning</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-13-LOW-missing-validation-of-token" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">13. Missing validation of token transfer during tokens burning</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-14-LOW-missing-validations').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">14. Missing validations during system upgrades</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-14-LOW-missing-validations" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">14. Missing validations during system upgrades</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-15-LOW-validations').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">15. Potential extra validations</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-15-LOW-validations" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">15. Potential extra validations</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-16-LOW-unchecked-base-fee-per-gas').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">16. Unchecked `base_fee_per_gas` downcast</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-16-LOW-unchecked-base-fee-per-gas" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">16. Unchecked `base_fee_per_gas` downcast</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-17-LOW-unsafe-assumption').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">17. Unsafe assumption that `pubdata` cannot decrease after validation</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-17-LOW-unsafe-assumption" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">17. Unsafe assumption that `pubdata` cannot decrease after validation</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-18-LOW-decreased-performance').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">18. Decreased performance due to redundant `pubdata` calculation</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-18-LOW-decreased-performance" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">18. Decreased performance due to redundant `pubdata` calculation</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-19-LOW-double-resource-accounting').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">19. Double resource accounting is a deviation from EVM semantics</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-19-LOW-double-resource-accounting" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">19. Double resource accounting is a deviation from EVM semantics</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-20-LOW-inconsistent-developer-doc').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">20. Inconsistent developer documentation</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-20-LOW-inconsistent-developer-doc" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">20. Inconsistent developer documentation</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-21-LOW-incorrect-opcode').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">21. Incorrect opcode name in debug output</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-21-LOW-incorrect-opcode" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">21. Incorrect opcode name in debug output</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
   <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-22-QA-code-duplicates').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">22. Code duplicates</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-22-QA-code-duplicates" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">22. Code duplicates</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-23-QA-error-handling').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">23. Error handling issues</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-23-QA-error-handling" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">23. Error handling issues</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-24-QA-magic-numbers').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">24. Magic numbers</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-24-QA-magic-numbers" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">24. Magic numbers</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-25-QA-misleading-docs').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">25. Misleading docs and messages</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-25-QA-misleading-docs" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">25. Misleading docs and messages</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-26-QA-redundant-code').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">26. Redundant code</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-26-QA-redundant-code" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">26. Redundant code</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-27-QA-unimplemented').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">27. Unimplemented functionality</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-27-QA-unimplemented" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">27. Unimplemented functionality</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
-<tr style="cursor: pointer;" onclick="document.getElementById('issue-28-QA-using-raw-u8').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-  <td style="border: 1px solid white; padding: 8px;">28. Using raw `u8` type instead of `enum`</td>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-28-QA-using-raw-u8" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">28. Using raw `u8` type instead of `enum`</a></td>
   <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
   <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
 </tr>
