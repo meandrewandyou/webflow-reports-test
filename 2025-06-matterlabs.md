@@ -444,30 +444,31 @@ When an attempt is made to grow the heap larger than _128 MB_, a call to `Vec::e
 
 The following test case demonstrates that the `returndata_buffer` variable is not protected from growing larger than `MAX_RETURNDATA_BUFFER_SIZE`:
 
-<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">#[cfg(test)]</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">mod tests {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    use super::*;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    use alloc::alloc::Global;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">    #[test]</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">    fn returndata_buffer_can_grow_past_limit() {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">        let mut mem = MemoryImpl::new(Global);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">        // 150 MB payload (more than MAX_RETURNDATA_BUFFER_SIZE)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">        let payload = vec![0u8; 150 &lt;&lt; 20];</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">        // first call already exceeds the cap</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">14</span><span style="font-family: monospace !important;">        mem.copy_into_return_memory(&amp;payload).unwrap();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">15</span><span style="font-family: monospace !important;">        // the buffer keeps growing</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">16</span><span style="font-family: monospace !important;">        mem.copy_into_return_memory(&amp;payload).unwrap();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">17</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">18</span><span style="font-family: monospace !important;">        assert!(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">19</span><span style="font-family: monospace !important;">            mem.returndata_buffer.len() &lt;= MAX_RETURNDATA_BUFFER_SIZE,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">20</span><span style="font-family: monospace !important;">            "returndata_buffer overflowed: {} bytes",</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">21</span><span style="font-family: monospace !important;">            mem.returndata_buffer.len()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">22</span><span style="font-family: monospace !important;">        );</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">23</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">24</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<pre class="language-rust"><code>#[cfg(test)]
+mod tests {
+    use super::*;
+    use alloc::alloc::Global;
+
+    #[test]
+    fn returndata_buffer_can_grow_past_limit() {
+        let mut mem = MemoryImpl::new(Global);
+
+        // 150 MB payload (more than MAX_RETURNDATA_BUFFER_SIZE)
+        let payload = vec![0u8; 150 &lt;&lt; 20];
+
+        // first call already exceeds the cap
+        mem.copy_into_return_memory(&amp;payload).unwrap();
+        // the buffer keeps growing
+        mem.copy_into_return_memory(&amp;payload).unwrap();
+
+        assert!(
+            mem.returndata_buffer.len() &lt;= MAX_RETURNDATA_BUFFER_SIZE,
+            "returndata_buffer overflowed: {} bytes",
+            mem.returndata_buffer.len()
+        );
+    }
+}
+</code></pre>
 
 To execute this test case, place it in the `basic_system/src/system_implementation/memory/basic_memory.rs` file.
 
@@ -807,18 +808,19 @@ As a consequence of `new_size` wrapping to zero, heap expansion does not occur, 
 
 The following code snippet serves as an example of vulnerable usage of the `grow_heap` function:
 
-<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">let mut memory = ...;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">let empty_region = memory.empty_managed_region();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">// Returns a buffer with length 0</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">let mut resized_region = memory</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">  .grow_heap(empty_region, usize::MAX)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">  .unwrap().unwrap();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">let data = b"deadbeef";</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">// Panic: Range end index 8 out of range for slice of length 0</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">resized_region[..data.len()].copy_from_slice(data);</span></span></code></pre>
+<pre class="language-rust"><code>let mut memory = ...;
+let empty_region = memory.empty_managed_region();
+
+// Returns a buffer with length 0
+let mut resized_region = memory
+  .grow_heap(empty_region, usize::MAX)
+  .unwrap().unwrap();
+
+let data = b"deadbeef";
+
+// Panic: Range end index 8 out of range for slice of length 0
+resized_region[..data.len()].copy_from_slice(data);
+</code></pre>
 
 ## Actual usages in the codebase
 
@@ -1168,33 +1170,35 @@ In multiple locations, getters `.2` and `.3` are used. In mission-critical code 
 
 The implementation of withdrawals from L2 to L1 relies on the implicit invariant that `nominal_token_value` has been transferred from the `caller` to `L2_BASE_TOKEN_ADDRESS`. Otherwise, any user could crash the node by attempting to withdraw non-existing tokens:
 
-<pre class="language-rust" data-attributes="filepath context lines=147 highlight=[11]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l2_base_token.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">fn l2_base_token_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">// Burn nominal_token_value</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">match system.io.update_account_nominal_token_balance(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    ExecutionEnvironmentType::parse_ee_version_byte(caller_ee)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">        .map_err(SystemError::LeafDefect)?,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">    resources,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">    &amp;L2_BASE_TOKEN_ADDRESS,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">    &amp;nominal_token_value,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">    true,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">    Ok(_) =&gt; Ok(()),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">    Err(UpdateQueryError::NumericBoundsError) =&gt; Err(SystemError::LeafDefect(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">        internal_error!("L2 base token must have withdrawal amount"),</span></span></code></pre>
+<pre class="language-rust" data-attributes="filepath context lines=147 highlight=[11]"><code>system_hooks/src/l2_base_token.rs
+fn l2_base_token_hook_inner
+// Burn nominal_token_value
+match system.io.update_account_nominal_token_balance(
+    ExecutionEnvironmentType::parse_ee_version_byte(caller_ee)
+        .map_err(SystemError::LeafDefect)?,
+    resources,
+    &amp;L2_BASE_TOKEN_ADDRESS,
+    &amp;nominal_token_value,
+    true,
+) {
+    Ok(_) =&gt; Ok(()),
+    Err(UpdateQueryError::NumericBoundsError) =&gt; Err(SystemError::LeafDefect(
+        internal_error!("L2 base token must have withdrawal amount"),
+</code></pre>
 
 The prerequisite token transfer is ensured earlier in the withdrawal flow, by another function `external_call_before_vm`, which invokes the `transfer_nominal_token_value_inner` function. This is happening right before the `handle_requested_external_call_to_special_address_space` function passes execution to `try_intercept`, which calls the `l2_base_token_hook` handler.
 
-<pre class="language-rust" data-attributes="filepath context lines=425 highlight=[1,3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l2_base_token.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">fn external_call_before_vm</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">if let Some(TransferInfo { value, target }) = transfer_to_perform {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    match actual_resources_to_pass.with_infinite_ergs(|inf_resources| {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">        self.system.io.transfer_nominal_token_value(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">            ExecutionEnvironmentType::NoEE,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">            inf_resources,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">            &amp;call_request.caller,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">            &amp;target,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">            &amp;value,</span></span></code></pre>
+<pre class="language-rust" data-attributes="filepath context lines=425 highlight=[1,3]"><code>system_hooks/src/l2_base_token.rs
+fn external_call_before_vm
+if let Some(TransferInfo { value, target }) = transfer_to_perform {
+    match actual_resources_to_pass.with_infinite_ergs(|inf_resources| {
+        self.system.io.transfer_nominal_token_value(
+            ExecutionEnvironmentType::NoEE,
+            inf_resources,
+            &amp;call_request.caller,
+            &amp;target,
+            &amp;value,
+</code></pre>
 
 However, when `transfer_to_perform` is `None`, no action is taken, despite certain call modifiers potentially setting it to this value. System hooks currently treat such modifiers as errors, thereby preventing `None` values. The concern here is that this invariant is not explicitly enforced in the code.
 
@@ -2113,7 +2117,8 @@ The message is duplicate from the file `contract_deployer.rs` and contains incor
 
 In [the documentation of system hooks](https://github.com/matter-labs/zksync-os/blob/main/docs/system_hooks.md?plain=1#L44), it is stated:
 
-<pre><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">Bytecodes will be published separately with Ethereum calldata.</span></span></code></pre>
+<pre><code>Bytecodes will be published separately with Ethereum calldata.
+</code></pre>
 
 However, during system upgrades, only the value `bytecode_hash` is decoded from the `calldata`:
 
@@ -2208,9 +2213,10 @@ The line 33 may look like there can be a scenario, in which the loop does not re
 
 The value `snapshot` is not actually utilized, since no other frames are being started between the frame creation and release. The `snapshot` value is simply the number of frames on the stack at the moment of opening new fram. Passing `None` during the frame release would have the same effect, in the current scenario. It is possible to discard the `snapshot` variable completely and simplify the flow:
 
-<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">system.memory.start_memory_frame();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">system.memory.finish_memory_frame(None);</span></span></code></pre>
+<pre class="language-rust"><code>system.memory.start_memory_frame();
+...
+system.memory.finish_memory_frame(None);
+</code></pre>
 
 
 
