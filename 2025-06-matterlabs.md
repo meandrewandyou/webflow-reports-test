@@ -33,18 +33,18 @@ Building upon the groundwork laid by zkSync Era, ZKsync OS features a modular ar
 
 The architecture of ZKsync OS can be considered as two main layers:
 
-- **Operation layer** is a Rust-based program that can be upgraded independently of the proving circuits, enabling seamless upgrades and customization for app-specific chains.
+- <strong>Operation layer</strong> is a Rust-based program that can be upgraded independently of the proving circuits, enabling seamless upgrades and customization for app-specific chains.
 
-- **Proving layer** can be fully optimized or replaced without affecting the operation layer, ensuring long-term flexibility and innovation.
+- <strong>Proving layer</strong> can be fully optimized or replaced without affecting the operation layer, ensuring long-term flexibility and innovation.
 
 ## Operation Layer
 
 The operation layer serves as the system-level implementation of the chain’s state transition function. It manages memory and I/O operations to maximize performance and efficiency. Additionally, it supports multiple virtual machines, each tailored to different use cases:
 
-- **EVM (Ethereum Virtual Machine):** Ensures full compatibility with Ethereum.
-- **EraVM:** Maintains backward compatibility with existing applications.
-- **WASM (WebAssembly):** Expands possibilities by allowing smart contracts in various programming languages.
-- **Native RISC-V Contracts:** Delivers maximum performance for high-efficiency use cases.
+- <strong>EVM (Ethereum Virtual Machine):</strong> Ensures full compatibility with Ethereum.
+- <strong>EraVM:</strong> Maintains backward compatibility with existing applications.
+- <strong>WASM (WebAssembly):</strong> Expands possibilities by allowing smart contracts in various programming languages.
+- <strong>Native RISC-V Contracts:</strong> Delivers maximum performance for high-efficiency use cases.
 
 # Scope and Timeline
 
@@ -122,9 +122,9 @@ Likelihood reflects the ease of exploitation, indicating how readily attackers c
 
 This factor is categorized into one of three levels:
 
-- **<span class="border rounded px-1">High</span>** Exploitation is almost certain to occur, straightforward to execute, or challenging but highly incentivized. The issue can be exploited by virtually anyone under almost any condition. Attackers can exploit the finding unilaterally without needing special permissions or encountering significant obstacles.
-- **<span class="border rounded px-1">Medium</span>** Exploitation of the issue requires non-trivial preconditions. Once these preconditions are met, the issue is either easy to exploit or well incentivized. Attackers may need to leverage a third party, gain access to non-public information, exploit a race condition, or overcome moderate challenges to exploit the finding.
-- **<span class="border rounded px-1">Low</span>** Exploitation requires stringent preconditions, possibly requiring the alignment of several unlikely factors or a preceding attack. It might involve implausible social engineering, exploiting a challenging race condition, or guessing difficult-to-predict data, making it unlikely. There is little or no incentive to exploit the issue. Centralization issues, exploitable only by operators, on-chain governance, or development teams, fall into this category as well.
+- <strong><span class="border rounded px-1">High</span></strong> Exploitation is almost certain to occur, straightforward to execute, or challenging but highly incentivized. The issue can be exploited by virtually anyone under almost any condition. Attackers can exploit the finding unilaterally without needing special permissions or encountering significant obstacles.
+- <strong><span class="border rounded px-1">Medium</span></strong> Exploitation of the issue requires non-trivial preconditions. Once these preconditions are met, the issue is either easy to exploit or well incentivized. Attackers may need to leverage a third party, gain access to non-public information, exploit a race condition, or overcome moderate challenges to exploit the finding.
+- <strong><span class="border rounded px-1">Low</span></strong> Exploitation requires stringent preconditions, possibly requiring the alignment of several unlikely factors or a preceding attack. It might involve implausible social engineering, exploiting a challenging race condition, or guessing difficult-to-predict data, making it unlikely. There is little or no incentive to exploit the issue. Centralization issues, exploitable only by operators, on-chain governance, or development teams, fall into this category as well.
 
 ### Impact
 
@@ -132,37 +132,41 @@ Impact considers the consequences of successful exploitation on the target syste
 
 This factor is classified into one of three levels:
 
-- **<span class="border rounded px-1">High</span>** Entails the loss of a significant portion of assets within the protocol, or causes substantial harm to the majority of users. Attackers can access or modify all data in a system, execute arbitrary code, escalate their privileges to superuser level, or disrupt the system's ability to serve its users.
-- **<span class="border rounded px-1">Medium</span>** Leads to global losses of assets in moderate amounts or affects only a subset of users, which is still deemed unacceptable. Attackers can access or modify some unauthorized data, affect availability or restrict access to the system, or obtain significant internal technical insights.
-- **<span class="border rounded px-1">Low</span>** Losses are inconvenient but manageable. This applies to scenarios like easily remediable griefing attacks or gas inefficiencies. Attackers may access limited amounts of unauthorized information or marginally degrade system performance. This category also includes code quality concerns and non-exploitable issues that may still negatively impact public perception of security.
+- <strong><span class="border rounded px-1">High</span></strong> Entails the loss of a significant portion of assets within the protocol, or causes substantial harm to the majority of users. Attackers can access or modify all data in a system, execute arbitrary code, escalate their privileges to superuser level, or disrupt the system's ability to serve its users.
+- <strong><span class="border rounded px-1">Medium</span></strong> Leads to global losses of assets in moderate amounts or affects only a subset of users, which is still deemed unacceptable. Attackers can access or modify some unauthorized data, affect availability or restrict access to the system, or obtain significant internal technical insights.
+- <strong><span class="border rounded px-1">Low</span></strong> Losses are inconvenient but manageable. This applies to scenarios like easily remediable griefing attacks or gas inefficiencies. Attackers may access limited amounts of unauthorized information or marginally degrade system performance. This category also includes code quality concerns and non-exploitable issues that may still negatively impact public perception of security.
 
 ### Final Severity
 
 Upon assessing the issue's likelihood and impact, its severity is determined using the table below:
 
-<table>
+<table style="border-collapse: collapse; border: 1px solid white;">
 <thead>
 <tr>
-  <th><span class="border rounded px-1">High</span></th>
-  <th><span class="border rounded px-1">Medium</span></th>
-  <th><span class="border rounded px-1">Low</span></th>
+  <th style="border: 1px solid white; padding: 8px;"></th>
+  <th style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">High</span></th>
+  <th style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">Medium</span></th>
+  <th style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">Low</span></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><span class="border rounded px-1">High</span></td>
-  <td>**<span style="color: #ef4444; font-weight: 700;">Critical</span>**</td>
-  <td>**<span style="color: #f97316; font-weight: 700;">High</span>**</td>
+  <td style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">High</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #ef4444; font-weight: 700;">Critical</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #f97316; font-weight: 700;">High</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #fbc02d; font-weight: 700;">Medium</span></strong></td>
 </tr>
 <tr>
-  <td><span class="border rounded px-1">Medium</span></td>
-  <td>**<span style="color: #f97316; font-weight: 700;">High</span>**</td>
-  <td>**<span style="color: #fbc02d; font-weight: 700;">Medium</span>**</td>
+  <td style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">Medium</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #f97316; font-weight: 700;">High</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #fbc02d; font-weight: 700;">Medium</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #84cc16; font-weight: 700;">Low</span></strong></td>
 </tr>
 <tr>
-  <td><span class="border rounded px-1">Low</span></td>
-  <td>**<span style="color: #fbc02d; font-weight: 700;">Medium</span>**</td>
-  <td>**<span style="color: #84cc16; font-weight: 700;">Low</span>**</td>
+  <td style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">Low</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #fbc02d; font-weight: 700;">Medium</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #84cc16; font-weight: 700;">Low</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #22c55e; font-weight: 700;">QA</span></strong></td>
 </tr>
 </tbody>
 </table>
