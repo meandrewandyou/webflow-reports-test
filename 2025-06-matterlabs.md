@@ -140,11 +140,32 @@ This factor is classified into one of three levels:
 
 Upon assessing the issue's likelihood and impact, its severity is determined using the table below:
 
-|                           | <span class="border rounded px-1">High</span>     | <span class="border rounded px-1">Medium</span>   | <span class="border rounded px-1">Low</span>      |
-| ------------------------- | --------------------------- | --------------------------- | --------------------------- |
-| <span class="border rounded px-1">High</span>   | **<span style="color: #ef4444; font-weight: 700;">Critical</span>** | **<span style="color: #f97316; font-weight: 700;">High</span>** | **<span style="color: #fbc02d; font-weight: 700;">Medium</span>** |
-| <span class="border rounded px-1">Medium</span> | **<span style="color: #f97316; font-weight: 700;">High</span>** | **<span style="color: #fbc02d; font-weight: 700;">Medium</span>** | **<span style="color: #84cc16; font-weight: 700;">Low</span>** |
-| <span class="border rounded px-1">Low</span>    | **<span style="color: #fbc02d; font-weight: 700;">Medium</span>** | **<span style="color: #84cc16; font-weight: 700;">Low</span>** | **<span style="color: #22c55e; font-weight: 700;">QA</span>** |
+<table>
+<thead>
+<tr>
+  <th><span class="border rounded px-1">High</span></th>
+  <th><span class="border rounded px-1">Medium</span></th>
+  <th><span class="border rounded px-1">Low</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="border rounded px-1">High</span></td>
+  <td>**<span style="color: #ef4444; font-weight: 700;">Critical</span>**</td>
+  <td>**<span style="color: #f97316; font-weight: 700;">High</span>**</td>
+</tr>
+<tr>
+  <td><span class="border rounded px-1">Medium</span></td>
+  <td>**<span style="color: #f97316; font-weight: 700;">High</span>**</td>
+  <td>**<span style="color: #fbc02d; font-weight: 700;">Medium</span>**</td>
+</tr>
+<tr>
+  <td><span class="border rounded px-1">Low</span></td>
+  <td>**<span style="color: #fbc02d; font-weight: 700;">Medium</span>**</td>
+  <td>**<span style="color: #84cc16; font-weight: 700;">Low</span>**</td>
+</tr>
+</tbody>
+</table>
 
 In exceptional cases, the total severity may be elevated to highlight the significance of the issue. Whenever this occurs, the rationale for applying an increased severity level is detailed in the report.
 
