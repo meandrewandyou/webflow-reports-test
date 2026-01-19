@@ -177,9 +177,9 @@ In exceptional cases, the total severity may be elevated to highlight the signif
 
 The status of an issue can be one of the following:
 
-- <statustext status="Notified">NotifiedNotified indicates that the client has been informed of the issue but has either not addressed it yet or has acknowledged the behavior without planning to remediate it soon. This inaction may stem from the client not viewing the behavior as problematic, lacking a feasible solution, or intending to address it at a later date.
-- <statustext status="Addressed">AddressedAddressed is used when the client has made an effort to address the issue with partial success. In the case of complex issues, the provided fix may only resolve one of several points described.
-- <statustext status="Fixed">FixedFixed means that the client has implemented a solution that completely resolves the described issue.
+- <span style="color: #fbc02d; margin: 0px;">Notified</span> indicates that the client has been informed of the issue but has either not addressed it yet or has acknowledged the behavior without planning to remediate it soon. This inaction may stem from the client not viewing the behavior as problematic, lacking a feasible solution, or intending to address it at a later date.
+- <span style="color: #00acc1; margin: 0px;">Addressed</span> is used when the client has made an effort to address the issue with partial success. In the case of complex issues, the provided fix may only resolve one of several points described.
+- <span style="color: #10b981; margin: 0px;">Fixed</span> means that the client has implemented a solution that completely resolves the described issue.
 
 # Access list decoding can be exploited to submit invalid transactions
 
