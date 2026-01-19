@@ -181,13 +181,13 @@ The status of an issue can be one of the following:
 - <span style="color: #00acc1; margin: 0px;">Addressed</span> is used when the client has made an effort to address the issue with partial success. In the case of complex issues, the provided fix may only resolve one of several points described.
 - <span style="color: #10b981; margin: 0px;">Fixed</span> means that the client has implemented a solution that completely resolves the described issue.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">1. Access list decoding can be exploited to submit invalid transactions</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316; font-size: 0.875rem;"><strong>Severity:</strong> High</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> High</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -225,13 +225,13 @@ Impacts include:
 
 Implement bounds checking in the `parse_u256()` function to reject any value exceeding `u32::MAX`. Add validation to ensure all access list length and offset values fit within expected bounds before processing and fail explicitly when this condition is not satisfied.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">2. Returndata buffer overflow can cause DoS or exploitable memory corruption</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316; font-size: 0.875rem;"><strong>Severity:</strong> High</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> High</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -356,13 +356,13 @@ A single malicious transaction could expand the `returndata_buffer` beyond _128 
 
 Implementing size validation for the `returndata_buffer` or utilizing a pre-allocated fixed buffer would fully mitigate the risk.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">3. Incorrect native cost calculation causes DoS</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316; font-size: 0.875rem;"><strong>Severity:</strong> High</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> High</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -408,13 +408,13 @@ While native resources are not directly deducted from the Ethereum balance of th
 
 Correct the pricing formula by replacing the first occurrence of `COPY_BASE_NATIVE_COST` with `COPY_BYTE_NATIVE_COST` to follow the anticipated `base + (per_byte * length)` pattern.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">4. Non-deterministic decoding allows effective DoS attacks</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316; font-size: 0.875rem;"><strong>Severity:</strong> High</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> High</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 5e69d44</span>
@@ -493,13 +493,13 @@ Consider using a fixed-sized type like `u32` for message-related variables and e
 
 In L1 contracts, it is crucial to ensure that L1 transactions and system upgrade requests are properly validated. This validation should ensure that messages are not excessively long and that message parameters can comfortably fit within the `u32` range.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">5. Flawed addresses validation can lead to token loss</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Severity:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 5e69d44</span>
@@ -533,13 +533,13 @@ The presence of non-zero bytes in the 12 highest bytes of an address could stem 
 
 As a consequence of such a mistake, the user's tokens will be silently transferred to an invalid address, effectively resulting in the loss of those tokens without any immediate indication of the mistake to the user.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">6. Merkle proofs serialization can produce malformed data</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Severity:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -590,13 +590,13 @@ Data within these 7 data structures is critical for the correct functioning of M
 
 _Only because the incorrect definition is involved into serialization of 7 other critical proof-related structures, the likelihood and overall severity of the issue are both considered "Medium." This classification reflects a significantly broader attack surface compared to a similar issue reported in the previous audit, which was rated as "Low."_
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">7. Opcode `SELFBALANCE` is not guaranteed to succeed</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Severity:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #ef4444; border-radius: 4px; padding: 4px 8px; color: #ef4444; font-size: 0.875rem;"><strong>Status:</strong> Invalid</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #ef4444; border-radius: 4px; padding: 4px 8px; color: #ef4444;">Invalid</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -646,13 +646,13 @@ Other locations in the codebase do not insert the balance of the contract before
 
 Consider explicitly implementing balance retrieval in the event of a cache miss, or ensure the contract's balance is inserted into the cache before executing its code.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">8. Overflow during memory heap expansion</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Severity:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -729,13 +729,13 @@ This call path, though influenced by user input from a smart contract, is deemed
 
 Return a well-typed error when the parameter `new_size` exceeds `usize::MAX - (USIZE_SIZE - 1)`.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">9. Potential "Use-After-Free" issues in the preimage cache</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> High</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -777,13 +777,13 @@ The result of the `record_preimage` function is utilized only by `deploy_code`, 
 
 A more detailed analysis is required to assess the risk posed by the `get_preimage` function. The value returned by this function is not only used by a few functions but is also stored in the `AccountData::bytecode` field during the execution of the `read_account_properties` function, which is called by multiple other functions during the transaction validation stage. Later, the value stored in `AccountData::bytecode` is retrieved by several functions, including the `evm_interpreter` module and execution handlers for both L1 and L2 transactions.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">10. Invalid safety assumption when deserializing data from oracle</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -889,13 +889,13 @@ Constants `USIZE_LEN` in all of the other types are not actually utilized, yet r
 
 Complete all `UsizeDeserializable` implementations by enforcing output lengths to match the corresponding `USIZE_LEN` constants. Ideally, these constants should not be maintained manually but an automated mechanism should derive them from the actual structure layouts.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">11. L1 transactions can pose strong DoS potential</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1; font-size: 0.875rem;"><strong>Status:</strong> Addressed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 5e69d44</span>
@@ -944,13 +944,13 @@ _While the impact is significant, the likelihood of this issue depends on the sp
 
 Ensure that users cannot submit transactions with values of the `tx_type` equal to `L1_L2_TX_TYPE` or `UPGRADE_TX_TYPE` by rejecting such by the sequencer node.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">12. Merkle tree implementation concerns</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1; font-size: 0.875rem;"><strong>Status:</strong> Addressed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -1090,13 +1090,13 @@ if let Some(new_root) = current_hashes_buffer[0].3 {
 
 In multiple locations, getters `.2` and `.3` are used. In mission-critical code such should be replaced with a named field to improve maintainability.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">13. Missing validation of token transfer during tokens burning</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 5e69d44</span>
@@ -1146,13 +1146,13 @@ While the analysis revealed that this scenario is safe, it is still recommended 
 - Explicitly handle the `None` case for the `transfer_to_perform` parameter.
 - Additionally, verify that the transaction has adjusted the balances of the `caller` and the `L2_BASE_TOKEN_ADDRESS` by the burned amount.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">14. Missing validations during system upgrades</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 5e69d44</span>
@@ -1216,13 +1216,13 @@ Although it is required to be validated by the L1 governance, the extra check wo
 
 Additionally, the validations required by governance should be documented.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">15. Potential extra validations</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
 </div>
 
@@ -1271,13 +1271,13 @@ In this particular case, this means that `self.current_heap_start` must be ensur
 
 Otherwise, the call can lead to an Unsafe Behaviour.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">16. Unchecked `base_fee_per_gas` downcast</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -1315,13 +1315,13 @@ A panic in this context halts the network until the oracle issue is resolved.
 
 Handle gracefully the case of `base_fee_per_gas` value exceeding `u64::MAX` by returning an error of type `TxError::Internal`.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">17. Unsafe assumption that `pubdata` cannot decrease after validation</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Medium</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1; font-size: 0.875rem;"><strong>Status:</strong> Addressed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -1380,13 +1380,13 @@ To ensure a future-proof design, consider two approaches:
 - Implement checked arithmetic to prevent underflow and reject scenarios where the post-execution pubdata value is less than the post-validation value. Additionally, document this behaviour as a requirement for future execution environments.
 - Alternatively, explicitly permit a reduction in pubdata during later processing stages, and incorporate this difference into the gas refund calculation.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">18. Decreased performance due to redundant `pubdata` calculation</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -1452,13 +1452,13 @@ let (_pubdata_spent, to_charge_for_pubdata) = get_resources_to_charge_for_pubdat
 
 Avoid excessive calculation by passing the result of the `pubdata` calculation from the execution stage to the refund stage. Alternatively, a more sophisticated but universal memoization technique could be implemented.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">19. Double resource accounting is a deviation from EVM semantics</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1; font-size: 0.875rem;"><strong>Status:</strong> Addressed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -1503,13 +1503,13 @@ Similar issues have been observed in other locations:
 - `basic_bootloader/src/bootloader/account_models/eoa.rs`, line 503
 - `basic_bootloader/src/bootloader/account_models/eoa.rs`, line 556
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">20. Inconsistent developer documentation</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1; font-size: 0.875rem;"><strong>Status:</strong> Addressed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -1556,13 +1556,13 @@ The `p256Verify` function is actually implemented as a system function rather th
 
 This discrepancy could mislead developers expecting standard precompile behavior at address `0x100`.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">21. Incorrect opcode name in debug output</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16; font-size: 0.875rem;"><strong>Severity:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Medium</span>
-    <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981; font-size: 0.875rem;"><strong>Status:</strong> Fixed</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -1591,13 +1591,13 @@ This discrepancy only affects debug output and logging --- the actual opcode exe
 
 Update the string mapping to correctly identify the opcode as `"TSTORE"` for accurate debug output.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">22. Code duplicates</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e; font-size: 0.875rem;"><strong>Severity:</strong> QA</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
 </div>
 
@@ -1771,13 +1771,13 @@ if calldata[0..12].iter().any(|byte| *byte != 0) {
 
 Almost exact duplicate is located in `system_hooks/src/l2_base_token.rs:170-175`.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">23. Error handling issues</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e; font-size: 0.875rem;"><strong>Severity:</strong> QA</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
 </div>
 
@@ -1894,13 +1894,13 @@ system
 
 Unless when it is supposed to be an unbreakable invariant, replace all `panic!` and `assert!` statements with proper error handling by returning typed error messages. This would prevent unnecessary node crashes.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">24. Magic numbers</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e; font-size: 0.875rem;"><strong>Severity:</strong> QA</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
 </div>
 
@@ -2090,13 +2090,13 @@ charge_keccak(2 + 2 * U256::BYTES, resources)?;
 
 The number `2` should represent a computation price for Keccak256 in RISC-V cycles. However, this semantics should be properly documented by using named constants.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">25. Misleading docs and messages</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e; font-size: 0.875rem;"><strong>Severity:</strong> QA</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
 </div>
 
@@ -2215,13 +2215,13 @@ let bytecode_hash =
 
 The bytecode itself is retrieved from the preimage storage.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">26. Redundant code</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e; font-size: 0.875rem;"><strong>Severity:</strong> QA</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
@@ -2413,13 +2413,13 @@ AccessListNotSupported,
 
 Remove unreachable code branches to improve code clarity and maintainability. Consider using exhaustive pattern matching without impossible cases. Simplify complex data flows and remove unnecessary validations, unused error messages, commented-out code and outdated comments.
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">27. Unimplemented functionality</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e; font-size: 0.875rem;"><strong>Severity:</strong> QA</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
 </div>
 
@@ -2514,13 +2514,13 @@ fn transaction_execution
 // TODO: factory deps? Probably fine to ignore for now
 ```
 
-<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0; background-color: #1f2937;">
+<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">28. Using raw `u8` type instead of `enum`</h2>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-    <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e; font-size: 0.875rem;"><strong>Severity:</strong> QA</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Impact:</strong> Low</span>
-    <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb; font-size: 0.875rem;"><strong>Likelihood:</strong> Low</span>
-    <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d; font-size: 0.875rem;"><strong>Status:</strong> Notified</span>
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
   </div>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.875rem; color: #9ca3af;">
     <span><strong>Commit:</strong> 96d9d37</span>
