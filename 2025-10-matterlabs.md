@@ -5,12 +5,6 @@ created_at: '2025-11-19'
 updated_at: '2025-12-23'
 draft: false
 ---
-<script>
-  import Levels from '$lib/components/levels.svelte';
-  import LevelText from '$lib/components/colored-level.svelte';
-  import StatusText from '$lib/components/colored-status.svelte';
-</script>
-
 # Synopsis
 
 In October 2025, Matter Labs engaged Taran Space to conduct an additional security assessment of their new product, ZKsync OS, with a focus on the cryptographic modules. The audit was conducted over a single 4-week phase.
@@ -67,9 +61,9 @@ Likelihood reflects the ease of exploitation, indicating how readily attackers c
 
 This factor is categorized into one of three levels:
 
-- **<span class="border rounded px-1">High</span>** Exploitation is almost certain to occur, straightforward to execute, or challenging but highly incentivized. The issue can be exploited by virtually anyone under almost any condition. Attackers can exploit the finding unilaterally without needing special permissions or encountering significant obstacles.
-- **<span class="border rounded px-1">Medium</span>** Exploitation of the issue requires non-trivial preconditions. Once these preconditions are met, the issue is either easy to exploit or well incentivized. Attackers may need to leverage a third party, gain access to non-public information, exploit a race condition, or overcome moderate challenges to exploit the finding.
-- **<span class="border rounded px-1">Low</span>** Exploitation requires stringent preconditions, possibly requiring the alignment of several unlikely factors or a preceding attack. It might involve implausible social engineering, exploiting a challenging race condition, or guessing difficult-to-predict data, making it unlikely. There is little or no incentive to exploit the issue. Centralization issues, exploitable only by operators, on-chain governance, or development teams, fall into this category as well.
+- <strong><span class="border rounded px-1">High</span></strong> Exploitation is almost certain to occur, straightforward to execute, or challenging but highly incentivized. The issue can be exploited by virtually anyone under almost any condition. Attackers can exploit the finding unilaterally without needing special permissions or encountering significant obstacles.
+- <strong><span class="border rounded px-1">Medium</span></strong> Exploitation of the issue requires non-trivial preconditions. Once these preconditions are met, the issue is either easy to exploit or well incentivized. Attackers may need to leverage a third party, gain access to non-public information, exploit a race condition, or overcome moderate challenges to exploit the finding.
+- <strong><span class="border rounded px-1">Low</span></strong> Exploitation requires stringent preconditions, possibly requiring the alignment of several unlikely factors or a preceding attack. It might involve implausible social engineering, exploiting a challenging race condition, or guessing difficult-to-predict data, making it unlikely. There is little or no incentive to exploit the issue. Centralization issues, exploitable only by operators, on-chain governance, or development teams, fall into this category as well.
 
 ### Impact
 
@@ -77,19 +71,44 @@ Impact considers the consequences of successful exploitation on the target syste
 
 This factor is classified into one of three levels:
 
-- **<span class="border rounded px-1">High</span>** Entails the loss of a significant portion of assets within the protocol, or causes substantial harm to the majority of users. Attackers can access or modify all data in a system, execute arbitrary code, escalate their privileges to superuser level, or disrupt the system's ability to serve its users.
-- **<span class="border rounded px-1">Medium</span>** Leads to global losses of assets in moderate amounts or affects only a subset of users, which is still deemed unacceptable. Attackers can access or modify some unauthorized data, affect availability or restrict access to the system, or obtain significant internal technical insights.
-- **<span class="border rounded px-1">Low</span>** Losses are inconvenient but manageable. This applies to scenarios like easily remediable griefing attacks or gas inefficiencies. Attackers may access limited amounts of unauthorized information or marginally degrade system performance. This category also includes code quality concerns and non-exploitable issues that may still negatively impact public perception of security.
+- <strong><span class="border rounded px-1">High</span></strong> Entails the loss of a significant portion of assets within the protocol, or causes substantial harm to the majority of users. Attackers can access or modify all data in a system, execute arbitrary code, escalate their privileges to superuser level, or disrupt the system's ability to serve its users.
+- <strong><span class="border rounded px-1">Medium</span></strong> Leads to global losses of assets in moderate amounts or affects only a subset of users, which is still deemed unacceptable. Attackers can access or modify some unauthorized data, affect availability or restrict access to the system, or obtain significant internal technical insights.
+- <strong><span class="border rounded px-1">Low</span></strong> Losses are inconvenient but manageable. This applies to scenarios like easily remediable griefing attacks or gas inefficiencies. Attackers may access limited amounts of unauthorized information or marginally degrade system performance. This category also includes code quality concerns and non-exploitable issues that may still negatively impact public perception of security.
 
 ### Final Severity
 
 Upon assessing the issue's likelihood and impact, its severity is determined using the table below:
 
-|                           | <Levels level="High" />     | <Levels level="Medium" />   | <Levels level="Low" />      |
-| ------------------------- | --------------------------- | --------------------------- | --------------------------- |
-| <Levels level="High" />   | **<LevelText level={4} />** | **<LevelText level={3} />** | **<LevelText level={2} />** |
-| <Levels level="Medium" /> | **<LevelText level={3} />** | **<LevelText level={2} />** | **<LevelText level={1} />** |
-| <Levels level="Low" />    | **<LevelText level={2} />** | **<LevelText level={1} />** | **<LevelText level={0} />** |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;"></th>
+  <th style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">High</span></th>
+  <th style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">Medium</span></th>
+  <th style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">Low</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">High</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #ef4444; font-weight: 700;">Critical</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #f97316; font-weight: 700;">High</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #fbc02d; font-weight: 700;">Medium</span></strong></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">Medium</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #f97316; font-weight: 700;">High</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #fbc02d; font-weight: 700;">Medium</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #84cc16; font-weight: 700;">Low</span></strong></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span class="border rounded px-1">Low</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #fbc02d; font-weight: 700;">Medium</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #84cc16; font-weight: 700;">Low</span></strong></td>
+  <td style="border: 1px solid white; padding: 8px;"><strong><span style="color: #22c55e; font-weight: 700;">QA</span></strong></td>
+</tr>
+</tbody>
+</table>
 
 In exceptional cases, the total severity may be elevated to highlight the significance of the issue. Whenever this occurs, the rationale for applying an increased severity level is detailed in the report.
 
@@ -97,11 +116,114 @@ In exceptional cases, the total severity may be elevated to highlight the signif
 
 The status of an issue can be one of the following:
 
-- <StatusText status="Notified" /> indicates that the client has been informed of the issue but has either not addressed it yet or has acknowledged the behavior without planning to remediate it soon. This inaction may stem from the client not viewing the behavior as problematic, lacking a feasible solution, or intending to address it at a later date.
-- <StatusText status="Addressed" /> is used when the client has made an effort to address the issue with partial success. In the case of complex issues, the provided fix may only resolve one of several points described.
-- <StatusText status="Fixed" /> means that the client has implemented a solution that completely resolves the described issue.
+- <span style="color: #fbc02d; margin: 0px;">Notified</span> indicates that the client has been informed of the issue but has either not addressed it yet or has acknowledged the behavior without planning to remediate it soon. This inaction may stem from the client not viewing the behavior as problematic, lacking a feasible solution, or intending to address it at a later date.
+- <span style="color: #00acc1; margin: 0px;">Addressed</span> is used when the client has made an effort to address the issue with partial success. In the case of complex issues, the provided fix may only resolve one of several points described.
+- <span style="color: #10b981; margin: 0px;">Fixed</span> means that the client has implemented a solution that completely resolves the described issue.
 
-# Incorrect identity predicates for affine and Jacobian points
+<h1 id="summary-of-issues">Summary of Issues</h1>
+
+<table style="border-collapse: collapse; border: 1px solid white; width: 100%;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px; text-align: left;">Title</th>
+  <th style="border: 1px solid white; padding: 8px; text-align: left;">Severity</th>
+  <th style="border: 1px solid white; padding: 8px; text-align: left;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-1-affine-and-jacobian-points" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">1. Incorrect identity predicates for affine and Jacobian points</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #ef4444;">Critical</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-2-undefined-behavior-in-pairings-check" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">2. DoS and corrupted state in BN254 and BLS12-381 pairings checks</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #ef4444;">Critical</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-3-insufficient-magnitude" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">3. Insufficient magnitude update in scalar multiplication</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #f97316;">High</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-4-failed-assertion-in-fma" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">4. Failed assertion in the Fused Multiply-Add operation</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Medium</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-5-unchecked-field-arithmetic" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">5. Unchecked field-arithmetic invariants</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Medium</td>
+  <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-6-magnitude-limit-2047" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">6. Magnitude limit 2047 cannot detect arithmetic issues in 5×52 backend</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-7-incorrect-validation-table_verify" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">7. Incorrect validation of wNAF table digits</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-8-miscellaneous-validations" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">8. Miscellaneous validation issues</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-9-QA-thread-safety" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">9. Concurrent usage is not supported</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-10-QA-variable-timing" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">10. Variable-time scalar operations should not be used with secret data</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-11-QA-normalization-check" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">11. Normalization check is not strong enough</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-12-unit_tests" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">12. Unit tests issues</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-13-QA-excessive-magnitude" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">13. Excessive magnitude increment</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-14-QA-magic-numbers" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">14. Magic numbers decrease maintainability</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-15-QA-code-duplicates" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">15. Code duplicates</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-16-QA-redundant-code" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">16. Redundant `else` branch</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+</tbody>
+</table>
+
+
+<div id="issue-1-affine-and-jacobian-points" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">1. Incorrect identity predicates for affine and Jacobian points</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #ef4444; border-radius: 4px; padding: 4px 8px; color: #ef4444;">Critical</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 In the `secp256r1` module, incorrect predicates are used to determine whether a point represents the identity (the point at infinity):
 
@@ -129,7 +251,7 @@ This flaw breaks fundamental elliptic-curve invariants and has critical impacts:
 
 This behavior diverges from standard `secp256r1` implementations and can lead to inconsistent public keys, hashes, and verification results. Arithmetic operations may return incorrect results, spuriously produce the identity, or terminate early: addition, doubling and, overall, scalar multiplication.
 
-[page-break]
+
 
 The following functions rely directly or indirectly on the incorrect identity predicates:
 - Function `odd_multiples`, defined in `context.rs:29-41`
@@ -145,9 +267,15 @@ The following functions rely directly or indirectly on the incorrect identity pr
 2. A mathematically correct approach is to define the identity exclusively via the coordinate system invariant: `z` is zero for Jacobian points, or the explicit `infinity` flag for affine points, and never determine identity from `(x, y)` coordinate values.
 3. Centralize identity checks into a single helper function shared by affine and Jacobian representations to prevent future inconsistencies.
 
-[page-break]
-
-# DoS and corrupted state in BN254 and BLS12-381 pairings checks
+<div id="issue-2-undefined-behavior-in-pairings-check" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">2. DoS and corrupted state in BN254 and BLS12-381 pairings checks</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #ef4444; border-radius: 4px; padding: 4px 8px; color: #ef4444;">Critical</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 ## The issue in the `bn254` module
 
@@ -176,7 +304,7 @@ if q.is_zero() {
 }
 ```
 
-[page-break]
+
 
 The conversion `into()` for `G2Affine` type is implemented via `G2PreparedNoAlloc::from`, which handles the point-at-infinity case as follows:
 ```rust context line=217 highlight=[4]
@@ -213,7 +341,7 @@ This `unsafe` section immediately triggers an Undefined Behavior, even if the fi
 /// this initialization invariant.
 ```
 
-[page-break]
+
 
 ## Similar issue in the `bls12_381` module
 
@@ -251,7 +379,7 @@ Since input points are derived from attacker-controlled smart contract calldata,
 
 Even if the corrupted state is eventually rejected during verification, the issue still equips attackers with an extremely cheap DoS vector.
 
-[page-break]
+
 
 ## Recommendations
 
@@ -260,7 +388,15 @@ Apply these recommendations to both BN254 and BLS12-381 implementations:
 1. Reject invalid points, including the point-at-infinity, early — before invoking any conversions on them.
 2. Construct a concrete, fully-initialized dummy `EllCoeff` (zeros) in the array initializer.
 
-# Insufficient magnitude update in scalar multiplication
+<div id="issue-3-insufficient-magnitude" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">3. Insufficient magnitude update in scalar multiplication</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 In the `secp256k1` module, several incorrect magnitude updates have been identified, specifically in the implementation of scalar multiplication.
 
@@ -299,7 +435,15 @@ If the same code were used in a decentralized environment (e.g. an L1 network), 
 
 Correct the magnitude update so that the resulting magnitude is computed as the product of the previous magnitude and the scalar, rather than their sum.
 
-# Failed assertion in the Fused Multiply-Add operation
+<div id="issue-4-failed-assertion-in-fma" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">4. Failed assertion in the Fused Multiply-Add operation</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 During fuzzing test runs, an assertion failed:
 ```
@@ -313,7 +457,7 @@ See the _Appendix_ section for details on how fuzzing was performed.
 
 The assertion is located in the function `fma`, which implements a Fused Multiply-Add (FMA) operation for the `BigintRepr` structure.
 
-[page-break]
+
 
 The function `bigint_op_delegation_raw`, defined in the in-scope crate `crypto`, returns a non-zero value to signal a limb overflow. The assertion assumes that no overflow can occur at this stage of the algorithm:
 
@@ -334,7 +478,15 @@ As a consequence, this creates a limited potential for panic-based DoS during mo
 
 At the same time, the likelihood of exploitation is low. The failing input is not trivially constructible.
 
-# Unchecked field-arithmetic invariants
+<div id="issue-5-unchecked-field-arithmetic" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">5. Unchecked field-arithmetic invariants</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
+  </div>
+</div>
 
 Regular CI test runs execute the test suite only in Release mode, where debug assertions and integer overflow checks are disabled. The codebase provides no runtime validation of field-arithmetic invariants in Release builds. Correctness of the field operations depends entirely on debug-mode assertions and overflow checks, which are never exercised by CI. If these invariants are violated, the failures remain silent in Release mode, allowing field-arithmetic errors to persist undetected.
 
@@ -370,7 +522,7 @@ seq 1 1000 \
 | tee -a errors.txt
 ```
 
-[page-break]
+
 
 ## Examples of unreported issues
 
@@ -434,7 +586,15 @@ Refactor CI workflows and run all tests with all possible checks since running t
 
 Additionally, run the test suite multiple times. Property-based tests do not guarantee full coverage in a single pass, and repeated execution significantly increases the likelihood of catching regressions.
 
-# Magnitude limit 2047 cannot detect arithmetic issues in 5×52 backend
+<div id="issue-6-magnitude-limit-2047" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">6. Magnitude limit 2047 cannot detect arithmetic issues in 5×52 backend</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 The magnitude limit for the `5x52` storage is defined as `2047`:
 
@@ -465,7 +625,7 @@ These constraints imply:
 
 Thus, a magnitude of `2047` can never occur during legal operation, and using `2047` as `max_magnitude()` renders magnitude-based invariants validation ineffective. Internal arithmetic faults may pass unnoticed.
 
-[page-break]
+
 
 ### Estimation based on `mul_in_place` invariants
 
@@ -481,7 +641,15 @@ Any magnitude above `16` cannot be produced by correct arithmetic and cannot be 
 
 Set the magnitude limit to `16`.
 
-# Incorrect validation of wNAF table digits
+<div id="issue-7-incorrect-validation-table_verify" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">7. Incorrect validation of wNAF table digits</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 In `secp256k1`, the function `table_verify` is used in debug assertions to validate wNAF digits:
 
@@ -500,7 +668,7 @@ fn table_get_ge(pre: &[Affine], n: i32, w: usize) -> Affine {
 }
 ```
 
-[page-break]
+
 
 However, it is implemented incorrectly:
 
@@ -567,9 +735,15 @@ fn table_verify(n: i32, w: usize) -> bool {
 
 Additionally, implement similar validation in `secp256r1`.
 
-[page-break]
-
-# Miscellaneous validation issues
+<div id="issue-8-miscellaneous-validations" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">8. Miscellaneous validation issues</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
+  </div>
+</div>
 
 ## Imprecise range check includes the modulus
 
@@ -723,7 +897,15 @@ for i in (1..Config::ATE_LOOP_COUNT.len()).rev() {
 
 Validate `ell_coeffs.len()` against `EXPECTED_ELL_COEFFS` using a debug assertion. This would improve diagnosticability.
 
-# Concurrent usage is not supported
+<div id="issue-9-QA-thread-safety" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">9. Concurrent usage is not supported</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 The library is designed using global static variables that must be initialized before calling the functions defined by the library:
 
@@ -737,7 +919,7 @@ bigint_delegation::init();
 secp256r1::init();
 ```
 
-[page-break]
+
 
 The crates themselves contain multiple global static variables:
 ```rust filepath line=7
@@ -769,7 +951,15 @@ If the library needs to be used concurrently by community developers, it should 
 
 Document the initialization and concurrency constraints for using the library for potential community developers.
 
-# Variable-time scalar operations should not be used with secret data
+<div id="issue-10-QA-variable-timing" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">10. Variable-time scalar operations should not be used with secret data</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
+  </div>
+</div>
 
 Several functions involved in core cryptographic operations are not constant-time. If these functions are ever used with secret inputs, attackers may exploit timing variability to gather statistical information and potentially recover secret data.
 
@@ -793,7 +983,7 @@ if (l >> 63) & 1 != 0 {
 
 The function is used in the `decompose` function, which implements the scalar decomposition operation, which in its turn affects the scalar multiplication operation.
 
-[page-break]
+
 
 ## Function `pow_vartime`, scalar inversion and affine conversion
 
@@ -816,9 +1006,15 @@ Timing variability affects the functions relying on scalar inversion:
 - `invert_assign` calls `pow_vartime` in `src/secp256r1/scalar/mod.rs:68`
 - `verify` calls `invert_assign` in `src/secp256r1/verify.rs:25`
 
-[page-break]
-
-# Normalization check is not strong enough
+<div id="issue-11-QA-normalization-check" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">11. Normalization check is not strong enough</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 In module `secp256k1`, the function `normalize_in_place` is defined, conditioning on values of the `normalized` flag and `magnitude` tracker:
 
@@ -850,9 +1046,15 @@ if self.normalized {
 }
 ```
 
-[page-break]
-
-# Unit tests issues
+<div id="issue-12-unit_tests" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">12. Unit tests issues</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
+  </div>
+</div>
 
 ### Outdated instructions in the `README`
 
@@ -879,7 +1081,7 @@ cargo test --release -p crypto secp256k1::field::field_8x32 -- --test-threads=1 
 cargo test --release -p crypto secp256k1::scalars::scalar32_delegation -- --test-threads=1 --ignored
 ```
 
-[page-break]
+
 
 ### Some of the unit tests require larger stack
 
@@ -920,7 +1122,15 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 110 filtered out; fi
     - Only 1 proptest regression
     - No dedicated fuzz targets
 
-# Excessive magnitude increment
+<div id="issue-13-QA-excessive-magnitude" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">13. Excessive magnitude increment</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 In the `secp256k1` module, the function `add_int_in_place` overestimates the magnitude increase of a field element:
 
@@ -944,9 +1154,15 @@ This issue does not affect correctness or security; it only potentially reduces 
 
 Adjust the magnitude update so that the increment is always `1` in the 5x52 backend, and between `1` and `64` (inclusive) in the 10x26 backend, depending on the value of `rhs`.
 
-[page-break]
-
-# Magic numbers decrease maintainability
+<div id="issue-14-QA-magic-numbers" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">14. Magic numbers decrease maintainability</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
+  </div>
+</div>
 
 Throughout the codebase, hard-coded number literals without context or a description are used. Using such “magic numbers” goes against best practices as they reduce code readability and maintenance as developers are unable to easily understand their use and may make inconsistent changes across the codebase.
 
@@ -983,7 +1199,7 @@ pub(super) const fn square(&self) -> Self {
     debug_assert!(self.magnitude <= 8);
 ```
 
-[page-break]
+
 
 ## File `crypto/src/secp256k1/points/affine.rs`
 
@@ -1033,7 +1249,15 @@ Using magic numbers leads to maintainability issues and confusion, especially wh
 
 Declare named constants or implement configuration values instead of directly embedding literals to improve clarity and reduce potential errors in future development.
 
-# Code duplicates
+<div id="issue-15-QA-code-duplicates" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">15. Code duplicates</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 In the codebase, several code duplicates have been discovered:
 - The function `bits_var` has several exact copies:
@@ -1057,9 +1281,15 @@ Code duplication increases security risks, as it hinders maintainability and als
 
 We recommend extracting common code into auxiliary functions in order to improve maintainability and reviewability of the codebase.
 
-[page-break]
-
-# Redundant `else` branch
+<div id="issue-16-QA-redundant-code" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">16. Redundant `else` branch</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 In the function `mul_assign`, the "schoolbook" algorithm is implemented. Right after iterating `j` up to `4`, the `if` splits execution depending on the value of `i + j`: 
 
@@ -1094,29 +1324,67 @@ If `i + j < 4`, the `else` branch would execute. However, this condition is neve
 The fuzzing was executed with the following parameters and targets:
 
 - Duration
-  - **48 hours**
+  - <strong>48 hours</strong>
 - Machine:
   - CPU: Virtual AMD EPYC-Milan
-    - **2 GHz, 48 Threads**
+    - <strong>2 GHz, 48 Threads</strong>
     - 32 MiB L3 Cache
   - RAM: 184 GiB
 
 ### Fuzzing targets
 
-|                         |                         |
-|:------------------------|:------------------------|
-| `blake2s`               | `bn254_ecadd`           |
-| `bn254_ecmul`           | `bn254_pairing_check`   |
-| `ecrecover`             | `p256_verify`           |
-| `keccak256`             | `sha256`                |
-| `ripemd160`             | `modexp`                |
-| `modexp_delegation`     | `precompiles_ecadd`     |
-| `precompiles_ecmul`     | `precompiles_ecpairing` |
-| `precompiles_ecrecover` | `precompiles_p256`      |
-| `precompiles_sha256`    | `precompiles_ripemd160` |
-| `precompiles_modexp`    | `precompiles_modexplen` |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;"></th>
+  <th style="border: 1px solid white; padding: 8px;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`blake2s`</td>
+  <td style="border: 1px solid white; padding: 8px;">`bn254_ecadd`</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`bn254_ecmul`</td>
+  <td style="border: 1px solid white; padding: 8px;">`bn254_pairing_check`</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`ecrecover`</td>
+  <td style="border: 1px solid white; padding: 8px;">`p256_verify`</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`keccak256`</td>
+  <td style="border: 1px solid white; padding: 8px;">`sha256`</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`ripemd160`</td>
+  <td style="border: 1px solid white; padding: 8px;">`modexp`</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`modexp_delegation`</td>
+  <td style="border: 1px solid white; padding: 8px;">`precompiles_ecadd`</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`precompiles_ecmul`</td>
+  <td style="border: 1px solid white; padding: 8px;">`precompiles_ecpairing`</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`precompiles_ecrecover`</td>
+  <td style="border: 1px solid white; padding: 8px;">`precompiles_p256`</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`precompiles_sha256`</td>
+  <td style="border: 1px solid white; padding: 8px;">`precompiles_ripemd160`</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`precompiles_modexp`</td>
+  <td style="border: 1px solid white; padding: 8px;">`precompiles_modexplen`</td>
+</tr>
+</tbody>
+</table>
 
-[page-break]
+
 
 ## Fuzzing coverage
 
@@ -1124,78 +1392,490 @@ Generated using the command `./fuzz.sh coverage`.
 
 ### Crate `callable_oracles`
 
-| File / Module | Lines Covered | Line Coverage | Functions Covered | Function Coverage |
-|-----|----:|----:|----:|----:|
-| <span style="color:orange">**callable_oracles**</span> | 114 / 650 | <span style="color:orange">17.5%</span> | 13 / 78 | <span style="color:orange">16.7%</span> |
-| <span style="color:#6BD36B">src/arithmetic/mod.rs</span> | 53 / 54 | <span style="color:#6BD36B">98.1%</span> | 7 / 17 | <span style="color:#4DA3FF">41.2%</span> |
-| <span style="color:red">src/hash_to_prime/common.rs</span> | 0 / 247 | <span style="color:red">0.0%</span> | 0 / 34 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/hash_to_prime/compute.rs</span> | 0 / 75 | <span style="color:red">0.0%</span> | 0 / 5 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/hash_to_prime/evaluate.rs</span> | 0 / 28 | <span style="color:red">0.0%</span> | 0 / 2 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/hash_to_prime/verify.rs</span> | 0 / 119 | <span style="color:red">0.0%</span> | 0 / 5 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/hash_to_prime/lib.rs</span> | 0 / 11 | <span style="color:red">0.0%</span> | 0 / 2 | <span style="color:red">0.0%</span> |
-| <span style="color:#4DA3FF">src/utils/evaluate.rs</span> | 42 / 96 | <span style="color:#4DA3FF">43.8%</span> | 2 / 9 | <span style="color:orange">22.2%</span> |
-| <span style="color:#6BD36B">src/utils/usize_slice_iterator.rs</span> | 19 / 20 | <span style="color:#6BD36B">95.0%</span> | 4 / 4 | <span style="color:#6BD36B">100.0%</span> |
-| <span style="color:orange"><b>Total</b></span> | 114 / 650 | <span style="color:orange">17.5%</span> | 13 / 78 | <span style="color:orange">16.7%</span> |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">File / Module</th>
+  <th style="border: 1px solid white; padding: 8px;">Lines Covered</th>
+  <th style="border: 1px solid white; padding: 8px;">Line Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Functions Covered</th>
+  <th style="border: 1px solid white; padding: 8px;">Function Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange"><strong>callable_oracles</strong></span></td>
+  <td style="border: 1px solid white; padding: 8px;">114 / 650</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">17.5%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">13 / 78</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">16.7%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/arithmetic/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">53 / 54</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">98.1%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">7 / 17</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">41.2%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/common.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 247</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 34</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/compute.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 75</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 5</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/evaluate.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 28</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 2</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/verify.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 119</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 5</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/lib.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 11</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 2</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">src/utils/evaluate.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">42 / 96</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">43.8%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">2 / 9</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">22.2%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/utils/usize_slice_iterator.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">19 / 20</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">95.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">4 / 4</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange"><b>Total</b></span></td>
+  <td style="border: 1px solid white; padding: 8px;">114 / 650</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">17.5%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">13 / 78</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">16.7%</span></td>
+</tr>
+</tbody>
+</table>
 
 ### Crate `crypto`
 
-| File / Module | Lines Covered | Line Coverage | Functions Covered | Function Coverage |
-|-----|----:|----:|----:|----:|
-| <span style="color:red">src/ark_ff_delegation</span> | 0 / 1080 | <span style="color:red">0.0%</span> | 0 / 210 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/biginteger/mod.rs</span> | 0 / 387 | <span style="color:red">0.0%</span> | 0 / 74 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/biginteger/const_helpers.rs</span> | 0 / 117 | <span style="color:red">0.0%</span> | 0 / 19 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/fp/mod.rs</span> | 0 / 414 | <span style="color:red">0.0%</span> | 0 / 91 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/fp/montgomery_backend.rs</span> | 0 / 162 | <span style="color:red">0.0%</span> | 0 / 26 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bigint_delegation/delegation.rs</span> | 0 / 82 | <span style="color:red">0.0%</span> | 0 / 16 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bigint_delegation/mod.rs</span> | 0 / 4 | <span style="color:red">0.0%</span> | 0 / 1 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bigint_delegation/u256.rs</span> | 0 / 209 | <span style="color:red">0.0%</span> | 0 / 29 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bigint_delegation/u512.rs</span> | 0 / 189 | <span style="color:red">0.0%</span> | 0 / 14 | <span style="color:red">0.0%</span> |
-| <span style="color:#6BD36B">src/blake2s/naive.rs</span> | 20 / 30 | <span style="color:#6BD36B">66.7%</span> | 19 / 29 | <span style="color:#4DA3FF">65.5%</span> |
-| <span style="color:red">**crypto/bls12_381**</span> | 0 / 591 | <span style="color:red">0.0%</span> | 0 / 65 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bls12_381/curves/g1.rs</span> | 0 / 92 | <span style="color:red">0.0%</span> | 0 / 14 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bls12_381/curves/g2.rs</span> | 0 / 105 | <span style="color:red">0.0%</span> | 0 / 11 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bls12_381/curves/pairing_impl.rs</span> | 0 / 209 | <span style="color:red">0.0%</span> | 0 / 21 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bls12_381/curves/util.rs</span> | 0 / 166 | <span style="color:red">0.0%</span> | 0 / 14 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bls12_381/fields/fq2.rs</span> | 0 / 13 | <span style="color:red">0.0%</span> | 0 / 4 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bls12_381/fields/fq6.rs</span> | 0 / 6 | <span style="color:red">0.0%</span> | 0 / 1 | <span style="color:red">0.0%</span> |
-| <span style="color:red">**crypto/bn254**</span> | 0 / 306 | <span style="color:red">0.0%</span> | 0 / 36 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bn254/curves/g1.rs</span> | 0 / 31 | <span style="color:red">0.0%</span> | 0 / 7 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bn254/curves/g2.rs</span> | 0 / 26 | <span style="color:red">0.0%</span> | 0 / 5 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bn254/curves/pairing_impl.rs</span> | 0 / 235 | <span style="color:red">0.0%</span> | 0 / 22 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bn254/fields/fq2.rs</span> | 0 / 3 | <span style="color:red">0.0%</span> | 0 / 1 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bn254/fields/fq6.rs</span> | 0 / 11 | <span style="color:red">0.0%</span> | 0 / 1 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bn254/glv_decomposition.rs</span> | 0 / 93 | <span style="color:red">0.0%</span> | 0 / 12 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bn254/lib.rs</span> | 0 / 2 | <span style="color:red">0.0%</span> | 0 / 1 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/bn254/raw_delegation_interface.rs</span> | 0 / 18 | <span style="color:red">0.0%</span> | 0 / 2 | <span style="color:red">0.0%</span> |
-| <span style="color:#6BD36B">**crypto/secp256k1**</span> | 1663 / 2105 | <span style="color:#6BD36B">79.0%</span> | 136 / 188 | <span style="color:#6BD36B">72.3%</span> |
-| <span style="color:red">src/secp256k1/mod.rs</span> | 0 / 34 | <span style="color:red">0.0%</span> | 0 / 2 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256k1/context.rs</span> | 0 / 34 | <span style="color:red">0.0%</span> | 0 / 4 | <span style="color:red">0.0%</span> |
-| <span style="color:#6BD36B">src/secp256k1/field/field_5x52.rs</span> | 332 / 384 | <span style="color:#6BD36B">86.5%</span> | 20 / 27 | <span style="color:#6BD36B">74.1%</span> |
-| <span style="color:#4DA3FF">src/secp256k1/field/field_impl.rs</span> | 88 / 144 | <span style="color:#4DA3FF">61.1%</span> | 17 / 27 | <span style="color:#4DA3FF">63.0%</span> |
-| <span style="color:#6BD36B">src/secp256k1/field/mod.rs</span> | 114 / 169 | <span style="color:#6BD36B">67.5%</span> | 24 / 35 | <span style="color:#6BD36B">68.6%</span> |
-| <span style="color:#6BD36B">src/secp256k1/field/mod_inv64.rs</span> | 321 / 336 | <span style="color:#6BD36B">95.5%</span> | 16 / 17 | <span style="color:#6BD36B">94.1%</span> |
-| <span style="color:#6BD36B">src/secp256k1/points/affine.rs</span> | 80 / 111 | <span style="color:#6BD36B">72.1%</span> | 10 / 15 | <span style="color:#6BD36B">66.7%</span> |
-| <span style="color:#4DA3FF">src/secp256k1/points/jacobian.rs</span> | 170 / 300 | <span style="color:#4DA3FF">56.7%</span> | 6 / 12 | <span style="color:#4DA3FF">50.0%</span> |
-| <span style="color:#6BD36B">src/secp256k1/points/storage.rs</span> | 7 / 7 | <span style="color:#6BD36B">100.0%</span> | 1 / 1 | <span style="color:#6BD36B">100.0%</span> |
-| <span style="color:#6BD36B">src/secp256k1/recover.rs</span> | 218 / 229 | <span style="color:#6BD36B">95.2%</span> | 11 / 11 | <span style="color:#6BD36B">100.0%</span> |
-| <span style="color:#6BD36B">src/secp256k1/scalars/invert.rs</span> | 89 / 89 | <span style="color:#6BD36B">100.0%</span> | 2 / 2 | <span style="color:#6BD36B">100.0%</span> |
-| <span style="color:#6BD36B">src/secp256k1/scalars/mod.rs</span> | 33 / 42 | <span style="color:#6BD36B">78.6%</span> | 10 / 13 | <span style="color:#6BD36B">76.9%</span> |
-| <span style="color:#6BD36B">src/secp256k1/scalars/scalar64.rs</span> | 211 / 226 | <span style="color:#6BD36B">93.4%</span> | 19 / 22 | <span style="color:#6BD36B">86.4%</span> |
-| <span style="color:red">**crypto/secp256r1**</span> | 0 / 904 | <span style="color:red">0.0%</span> | 0 / 92 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/context.rs</span> | 0 / 20 | <span style="color:red">0.0%</span> | 0 / 3 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/field/fe64.rs</span> | 0 / 173 | <span style="color:red">0.0%</span> | 0 / 28 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/field/mod.rs</span> | 0 / 68 | <span style="color:red">0.0%</span> | 0 / 6 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/mod.rs</span> | 0 / 9 | <span style="color:red">0.0%</span> | 0 / 1 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/points/affine.rs</span> | 0 / 42 | <span style="color:red">0.0%</span> | 0 / 6 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/points/jacobian.rs</span> | 0 / 203 | <span style="color:red">0.0%</span> | 0 / 10 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/points/storage.rs</span> | 0 / 7 | <span style="color:red">0.0%</span> | 0 / 1 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/scalar/mod.rs</span> | 0 / 56 | <span style="color:red">0.0%</span> | 0 / 8 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/scalar/scalar64.rs</span> | 0 / 198 | <span style="color:red">0.0%</span> | 0 / 18 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/u64_arithmatic.rs</span> | 0 / 12 | <span style="color:red">0.0%</span> | 0 / 3 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/verify.rs</span> | 0 / 65 | <span style="color:red">0.0%</span> | 0 / 4 | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/secp256r1/wnaf.rs</span> | 0 / 51 | <span style="color:red">0.0%</span> | 0 / 4 | <span style="color:red">0.0%</span> |
-| <span style="color:#6BD36B">src/sha3/mod.rs</span> | 20 / 20 | <span style="color:#6BD36B">100.0%</span> | 9 / 23 | <span style="color:#4DA3FF">39.1%</span> |
-| <span style="color:orange"><b>Total</b></span> | 1703 / 5633 | <span style="color:orange">30.2%</span> | 164 / 718 | <span style="color:orange">22.8%</span> |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">File / Module</th>
+  <th style="border: 1px solid white; padding: 8px;">Lines Covered</th>
+  <th style="border: 1px solid white; padding: 8px;">Line Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Functions Covered</th>
+  <th style="border: 1px solid white; padding: 8px;">Function Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/ark_ff_delegation</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 1080</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 210</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/biginteger/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 387</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 74</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/biginteger/const_helpers.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 117</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 19</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/fp/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 414</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 91</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/fp/montgomery_backend.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 162</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 26</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bigint_delegation/delegation.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 82</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 16</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bigint_delegation/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 4</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 1</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bigint_delegation/u256.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 209</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 29</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bigint_delegation/u512.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 189</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 14</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/blake2s/naive.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">20 / 30</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">66.7%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">19 / 29</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">65.5%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red"><strong>crypto/bls12_381</strong></span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 591</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 65</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bls12_381/curves/g1.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 92</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 14</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bls12_381/curves/g2.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 105</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 11</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bls12_381/curves/pairing_impl.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 209</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 21</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bls12_381/curves/util.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 166</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 14</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bls12_381/fields/fq2.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 13</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 4</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bls12_381/fields/fq6.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 6</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 1</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red"><strong>crypto/bn254</strong></span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 306</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 36</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bn254/curves/g1.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 31</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 7</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bn254/curves/g2.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 26</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 5</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bn254/curves/pairing_impl.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 235</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 22</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bn254/fields/fq2.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 3</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 1</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bn254/fields/fq6.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 11</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 1</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bn254/glv_decomposition.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 93</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 12</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bn254/lib.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 2</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 1</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/bn254/raw_delegation_interface.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 18</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 2</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B"><strong>crypto/secp256k1</strong></span></td>
+  <td style="border: 1px solid white; padding: 8px;">1663 / 2105</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">79.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">136 / 188</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">72.3%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256k1/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 34</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 2</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256k1/context.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 34</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 4</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/secp256k1/field/field_5x52.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">332 / 384</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">86.5%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">20 / 27</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">74.1%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">src/secp256k1/field/field_impl.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">88 / 144</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">61.1%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">17 / 27</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">63.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/secp256k1/field/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">114 / 169</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">67.5%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">24 / 35</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">68.6%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/secp256k1/field/mod_inv64.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">321 / 336</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">95.5%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">16 / 17</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">94.1%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/secp256k1/points/affine.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">80 / 111</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">72.1%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">10 / 15</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">66.7%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">src/secp256k1/points/jacobian.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">170 / 300</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">56.7%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">6 / 12</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">50.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/secp256k1/points/storage.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">7 / 7</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">1 / 1</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/secp256k1/recover.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">218 / 229</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">95.2%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">11 / 11</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/secp256k1/scalars/invert.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">89 / 89</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">2 / 2</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/secp256k1/scalars/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">33 / 42</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">78.6%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">10 / 13</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">76.9%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/secp256k1/scalars/scalar64.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">211 / 226</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">93.4%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">19 / 22</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">86.4%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red"><strong>crypto/secp256r1</strong></span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 904</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 92</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/context.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 20</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 3</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/field/fe64.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 173</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 28</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/field/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 68</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 6</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 9</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 1</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/points/affine.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 42</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 6</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/points/jacobian.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 203</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 10</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/points/storage.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 7</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 1</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/scalar/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 56</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 8</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/scalar/scalar64.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 198</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 18</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/u64_arithmatic.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 12</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 3</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/verify.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 65</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 4</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/secp256r1/wnaf.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 51</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">0 / 4</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/sha3/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;">20 / 20</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">9 / 23</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">39.1%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange"><b>Total</b></span></td>
+  <td style="border: 1px solid white; padding: 8px;">1703 / 5633</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">30.2%</span></td>
+  <td style="border: 1px solid white; padding: 8px;">164 / 718</td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">22.8%</span></td>
+</tr>
+</tbody>
+</table>
 
 ## Unit tests coverage
 
@@ -1221,83 +1901,468 @@ Following are the coverage statistics produced by the commands above.
 
 ### Crate `callable_oracles`
 
-| Filename | Function Coverage | Line Coverage | Region Coverage |
-|-----------|------------------:|---------------:|----------------:|
-| <span style="color:#6BD36B">src/arithmetic/mod.rs</span> | <span style="color:#4DA3FF">41.2%</span> | <span style="color:#6BD36B">98.1%</span> | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/hash_to_prime/common.rs</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/hash_to_prime/compute.rs</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/hash_to_prime/evaluate.rs</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/hash_to_prime/verify.rs</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> |
-| <span style="color:red">src/hash_to_prime/lib.rs</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> | <span style="color:red">0.0%</span> |
-| <span style="color:#4DA3FF">src/utils/evaluate.rs</span> | <span style="color:orange">22.2%</span> | <span style="color:#4DA3FF">43.8%</span> | <span style="color:red">0.0%</span> |
-| <span style="color:#6BD36B">src/utils/usize_slice_iterator.rs</span> | <span style="color:#6BD36B">100.0%</span> | <span style="color:#6BD36B">95.0%</span> | <span style="color:red">0.0%</span> |
-| <span style="color:orange"><b>Total</b></span> | <span style="color:orange">16.7%</span> | <span style="color:orange">17.5%</span> | <span style="color:red">0.0%</span> |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Function Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Line Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Region Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/arithmetic/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">41.2%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">98.1%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/common.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/compute.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/evaluate.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/verify.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">src/hash_to_prime/lib.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">src/utils/evaluate.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">22.2%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">43.8%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">src/utils/usize_slice_iterator.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">95.0%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange"><b>Total</b></span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">16.7%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">17.5%</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.0%</span></td>
+</tr>
+</tbody>
+</table>
 
 ### Crate `crypto`
 
-| Filename | Function Coverage | Line Coverage | Region Coverage |
-|-----------|------------------:|---------------:|----------------:|
-| <span style="color:orange">crypto/src/ark_ff_delegation/biginteger/mod.rs</span> | <span style="color:orange">29.73% (22/74)</span> | <span style="color:orange">23.92% (94/393)</span> | <span style="color:orange">24.40% (133/545)</span> |
-| <span style="color:orange">crypto/src/ark_ff_delegation/const_helpers.rs</span> | <span style="color:#4DA3FF">40.00% (10/25)</span> | <span style="color:#4DA3FF">34.94% (58/166)</span> | <span style="color:orange">29.02% (74/255)</span> |
-| <span style="color:#4DA3FF">crypto/src/ark_ff_delegation/fp/mod.rs</span> | <span style="color:#4DA3FF">54.95% (50/91)</span> | <span style="color:#4DA3FF">52.87% (221/418)</span> | <span style="color:#4DA3FF">50.98% (311/610)</span> |
-| <span style="color:#4DA3FF">crypto/src/ark_ff_delegation/fp/montgomery_backend.rs</span> | <span style="color:#4DA3FF">65.52% (19/29)</span> | <span style="color:#4DA3FF">54.45% (104/191)</span> | <span style="color:#4DA3FF">60.43% (168/278)</span> |
-| <span style="color:#6BD36B">crypto/src/bigint_delegation/delegation.rs</span> | <span style="color:#6BD36B">100.00% (15/15)</span> | <span style="color:#6BD36B">100.00% (83/83)</span> | <span style="color:#6BD36B">100.00% (169/169)</span> |
-| <span style="color:#6BD36B">crypto/src/bigint_delegation/mod.rs</span> | <span style="color:#6BD36B">100.00% (1/1)</span> | <span style="color:#6BD36B">100.00% (4/4)</span> | <span style="color:#6BD36B">100.00% (4/4)</span> |
-| <span style="color:#6BD36B">crypto/src/bigint_delegation/u256.rs</span> | <span style="color:#6BD36B">87.88% (29/33)</span> | <span style="color:#6BD36B">89.87% (213/237)</span> | <span style="color:#6BD36B">89.04% (406/456)</span> |
-| <span style="color:#6BD36B">crypto/src/bigint_delegation/u512.rs</span> | <span style="color:#6BD36B">100.00% (14/14)</span> | <span style="color:#6BD36B">98.43% (188/191)</span> | <span style="color:#6BD36B">98.70% (456/462)</span> |
-| <span style="color:red">crypto/src/blake2s/naive.rs</span> | <span style="color:red">0.00% (0/9)</span> | <span style="color:red">0.00% (0/30)</span> | <span style="color:red">0.00% (0/43)</span> |
-| <span style="color:red">crypto/src/blake2s/test.rs</span> | <span style="color:red">0.00% (0/2)</span> | <span style="color:red">0.00% (0/18)</span> | <span style="color:red">0.00% (0/26)</span> |
-| <span style="color:orange">crypto/src/bls12_381/curves/g1.rs</span> | <span style="color:orange">25.00% (4/16)</span> | <span style="color:orange">20.16% (26/129)</span> | <span style="color:orange">12.12% (24/198)</span> |
-| <span style="color:#6BD36B">crypto/src/bls12_381/curves/g1_swu_iso.rs</span> | <span style="color:#6BD36B">100.00% (1/1)</span> | <span style="color:#6BD36B">100.00% (6/6)</span> | <span style="color:#6BD36B">100.00% (12/12)</span> |
-| <span style="color:red">crypto/src/bls12_381/curves/g2.rs</span> | <span style="color:red">0.00% (0/10)</span> | <span style="color:red">0.00% (0/105)</span> | <span style="color:red">0.00% (0/176)</span> |
-| <span style="color:#6BD36B">crypto/src/bls12_381/curves/g2_swu_iso.rs</span> | <span style="color:#6BD36B">100.00% (1/1)</span> | <span style="color:#6BD36B">100.00% (6/6)</span> | <span style="color:#6BD36B">100.00% (12/12)</span> |
-| <span style="color:#6BD36B">crypto/src/bls12_381/curves/pairing_impl.rs</span> | <span style="color:#6BD36B">66.67% (14/21)</span> | <span style="color:#6BD36B">80.56% (174/216)</span> | <span style="color:#6BD36B">85.32% (308/361)</span> |
-| <span style="color:red">crypto/src/bls12_381/curves/util.rs</span> | <span style="color:red">0.00% (0/10)</span> | <span style="color:red">0.00% (0/166)</span> | <span style="color:red">0.00% (0/320)</span> |
-| <span style="color:#6BD36B">crypto/src/bls12_381/fields/fq.rs</span> | <span style="color:#6BD36B">100.00% (26/26)</span> | <span style="color:#6BD36B">98.01% (246/251)</span> | <span style="color:#6BD36B">93.78% (422/450)</span> |
-| <span style="color:#4DA3FF">crypto/src/bls12_381/fields/fq2.rs</span> | <span style="color:#4DA3FF">50.00% (2/4)</span> | <span style="color:#4DA3FF">46.15% (6/13)</span> | <span style="color:#4DA3FF">42.86% (6/14)</span> |
-| <span style="color:#6BD36B">crypto/src/bls12_381/fields/fq6.rs</span> | <span style="color:#6BD36B">100.00% (1/1)</span> | <span style="color:#6BD36B">100.00% (6/6)</span> | <span style="color:#6BD36B">100.00% (7/7)</span> |
-| <span style="color:#6BD36B">crypto/src/bls12_381/fields/fr.rs</span> | <span style="color:#6BD36B">78.95% (15/19)</span> | <span style="color:#6BD36B">84.29% (118/140)</span> | <span style="color:#6BD36B">85.61% (113/132)</span> |
-| <span style="color:#6BD36B">crypto/src/bls12_381/fields/mod.rs</span> | <span style="color:#6BD36B">100.00% (1/1)</span> | <span style="color:#6BD36B">100.00% (4/4)</span> | <span style="color:#6BD36B">100.00% (4/4)</span> |
-| <span style="color:orange">crypto/src/bn254/curves/g1.rs</span> | <span style="color:#4DA3FF">40.00% (4/10)</span> | <span style="color:orange">29.85% (20/67)</span> | <span style="color:orange">25.51% (25/98)</span> |
-| <span style="color:red">crypto/src/bn254/curves/g2.rs</span> | <span style="color:red">0.00% (0/5)</span> | <span style="color:red">0.00% (0/26)</span> | <span style="color:red">0.00% (0/41)</span> |
-| <span style="color:#6BD36B">crypto/src/bn254/curves/pairing_impl.rs</span> | <span style="color:#6BD36B">68.18% (15/22)</span> | <span style="color:#6BD36B">81.82% (198/242)</span> | <span style="color:#6BD36B">87.38% (374/428)</span> |
-| <span style="color:#6BD36B">crypto/src/bn254/fields/fq.rs</span> | <span style="color:#6BD36B">100.00% (19/19)</span> | <span style="color:#6BD36B">97.06% (198/204)</span> | <span style="color:#6BD36B">92.41% (353/382)</span> |
-| <span style="color:#6BD36B">crypto/src/bn254/fields/fq2.rs</span> | <span style="color:#6BD36B">100.00% (1/1)</span> | <span style="color:#6BD36B">100.00% (3/3)</span> | <span style="color:#6BD36B">100.00% (3/3)</span> |
-| <span style="color:#6BD36B">crypto/src/bn254/fields/fq6.rs</span> | <span style="color:#6BD36B">100.00% (1/1)</span> | <span style="color:#6BD36B">100.00% (11/11)</span> | <span style="color:#6BD36B">100.00% (17/17)</span> |
-| <span style="color:#6BD36B">crypto/src/glv_decomposition.rs</span> | <span style="color:#6BD36B">91.67% (11/12)</span> | <span style="color:#6BD36B">96.35% (132/137)</span> | <span style="color:#6BD36B">94.52% (207/219)</span> |
-| <span style="color:#6BD36B">crypto/src/lib.rs</span> | <span style="color:#6BD36B">100.00% (1/1)</span> | <span style="color:#6BD36B">100.00% (9/9)</span> | <span style="color:#6BD36B">100.00% (6/6)</span> |
-| <span style="color:red">crypto/src/raw_delegation_interface.rs</span> | <span style="color:red">0.00% (0/2)</span> | <span style="color:red">0.00% (0/18)</span> | <span style="color:red">0.00% (0/17)</span> |
-| <span style="color:red">crypto/src/secp256k1/context.rs</span> | <span style="color:red">0.00% (0/4)</span> | <span style="color:red">0.00% (0/34)</span> | <span style="color:red">0.00% (0/45)</span> |
-| <span style="color:red">crypto/src/secp256k1/field/field_10x26.rs</span> | <span style="color:red">0.00% (0/36)</span> | <span style="color:red">0.00% (0/624)</span> | <span style="color:red">0.00% (0/876)</span> |
-| <span style="color:red">crypto/src/secp256k1/field/field_5x52.rs</span> | <span style="color:red">0.00% (0/37)</span> | <span style="color:red">0.00% (0/448)</span> | <span style="color:red">0.00% (0/562)</span> |
-| <span style="color:#6BD36B">crypto/src/secp256k1/field/field_8x32.rs</span> | <span style="color:#6BD36B">70.00% (21/30)</span> | <span style="color:#6BD36B">82.42% (211/256)</span> | <span style="color:#6BD36B">77.27% (170/220)</span> |
-| <span style="color:red">crypto/src/secp256k1/field/field_impl.rs</span> | <span style="color:red">0.00% (0/30)</span> | <span style="color:red">0.00% (0/152)</span> | <span style="color:red">0.00% (0/203)</span> |
-| <span style="color:red">crypto/src/secp256k1/field/mod.rs</span> | <span style="color:red">0.00% (0/52)</span> | <span style="color:red">0.00% (0/347)</span> | <span style="color:red">0.00% (0/323)</span> |
-| <span style="color:red">crypto/src/secp256k1/field/mod_inv32.rs</span> | <span style="color:red">0.00% (0/22)</span> | <span style="color:red">0.00% (0/353)</span> | <span style="color:red">0.00% (0/533)</span> |
-| <span style="color:red">crypto/src/secp256k1/field/mod_inv64.rs</span> | <span style="color:red">0.00% (0/18)</span> | <span style="color:red">0.00% (0/348)</span> | <span style="color:red">0.00% (0/550)</span> |
-| <span style="color:red">crypto/src/secp256k1/mod.rs</span> | <span style="color:orange">25.00% (1/4)</span> | <span style="color:red">9.76% (4/41)</span> | <span style="color:red">5.97% (4/67)</span> |
-| <span style="color:red">crypto/src/secp256k1/points/affine.rs</span> | <span style="color:red">0.00% (0/21)</span> | <span style="color:red">0.00% (0/139)</span> | <span style="color:red">0.00% (0/186)</span> |
-| <span style="color:red">crypto/src/secp256k1/points/jacobian.rs</span> | <span style="color:red">0.00% (0/20)</span> | <span style="color:red">0.00% (0/384)</span> | <span style="color:red">0.00% (0/660)</span> |
-| <span style="color:red">crypto/src/secp256k1/points/storage.rs</span> | <span style="color:red">0.00% (0/1)</span> | <span style="color:red">0.00% (0/7)</span> | <span style="color:red">0.00% (0/5)</span> |
-| <span style="color:red">crypto/src/secp256k1/recover.rs</span> | <span style="color:red">0.00% (0/24)</span> | <span style="color:red">0.00% (0/411)</span> | <span style="color:red">0.00% (0/543)</span> |
-| <span style="color:red">crypto/src/secp256k1/scalars/invert.rs</span> | <span style="color:red">0.00% (0/3)</span> | <span style="color:red">0.00% (0/107)</span> | <span style="color:red">0.00% (0/136)</span> |
-| <span style="color:red">crypto/src/secp256k1/scalars/mod.rs</span> | <span style="color:red">0.00% (0/30)</span> | <span style="color:red">0.00% (0/137)</span> | <span style="color:red">0.00% (0/148)</span> |
-| <span style="color:#4DA3FF">crypto/src/secp256k1/scalars/scalar32_delegation.rs</span> | <span style="color:#4DA3FF">63.16% (24/38)</span> | <span style="color:#4DA3FF">61.03% (166/272)</span> | <span style="color:#4DA3FF">39.93% (119/298)</span> |
-| <span style="color:red">crypto/src/secp256k1/scalars/scalar64.rs</span> | <span style="color:red">0.00% (0/28)</span> | <span style="color:red">0.00% (0/247)</span> | <span style="color:red">0.00% (0/746)</span> |
-| <span style="color:red">crypto/src/secp256r1/context.rs</span> | <span style="color:red">0.00% (0/3)</span> | <span style="color:red">0.00% (0/20)</span> | <span style="color:red">0.00% (0/32)</span> |
-| <span style="color:red">crypto/src/secp256r1/field/fe32_delegation.rs</span> | <span style="color:red">4.35% (1/23)</span> | <span style="color:red">7.00% (7/100)</span> | <span style="color:red">8.33% (10/120)</span> |
-| <span style="color:red">crypto/src/secp256r1/field/fe64.rs</span> | <span style="color:red">0.00% (0/30)</span> | <span style="color:red">0.00% (0/185)</span> | <span style="color:red">0.00% (0/480)</span> |
-| <span style="color:red">crypto/src/secp256r1/field/mod.rs</span> | <span style="color:red">0.00% (0/15)</span> | <span style="color:red">0.00% (0/256)</span> | <span style="color:red">0.00% (0/177)</span> |
-| <span style="color:orange">crypto/src/secp256r1/mod.rs</span> | <span style="color:#4DA3FF">50.00% (1/2)</span> | <span style="color:orange">30.77% (4/13)</span> | <span style="color:orange">21.05% (4/19)</span> |
-| <span style="color:red">crypto/src/secp256r1/points/affine.rs</span> | <span style="color:red">0.00% (0/6)</span> | <span style="color:red">0.00% (0/42)</span> | <span style="color:red">0.00% (0/62)</span> |
-| <span style="color:red">crypto/src/secp256r1/points/jacobian.rs</span> | <span style="color:red">0.00% (0/14)</span> | <span style="color:red">0.00% (0/240)</span> | <span style="color:red">0.00% (0/447)</span> |
-| <span style="color:red">crypto/src/secp256r1/points/storage.rs</span> | <span style="color:red">0.00% (0/1)</span> | <span style="color:red">0.00% (0/7)</span> | <span style="color:red">0.00% (0/3)</span> |
-| <span style="color:red">crypto/src/secp256r1/scalar/mod.rs</span> | <span style="color:red">0.00% (0/10)</span> | <span style="color:red">0.00% (0/80)</span> | <span style="color:red">0.00% (0/88)</span> |
-| <span style="color:red">crypto/src/secp256r1/scalar/scalar64.rs</span> | <span style="color:red">0.00% (0/21)</span> | <span style="color:red">0.00% (0/209)</span> | <span style="color:red">0.00% (0/564)</span> |
-| <span style="color:orange">crypto/src/secp256r1/scalar/scalar_delegation.rs</span> | <span style="color:red">5.56% (1/18)</span> | <span style="color:red">9.59% (7/73)</span> | <span style="color:orange">11.76% (10/85)</span> |
-| <span style="color:red">crypto/src/secp256r1/u64_arithmatic.rs</span> | <span style="color:red">0.00% (0/3)</span> | <span style="color:red">0.00% (0/12)</span> | <span style="color:red">0.00% (0/18)</span> |
-| <span style="color:red">crypto/src/secp256r1/verify.rs</span> | <span style="color:red">0.00% (0/6)</span> | <span style="color:red">0.00% (0/120)</span> | <span style="color:red">0.00% (0/208)</span> |
-| <span style="color:red">crypto/src/secp256r1/wnaf.rs</span> | <span style="color:red">0.00% (0/4)</span> | <span style="color:red">0.00% (0/51)</span> | <span style="color:red">0.00% (0/69)</span> |
-| <span style="color:red">crypto/src/sha3/mod.rs</span> | <span style="color:red">0.00% (0/5)</span> | <span style="color:red">0.00% (0/20)</span> | <span style="color:red">0.00% (0/34)</span> |
-| <span style="color:red">zksync_os_runner/src/lib.rs</span> | <span style="color:red">0.00% (0/3)</span> | <span style="color:red">0.00% (0/37)</span> | <span style="color:red">0.00% (0/36)</span> |
-| <span style="color:orange"><b>Total</b></span> | <span style="color:orange"><b>31.41% (326/1038)</b></span> | <span style="color:orange"><b>27.28% (2527/9262)</b></span> | <span style="color:orange"><b>27.51% (3931/14288)</b></span> |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Function Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Line Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Region Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">crypto/src/ark_ff_delegation/biginteger/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">29.73% (22/74)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">23.92% (94/393)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">24.40% (133/545)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">crypto/src/ark_ff_delegation/const_helpers.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">40.00% (10/25)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">34.94% (58/166)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">29.02% (74/255)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">crypto/src/ark_ff_delegation/fp/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">54.95% (50/91)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">52.87% (221/418)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">50.98% (311/610)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">crypto/src/ark_ff_delegation/fp/montgomery_backend.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">65.52% (19/29)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">54.45% (104/191)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">60.43% (168/278)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bigint_delegation/delegation.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (15/15)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (83/83)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (169/169)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bigint_delegation/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (1/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (4/4)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (4/4)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bigint_delegation/u256.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">87.88% (29/33)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">89.87% (213/237)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">89.04% (406/456)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bigint_delegation/u512.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (14/14)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">98.43% (188/191)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">98.70% (456/462)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/blake2s/naive.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/9)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/30)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/43)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/blake2s/test.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/2)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/18)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/26)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">crypto/src/bls12_381/curves/g1.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">25.00% (4/16)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">20.16% (26/129)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">12.12% (24/198)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bls12_381/curves/g1_swu_iso.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (1/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (6/6)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (12/12)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/bls12_381/curves/g2.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/10)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/105)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/176)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bls12_381/curves/g2_swu_iso.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (1/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (6/6)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (12/12)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bls12_381/curves/pairing_impl.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">66.67% (14/21)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">80.56% (174/216)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">85.32% (308/361)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/bls12_381/curves/util.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/10)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/166)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/320)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bls12_381/fields/fq.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (26/26)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">98.01% (246/251)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">93.78% (422/450)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">crypto/src/bls12_381/fields/fq2.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">50.00% (2/4)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">46.15% (6/13)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">42.86% (6/14)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bls12_381/fields/fq6.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (1/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (6/6)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (7/7)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bls12_381/fields/fr.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">78.95% (15/19)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">84.29% (118/140)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">85.61% (113/132)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bls12_381/fields/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (1/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (4/4)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (4/4)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">crypto/src/bn254/curves/g1.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">40.00% (4/10)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">29.85% (20/67)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">25.51% (25/98)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/bn254/curves/g2.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/5)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/26)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/41)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bn254/curves/pairing_impl.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">68.18% (15/22)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">81.82% (198/242)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">87.38% (374/428)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bn254/fields/fq.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (19/19)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">97.06% (198/204)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">92.41% (353/382)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bn254/fields/fq2.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (1/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (3/3)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (3/3)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/bn254/fields/fq6.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (1/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (11/11)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (17/17)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/glv_decomposition.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">91.67% (11/12)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">96.35% (132/137)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">94.52% (207/219)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/lib.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (1/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (9/9)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">100.00% (6/6)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/raw_delegation_interface.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/2)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/18)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/17)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/context.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/4)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/34)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/45)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/field/field_10x26.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/36)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/624)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/876)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/field/field_5x52.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/37)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/448)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/562)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">crypto/src/secp256k1/field/field_8x32.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">70.00% (21/30)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">82.42% (211/256)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#6BD36B">77.27% (170/220)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/field/field_impl.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/30)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/152)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/203)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/field/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/52)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/347)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/323)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/field/mod_inv32.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/22)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/353)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/533)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/field/mod_inv64.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/18)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/348)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/550)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">25.00% (1/4)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">9.76% (4/41)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">5.97% (4/67)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/points/affine.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/21)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/139)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/186)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/points/jacobian.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/20)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/384)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/660)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/points/storage.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/7)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/5)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/recover.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/24)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/411)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/543)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/scalars/invert.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/3)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/107)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/136)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/scalars/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/30)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/137)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/148)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">crypto/src/secp256k1/scalars/scalar32_delegation.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">63.16% (24/38)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">61.03% (166/272)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">39.93% (119/298)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256k1/scalars/scalar64.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/28)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/247)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/746)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/context.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/3)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/20)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/32)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/field/fe32_delegation.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">4.35% (1/23)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">7.00% (7/100)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">8.33% (10/120)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/field/fe64.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/30)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/185)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/480)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/field/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/15)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/256)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/177)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">crypto/src/secp256r1/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:#4DA3FF">50.00% (1/2)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">30.77% (4/13)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">21.05% (4/19)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/points/affine.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/6)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/42)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/62)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/points/jacobian.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/14)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/240)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/447)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/points/storage.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/1)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/7)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/3)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/scalar/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/10)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/80)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/88)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/scalar/scalar64.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/21)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/209)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/564)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">crypto/src/secp256r1/scalar/scalar_delegation.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">5.56% (1/18)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">9.59% (7/73)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange">11.76% (10/85)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/u64_arithmatic.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/3)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/12)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/18)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/verify.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/6)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/120)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/208)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/secp256r1/wnaf.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/4)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/51)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/69)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">crypto/src/sha3/mod.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/5)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/20)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/34)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">zksync_os_runner/src/lib.rs</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/3)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/37)</span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:red">0.00% (0/36)</span></td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange"><b>Total</b></span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange"><b>31.41% (326/1038)</b></span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange"><b>27.28% (2527/9262)</b></span></td>
+  <td style="border: 1px solid white; padding: 8px;"><span style="color:orange"><b>27.51% (3931/14288)</b></span></td>
+</tr>
+</tbody>
+</table>
