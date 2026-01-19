@@ -227,19 +227,15 @@ The status of an issue can be one of the following:
 
 In the `secp256r1` module, incorrect predicates are used to determine whether a point represents the identity (the point at infinity):
 
-```rust filepath line=282
-src/secp256r1/points/jacobian.rs
-pub(crate) const fn is_infinity_const(&self) -> bool {
-    self.z.is_zero() || (self.x.is_zero() || self.y.is_zero())
-}
-```
+<pre class="language-rust" data-attributes="filepath line=282"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">src/secp256r1/points/jacobian.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">282</span><span style="font-family: monospace !important;">pub(crate) const fn is_infinity_const(&amp;self) -&gt; bool {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">283</span><span style="font-family: monospace !important;">    self.z.is_zero() || (self.x.is_zero() || self.y.is_zero())</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">284</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
-```rust filepath line=21
-src/secp256r1/points/affine.rs
-pub(crate) fn is_infinity(&self) -> bool {
-    self.infinity || (self.x.is_zero() || self.y.is_zero())
-}
-```
+<pre class="language-rust" data-attributes="filepath line=21"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">src/secp256r1/points/affine.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">21</span><span style="font-family: monospace !important;">pub(crate) fn is_infinity(&amp;self) -&gt; bool {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">22</span><span style="font-family: monospace !important;">    self.infinity || (self.x.is_zero() || self.y.is_zero())</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">23</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 In Jacobian coordinates, a point represents the identity if and only if `z` is zero. In affine coordinates, the identity is typically represented only using an explicit flag, not by coordinate values.
 
@@ -280,66 +276,54 @@ The following functions rely directly or indirectly on the incorrect identity pr
 ## The issue in the `bn254` module
 
 The function `bn254_pairing_check_inner` parses the buffer `src` into G1 and G2 affine points and constructs `(G1Affine, G2Affine)` pairs. The buffer `src` is supplied by the caller function `execute` and may contain arbitrary data defined during a smart contract execution. The `(G1Affine, G2Affine)` pairs are then passed into the function `Bn254::multi_pairing` on line `154`:
-```rust filepath line=66
-basic_system/src/system_functions/bn254_pairing_check.rs
-fn bn254_pairing_check_inner<A: Allocator>(
-    num_pairs: usize,
-    src: &[u8],
-    allocator: A,
-) -> Result<bool, ()> {
-```
+<pre class="language-rust" data-attributes="filepath line=66"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/bn254_pairing_check.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">66</span><span style="font-family: monospace !important;">fn bn254_pairing_check_inner&lt;A: Allocator&gt;(</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">67</span><span style="font-family: monospace !important;">    num_pairs: usize,</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">68</span><span style="font-family: monospace !important;">    src: &amp;[u8],</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">69</span><span style="font-family: monospace !important;">    allocator: A,</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">70</span><span style="font-family: monospace !important;">) -&gt; Result&lt;bool, ()&gt; {</span></span></code></pre>
 
-```rust line=152
-let g1_iter = pairs.iter().map(|(g1, _)| g1);
-let g2_iter = pairs.iter().map(|(_, g2)| g2);
-let result = Bn254::multi_pairing(g1_iter, g2_iter);
-```
+<pre class="language-rust" data-attributes="line=152"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">152</span><span style="font-family: monospace !important;">let g1_iter = pairs.iter().map(|(g1, _)| g1);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">153</span><span style="font-family: monospace !important;">let g2_iter = pairs.iter().map(|(_, g2)| g2);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">154</span><span style="font-family: monospace !important;">let result = Bn254::multi_pairing(g1_iter, g2_iter);</span></span></code></pre>
 
 The function `Bn254::multi_pairing` includes a call to the `Bn254::multi_miller_loop` function, which processes each _(G1,G2)_ pair by converting the _G1_ input into `G1Prepared` and the `G2Affine` input into `G2Prepared`. After the conversions, both results are checked for representing the point-at-infinity, using the `is_zero` function. If either point is the point-at-infinity, the pair is skipped and the loop continues with the next pair:
-```rust filepath line=109
-crypto/src/bn254/curves/pairing_impl.rs
-let q: Self::G2Prepared = q.into();
-if q.is_zero() {
-    continue;
-}
-```
+<pre class="language-rust" data-attributes="filepath line=109"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/bn254/curves/pairing_impl.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">109</span><span style="font-family: monospace !important;">let q: Self::G2Prepared = q.into();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">110</span><span style="font-family: monospace !important;">if q.is_zero() {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">111</span><span style="font-family: monospace !important;">    continue;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">112</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 
 
 The conversion `into()` for `G2Affine` type is implemented via `G2PreparedNoAlloc::from`, which handles the point-at-infinity case as follows:
-```rust context line=217 highlight=[4]
-impl From<G2Affine> for G2PreparedNoAlloc
-if q.infinity {
-    #[allow(invalid_value)]
-    G2PreparedNoAlloc {
-        ell_coeffs: unsafe { core::mem::MaybeUninit::uninit().assume_init() }, // unused/filtered above
-        infinity: true,
-    }
-} else {
-```
+<pre class="language-rust" data-attributes="context line=217 highlight=[4]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">217</span><span style="font-family: monospace !important;">impl From&lt;G2Affine&gt; for G2PreparedNoAlloc</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">218</span><span style="font-family: monospace !important;">if q.infinity {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">219</span><span style="font-family: monospace !important;">    #[allow(invalid_value)]</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">220</span><span style="font-family: monospace !important;">    G2PreparedNoAlloc {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">221</span><span style="font-family: monospace !important;">        ell_coeffs: unsafe { core::mem::MaybeUninit::uninit().assume_init() }, // unused/filtered above</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">222</span><span style="font-family: monospace !important;">        infinity: true,</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">223</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">224</span><span style="font-family: monospace !important;">} else {</span></span></code></pre>
 
 Both `q.is_zero()` and `q.infinity` implement the check for point-at-infinity:
-```rust line=357
-impl G2PreparedNoAlloc {
-    pub fn is_zero(&self) -> bool {
-        self.infinity
-    }
-}
-```
+<pre class="language-rust" data-attributes="line=357"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">357</span><span style="font-family: monospace !important;">impl G2PreparedNoAlloc {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">358</span><span style="font-family: monospace !important;">    pub fn is_zero(&amp;self) -&gt; bool {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">359</span><span style="font-family: monospace !important;">        self.infinity</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">360</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">361</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 This means that both lines `110` and `217` check for the same condition, so there is a scenario when the block on lines `218-222` is executed. The line `220` contains an `unsafe` expression, accompanied by the comment `// unused/filtered above`. Apparently, the idea here is that the `unsafe` section would never actually execute if the field `ell_coeffs` is not accessed. However, struct fields are eagerly initialized in Rust, so all fields of a struct literal are evaluated before the value exists, and the `unsafe` section is executed every time the control flow reaches lines `218-222`.
 
 In other words, the `unsafe` section on line `220` is always entered before the filtering on line `110` occurs.
 
 This `unsafe` section immediately triggers an Undefined Behavior, even if the field `ell_coeffs` is never accessed later, because the expression `MaybeUninit::uninit().assume_init()` creates an uninitialized array and treats it as initialized. This is confirmed to be an invalid use by the documentation of the `assume_init` function:
-```rust
-/// # Safety
-///
-/// It is up to the caller to guarantee that the `MaybeUninit<T>` really is in an initialized
-/// state. Calling this when the content is not yet fully initialized causes immediate undefined
-/// behavior. The [type-level documentation][inv] contains more information about
-/// this initialization invariant.
-```
+<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">/// # Safety</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">///</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">/// It is up to the caller to guarantee that the `MaybeUninit&lt;T&gt;` really is in an initialized</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">/// state. Calling this when the content is not yet fully initialized causes immediate undefined</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">/// behavior. The [type-level documentation][inv] contains more information about</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">/// this initialization invariant.</span></span></code></pre>
 
 
 
@@ -347,25 +331,21 @@ This `unsafe` section immediately triggers an Undefined Behavior, even if the fi
 
 The same issue is present in the BLS12-381 implementation, due to code duplication.
 
-```rust filepath context line=112
-crypto/src/bls12_381/curves/pairing_impl.rs
-fn multi_miller_loop
-let q: Self::G2Prepared = q.into();
-if q.is_zero() {
-    continue;
-}
-```
+<pre class="language-rust" data-attributes="filepath context line=112"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/bls12_381/curves/pairing_impl.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">112</span><span style="font-family: monospace !important;">fn multi_miller_loop</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">113</span><span style="font-family: monospace !important;">let q: Self::G2Prepared = q.into();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">114</span><span style="font-family: monospace !important;">if q.is_zero() {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">115</span><span style="font-family: monospace !important;">    continue;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">116</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
-```rust context line=217
-impl From<G2Affine> for G2PreparedNoAlloc {
-if q.infinity {
-    #[allow(invalid_value)]
-    G2PreparedNoAlloc {
-        ell_coeffs: unsafe { core::mem::MaybeUninit::uninit().assume_init() }, // unused/filtered above
-        infinity: true,
-    }
-} else {
-```
+<pre class="language-rust" data-attributes="context line=217"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">217</span><span style="font-family: monospace !important;">impl From&lt;G2Affine&gt; for G2PreparedNoAlloc {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">218</span><span style="font-family: monospace !important;">if q.infinity {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">219</span><span style="font-family: monospace !important;">    #[allow(invalid_value)]</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">220</span><span style="font-family: monospace !important;">    G2PreparedNoAlloc {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">221</span><span style="font-family: monospace !important;">        ell_coeffs: unsafe { core::mem::MaybeUninit::uninit().assume_init() }, // unused/filtered above</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">222</span><span style="font-family: monospace !important;">        infinity: true,</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">223</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">224</span><span style="font-family: monospace !important;">} else {</span></span></code></pre>
 
 ## Severity
 
@@ -402,26 +382,22 @@ In the `secp256k1` module, several incorrect magnitude updates have been identif
 
 The function `mul_int_in_place`, which takes a field element `self` and a scalar `rhs`, increases the current magnitude by `rhs`. This is incorrect: every limb of the field element is multiplied by `rhs`, so if a limb is already inflated by a factor of `k`, the resulting inflation factor is `k * rhs`, not `k + rhs`.
 
-```rust filepath context line=79 highlight=[1]
-src/secp256k1/field/field_impl.rs
-pub(super) fn mul_int_in_place(&mut self, rhs: u32)
-self.magnitude += rhs;
-debug_assert!(self.magnitude <= Self::max_magnitude());
-
-self.value.mul_int_in_place(rhs);
-self.normalized = false;
-```
+<pre class="language-rust" data-attributes="filepath context line=79 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">src/secp256k1/field/field_impl.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">79</span><span style="font-family: monospace !important;">pub(super) fn mul_int_in_place(&amp;mut self, rhs: u32)</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">80</span><span style="font-family: monospace !important;">self.magnitude += rhs;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">81</span><span style="font-family: monospace !important;">debug_assert!(self.magnitude &lt;= Self::max_magnitude());</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">82</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">83</span><span style="font-family: monospace !important;">self.value.mul_int_in_place(rhs);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">84</span><span style="font-family: monospace !important;">self.normalized = false;</span></span></code></pre>
 
 The same incorrect update is present in `mul_int`:
 
-```rust context line=159 highlight=[1]
-pub(super) const fn mul_int(&self, rhs: u32)
-let new_magnitude = self.magnitude + rhs;
-debug_assert!(new_magnitude <= Self::max_magnitude());
-
-let value = self.value.mul_int(rhs);
-Self::new(value, new_magnitude)
-```
+<pre class="language-rust" data-attributes="context line=159 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">159</span><span style="font-family: monospace !important;">pub(super) const fn mul_int(&amp;self, rhs: u32)</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">160</span><span style="font-family: monospace !important;">let new_magnitude = self.magnitude + rhs;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">161</span><span style="font-family: monospace !important;">debug_assert!(new_magnitude &lt;= Self::max_magnitude());</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">162</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">163</span><span style="font-family: monospace !important;">let value = self.value.mul_int(rhs);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">164</span><span style="font-family: monospace !important;">Self::new(value, new_magnitude)</span></span></code></pre>
 
 Both `mul_int_in_place` and `mul_int` underestimate the resulting magnitude of the field element. At a minimum, this invalidates assumptions relied upon by routines such as `negate_in_place`.
 
@@ -446,12 +422,10 @@ Correct the magnitude update so that the resulting magnitude is computed as the 
 </div>
 
 During fuzzing test runs, an assertion failed:
-```
-thread '<unnamed>' panicked at /zksync-os/basic_system/src/system_functions/modexp/delegation/bigint.rs:686:25:
-assertion `left == right` failed
-  left: 1
- right: 0
-```
+<pre><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">thread '&lt;unnamed&gt;' panicked at /zksync-os/basic_system/src/system_functions/modexp/delegation/bigint.rs:686:25:</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">assertion `left == right` failed</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">  left: 1</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;"> right: 0</span></span></code></pre>
 
 See the _Appendix_ section for details on how fuzzing was performed.
 
@@ -461,16 +435,14 @@ The assertion is located in the function `fma`, which implements a Fused Multipl
 
 The function `bigint_op_delegation_raw`, defined in the in-scope crate `crypto`, returns a non-zero value to signal a limb overflow. The assertion assumes that no overflow can occur at this stage of the algorithm:
 
-```rust filepath context line=681 highlight=[1,6]
-basic_system/src/system_functions/modexp/delegation/bigint.rs
-unsafe fn fma
-let of = bigint_op_delegation_raw(
-    dst_scratch_capacity[dst_digit].as_mut_ptr().cast(),
-    carry_scratch.cast(),
-    BigIntOps::Add,
-);
-assert_eq!(of, 0);
-```
+<pre class="language-rust" data-attributes="filepath context line=681 highlight=[1,6]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/modexp/delegation/bigint.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">681</span><span style="font-family: monospace !important;">unsafe fn fma</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">682</span><span style="font-family: monospace !important;">let of = bigint_op_delegation_raw(</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">683</span><span style="font-family: monospace !important;">    dst_scratch_capacity[dst_digit].as_mut_ptr().cast(),</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">684</span><span style="font-family: monospace !important;">    carry_scratch.cast(),</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">685</span><span style="font-family: monospace !important;">    BigIntOps::Add,</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">686</span><span style="font-family: monospace !important;">);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">687</span><span style="font-family: monospace !important;">assert_eq!(of, 0);</span></span></code></pre>
 
 However, this assumption is incorrect. During accumulation, under certain operand combinations, a carry produced by earlier partial products can overflow the destination digit, requiring propagation into higher digits.
 
@@ -501,26 +473,20 @@ When running the tests specifically on the `crypto` crate, with overflow checks 
 ## Proof of concept
 
 After running `./dump_bin.sh` as usually, enable the extra checks using the `RUSTFLAGS` and build the project including the test code of the `crypto` crate:
-```sh
-export RUSTFLAGS="-C overflow-checks=on -C debug-assertions=on"
-cargo build --release
-cargo test --release -p crypto
-```
+<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">export RUSTFLAGS="-C overflow-checks=on -C debug-assertions=on"</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">cargo build --release</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">cargo test --release -p crypto</span></span></code></pre>
 
 Then run the property tests multiple times, using a loop:
-```sh
-$ for i in `seq 1 1000`
-do
-    cargo test --release -p crypto 2>&1 | grep FAILED | tee -a errors.txt
-done
-```
+<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">$ for i in `seq 1 1000`</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">do</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    cargo test --release -p crypto 2&gt;&amp;1 | grep FAILED | tee -a errors.txt</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">done</span></span></code></pre>
 
 During manual exploration, it is practical to limit scope of each pass to only one submodule or one test case, for easier interpretation of results. Additionally, parallelization should be enabled in order to save total computation time:
-```sh
-seq 1 1000 \
-| xargs -n1 -P48 sh -c 'cargo test --release -p crypto secp256k1::field::field_10x26 2>&1 | grep FAILED || true' _ \
-| tee -a errors.txt
-```
+<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">seq 1 1000 \</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">| xargs -n1 -P48 sh -c 'cargo test --release -p crypto secp256k1::field::field_10x26 2&gt;&amp;1 | grep FAILED || true' _ \</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">| tee -a errors.txt</span></span></code></pre>
 
 
 
@@ -537,22 +503,20 @@ These test cases have crashed on a `debug_assert!` statement:
 - `secp256k1::points::jacobian`: `test_add_zinv`
 
 For instance, one of violated debug assertions is located in the `normalize_in_place` function:
-```rust filepath context line=589 highlight=[5]
-src/secp256k1/field/field_10x26.rs
-pub(super) const fn normalize_in_place(&mut self) {
-self.0[8] &= 0x3FFFFFF;
-m &= self.0[8];
-
-/* ... except for a possible carry at bit 22 of self.0[9] (i.e. bit 256 of the field element) */
-debug_assert!(self.0[9] >> 23 == 0);
-
-// At most a single final reduction is needed; check if the value is >= the field characteristic
-x = (self.0[9] >> 22)
-    | ((self.0[9] == 0x03FFFFF)
-        & (m == 0x3FFFFFF)
-        & ((self.0[1] + 0x40 + ((self.0[0] + 0x3D1) >> 26)) > 0x3FFFFFF))
-        as u32;
-```
+<pre class="language-rust" data-attributes="filepath context line=589 highlight=[5]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">src/secp256k1/field/field_10x26.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">589</span><span style="font-family: monospace !important;">pub(super) const fn normalize_in_place(&amp;mut self) {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">590</span><span style="font-family: monospace !important;">self.0[8] &amp;= 0x3FFFFFF;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">591</span><span style="font-family: monospace !important;">m &amp;= self.0[8];</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">592</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">593</span><span style="font-family: monospace !important;">/* ... except for a possible carry at bit 22 of self.0[9] (i.e. bit 256 of the field element) */</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">594</span><span style="font-family: monospace !important;">debug_assert!(self.0[9] &gt;&gt; 23 == 0);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">595</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">596</span><span style="font-family: monospace !important;">// At most a single final reduction is needed; check if the value is &gt;= the field characteristic</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">597</span><span style="font-family: monospace !important;">x = (self.0[9] &gt;&gt; 22)</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">598</span><span style="font-family: monospace !important;">    | ((self.0[9] == 0x03FFFFF)</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">599</span><span style="font-family: monospace !important;">        &amp; (m == 0x3FFFFFF)</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">600</span><span style="font-family: monospace !important;">        &amp; ((self.0[1] + 0x40 + ((self.0[0] + 0x3D1) &gt;&gt; 26)) &gt; 0x3FFFFFF))</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">601</span><span style="font-family: monospace !important;">        as u32;</span></span></code></pre>
 
 ### Missed overflows
 
@@ -564,19 +528,17 @@ These test cases have crashed with overflow error:
 - `secp256k1::points::jacobian`: `test_add_zinv`
 
 For instance, the overflows error in the `field_10x26::test_mul` test case is thrown from the `normalize_in_place` function:
-```rust filepath context line=559 highlight=[7]
-src/secp256k1/field/field_10x26.rs
-pub(super) const fn normalize_in_place(&mut self) {
-// Reduce self.0[9] at the start so there will be at most a single carry from the first pass
-let mut x = self.0[9] >> 22;
-self.0[9] &= 0x03FFFFF;
-
-// The first pass ensures the magnitude is 1, ...
-self.0[0] += x * 0x3D1;
-self.0[1] += x << 6;
-self.0[1] += self.0[0] >> 26;
-self.0[0] &= 0x3FFFFFF;
-```
+<pre class="language-rust" data-attributes="filepath context line=559 highlight=[7]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">src/secp256k1/field/field_10x26.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">559</span><span style="font-family: monospace !important;">pub(super) const fn normalize_in_place(&amp;mut self) {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">560</span><span style="font-family: monospace !important;">// Reduce self.0[9] at the start so there will be at most a single carry from the first pass</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">561</span><span style="font-family: monospace !important;">let mut x = self.0[9] &gt;&gt; 22;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">562</span><span style="font-family: monospace !important;">self.0[9] &amp;= 0x03FFFFF;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">563</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">564</span><span style="font-family: monospace !important;">// The first pass ensures the magnitude is 1, ...</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">565</span><span style="font-family: monospace !important;">self.0[0] += x * 0x3D1;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">566</span><span style="font-family: monospace !important;">self.0[1] += x &lt;&lt; 6;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">567</span><span style="font-family: monospace !important;">self.0[1] += self.0[0] &gt;&gt; 26;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">568</span><span style="font-family: monospace !important;">self.0[0] &amp;= 0x3FFFFFF;</span></span></code></pre>
 
 It is possible that some of the overflows are caused by broken invariants, indicated by the violated assertions.
 
@@ -598,25 +560,21 @@ Additionally, run the test suite multiple times. Property-based tests do not gua
 
 The magnitude limit for the `5x52` storage is defined as `2047`:
 
-```rust filepath line=89
-crypto/src/secp256k1/field/field_5x52.rs
-pub(super) const fn max_magnitude() -> u32 {
-    2047u32
-}
-```
+<pre class="language-rust" data-attributes="filepath line=89"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256k1/field/field_5x52.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">89</span><span style="font-family: monospace !important;">pub(super) const fn max_magnitude() -&gt; u32 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">90</span><span style="font-family: monospace !important;">    2047u32</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">91</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 Although `2047` is the mathematical upper bound for keeping all limbs within 63 bits, it is not compatible with the actual algorithmic invariants in the `mul_in_place` implementation.
 
 The `mul_in_place` implementation contains tight limb-width debug assertions:
-```rust filepath context line=162
-crypto/src/secp256k1/field/field_5x52.rs
-pub(super) const fn mul_in_place
-debug_assert!(a0 >> 56 == 0);
-debug_assert!(a1 >> 56 == 0);
-debug_assert!(a2 >> 56 == 0);
-debug_assert!(a3 >> 56 == 0);
-debug_assert!(a4 >> 52 == 0);
-```
+<pre class="language-rust" data-attributes="filepath context line=162"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256k1/field/field_5x52.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">162</span><span style="font-family: monospace !important;">pub(super) const fn mul_in_place</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">163</span><span style="font-family: monospace !important;">debug_assert!(a0 &gt;&gt; 56 == 0);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">164</span><span style="font-family: monospace !important;">debug_assert!(a1 &gt;&gt; 56 == 0);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">165</span><span style="font-family: monospace !important;">debug_assert!(a2 &gt;&gt; 56 == 0);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">166</span><span style="font-family: monospace !important;">debug_assert!(a3 &gt;&gt; 56 == 0);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">167</span><span style="font-family: monospace !important;">debug_assert!(a4 &gt;&gt; 52 == 0);</span></span></code></pre>
 
 These constraints imply:
 - Limbs 0–3 may temporarily grow from 52 bits up to 56 bits.
@@ -631,9 +589,7 @@ Thus, a magnitude of `2047` can never occur during legal operation, and using `2
 
 A normalized limb less than `2^52` corresponds to the magnitude of 1. The largest permitted limb before entering `mul_in_place` is less than `2^56`. Thus the true maximum magnitude allowed by the `mul_in_place` function is:
 
-```
-(2^56) / (2^52) = 2^4 = 16
-```
+<pre><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">(2^56) / (2^52) = 2^4 = 16</span></span></code></pre>
 
 Any magnitude above `16` cannot be produced by correct arithmetic and cannot be safely consumed by `mul_in_place`.
 
@@ -653,32 +609,28 @@ Set the magnitude limit to `16`.
 
 In `secp256k1`, the function `table_verify` is used in debug assertions to validate wNAF digits:
 
-```rust filepath line=328 highlight=[2]
-crypto/src/secp256k1/recover.rs
-fn table_get_ge(pre: &[Affine], n: i32, w: usize) -> Affine {
-    debug_assert!(table_verify(n, w));
-
-    if n > 0 {
-        pre[(n - 1) as usize / 2]
-    } else {
-        let mut r = pre[(-n - 1) as usize / 2];
-        r.y.negate_in_place(1);
-        r
-    }
-}
-```
+<pre class="language-rust" data-attributes="filepath line=328 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256k1/recover.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">328</span><span style="font-family: monospace !important;">fn table_get_ge(pre: &amp;[Affine], n: i32, w: usize) -&gt; Affine {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">329</span><span style="font-family: monospace !important;">    debug_assert!(table_verify(n, w));</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">330</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">331</span><span style="font-family: monospace !important;">    if n &gt; 0 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">332</span><span style="font-family: monospace !important;">        pre[(n - 1) as usize / 2]</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">333</span><span style="font-family: monospace !important;">    } else {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">334</span><span style="font-family: monospace !important;">        let mut r = pre[(-n - 1) as usize / 2];</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">335</span><span style="font-family: monospace !important;">        r.y.negate_in_place(1);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">336</span><span style="font-family: monospace !important;">        r</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">337</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">338</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 
 
 However, it is implemented incorrectly:
 
-```rust line=373 highlight=[2,4]
-fn table_verify(n: i32, w: usize) -> bool {
-    let n = n as usize;
-
-    ((n & 1) == 1) || (n >= !(1 << ((w - 1) - 1))) || (n <= (1 << ((w - 1) - 1)))
-}
-```
+<pre class="language-rust" data-attributes="line=373 highlight=[2,4]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">373</span><span style="font-family: monospace !important;">fn table_verify(n: i32, w: usize) -&gt; bool {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">374</span><span style="font-family: monospace !important;">    let n = n as usize;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">375</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">376</span><span style="font-family: monospace !important;">    ((n &amp; 1) == 1) || (n &gt;= !(1 &lt;&lt; ((w - 1) - 1))) || (n &lt;= (1 &lt;&lt; ((w - 1) - 1)))</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">377</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 This definition contains several issues:
 
@@ -717,21 +669,19 @@ Additionally, no equivalent validations of wNAF table digits have been identifie
 
 Consider translating the [similar function in Bitcoin](https://github.com/bitcoin/bitcoin/blob/master/src/secp256k1/src/ecmult_impl.h#L117-L123) from C to Rust:
 
-```rust
-fn table_verify(n: i32, w: usize) -> bool {
-    // `w` is constant, but this check makes the function future-proof
-    // it would underflow/overflow when `w` is out of range
-    debug_assert!((2..=31).contains(&w));
-
-    // n must be odd
-    if (n & 1) == 0 {
-        return false;
-    }
-
-    let max: i32 = (1_i32 << (w - 1)) - 1;
-    n >= -max && n <= max
-}
-```
+<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">fn table_verify(n: i32, w: usize) -&gt; bool {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">    // `w` is constant, but this check makes the function future-proof</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    // it would underflow/overflow when `w` is out of range</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    debug_assert!((2..=31).contains(&amp;w));</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">    // n must be odd</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">    if (n &amp; 1) == 0 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">        return false;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">    let max: i32 = (1_i32 &lt;&lt; (w - 1)) - 1;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">    n &gt;= -max &amp;&amp; n &lt;= max</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 Additionally, implement similar validation in `secp256r1`.
 
@@ -749,17 +699,15 @@ Additionally, implement similar validation in `secp256r1`.
 
 In the `8x32` backend, the `from_bytes` function performs an incorrect range check when validating field elements parsed from raw bytes:
 
-```rust filepath context line=58
-crypto/src/secp256k1/field_8x32.rs
-pub(super) fn from_bytes
-let value = Self::from_bytes_unchecked(bytes);
-
-if u256::leq(&value.0, &Self::MODULUS.0) {
-    Some(value)
-} else {
-    None
-}
-```
+<pre class="language-rust" data-attributes="filepath context line=58"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256k1/field_8x32.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">58</span><span style="font-family: monospace !important;">pub(super) fn from_bytes</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">59</span><span style="font-family: monospace !important;">let value = Self::from_bytes_unchecked(bytes);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">60</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">61</span><span style="font-family: monospace !important;">if u256::leq(&amp;value.0, &amp;Self::MODULUS.0) {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">62</span><span style="font-family: monospace !important;">    Some(value)</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">63</span><span style="font-family: monospace !important;">} else {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">64</span><span style="font-family: monospace !important;">    None</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">65</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 This condition `u256::leq` accepts values equal to _P_, whereas valid field elements must satisfy _0 ≤ x < P_. As a result, the modulus _P_ itself is incorrectly accepted as a valid field element.
 
@@ -767,13 +715,11 @@ This condition `u256::leq` accepts values equal to _P_, whereas valid field elem
 
 The `normalize_in_place` function assumes that magnitude of the internal field element `self.magnitude` does not exceed `31`, but this invariant is not enforced locally:
 
-```rust filepath context line=559
-crypto/src/secp256k1/field/field_10x26.rs
-pub(super) const fn normalize_in_place
-// Reduce self.0[9] at the start so there will be at most a single carry from the first pass
-let mut x = self.0[9] >> 22;
-self.0[9] &= 0x03FFFFF;
-```
+<pre class="language-rust" data-attributes="filepath context line=559"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256k1/field/field_10x26.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">559</span><span style="font-family: monospace !important;">pub(super) const fn normalize_in_place</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">560</span><span style="font-family: monospace !important;">// Reduce self.0[9] at the start so there will be at most a single carry from the first pass</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">561</span><span style="font-family: monospace !important;">let mut x = self.0[9] &gt;&gt; 22;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">562</span><span style="font-family: monospace !important;">self.0[9] &amp;= 0x03FFFFF;</span></span></code></pre>
 
 If `self.magnitude > 31`, intermediate arithmetic could overflow, leading to incorrect field normalization. A debug assertion should ensure this assumption.
 
@@ -781,20 +727,18 @@ In the current version of the codebase, this condition is not reachable: the max
 
 ## Missing defensive overflow checks
 
-```rust filepath context line=316 highlight=[8]
-crypto/src/secp256k1/scalars/scalar64.rs
-fn muladd(a: u64, b: u64, c0: u64, c1: u64, c2: u64)
-let t = (a as u128) * (b as u128);
-let th = (t >> 64) as u64; // at most 0xFFFFFFFFFFFFFFFE
-let tl = t as u64;
-
-let (new_c0, carry0) = c0.overflowing_add(tl);
-let new_th = th.wrapping_add(carry0 as u64); // at most 0xFFFFFFFFFFFFFFFF
-let (new_c1, carry1) = c1.overflowing_add(new_th);
-let new_c2 = c2 + (carry1 as u64);
-
-(new_c0, new_c1, new_c2)
-```
+<pre class="language-rust" data-attributes="filepath context line=316 highlight=[8]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256k1/scalars/scalar64.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">316</span><span style="font-family: monospace !important;">fn muladd(a: u64, b: u64, c0: u64, c1: u64, c2: u64)</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">317</span><span style="font-family: monospace !important;">let t = (a as u128) * (b as u128);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">318</span><span style="font-family: monospace !important;">let th = (t &gt;&gt; 64) as u64; // at most 0xFFFFFFFFFFFFFFFE</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">319</span><span style="font-family: monospace !important;">let tl = t as u64;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">320</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">321</span><span style="font-family: monospace !important;">let (new_c0, carry0) = c0.overflowing_add(tl);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">322</span><span style="font-family: monospace !important;">let new_th = th.wrapping_add(carry0 as u64); // at most 0xFFFFFFFFFFFFFFFF</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">323</span><span style="font-family: monospace !important;">let (new_c1, carry1) = c1.overflowing_add(new_th);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">324</span><span style="font-family: monospace !important;">let new_c2 = c2 + (carry1 as u64);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">325</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">326</span><span style="font-family: monospace !important;">(new_c0, new_c1, new_c2)</span></span></code></pre>
 
 Similarly in:
 - `crypto/src/secp256k1/scalars/scalar64.rs`
@@ -807,20 +751,18 @@ Similarly in:
 
 The `sub_mod_with_carry` function relies on the precondition _a < 2·P_, but this bound is not enforced. If the invariant is violated, the result is not guaranteed to lie in _[0, P)_.
 
-```rust filepath line=142 highlight=[1]
-crypto/src/bigint_delegation/u256.rs
-/// Note: we assume `self < 2*modulus`, otherwise the result might not be in the range
-/// # Safety
-/// `DelegationModParams` should only provide references to mutable statics.
-/// It is the responsibility of the caller to make sure that is the case
-pub unsafe fn sub_mod_with_carry<T: DelegatedModParams<4>>(a: &mut U256, carry: bool) {
-    let borrow = delegation::sub(a, T::modulus()) != 0;
-
-    if borrow && !carry {
-        delegation::add(a, T::modulus());
-    }
-}
-```
+<pre class="language-rust" data-attributes="filepath line=142 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/bigint_delegation/u256.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">142</span><span style="font-family: monospace !important;">/// Note: we assume `self &lt; 2*modulus`, otherwise the result might not be in the range</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">143</span><span style="font-family: monospace !important;">/// # Safety</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">144</span><span style="font-family: monospace !important;">/// `DelegationModParams` should only provide references to mutable statics.</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">145</span><span style="font-family: monospace !important;">/// It is the responsibility of the caller to make sure that is the case</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">146</span><span style="font-family: monospace !important;">pub unsafe fn sub_mod_with_carry&lt;T: DelegatedModParams&lt;4&gt;&gt;(a: &amp;mut U256, carry: bool) {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">147</span><span style="font-family: monospace !important;">    let borrow = delegation::sub(a, T::modulus()) != 0;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">148</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">149</span><span style="font-family: monospace !important;">    if borrow &amp;&amp; !carry {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">150</span><span style="font-family: monospace !important;">        delegation::add(a, T::modulus());</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">151</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">152</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 Same issue in `crypto/src/bigint_delegation/u512.rs`.
 
@@ -830,27 +772,25 @@ In the current version of the codebase, all callers respect the required bounds.
 
 Invoking the function `assert_unchecked` is immediate Undefined Behavior if the condition does not actually hold:
 
-```rust filepath context highlight=[10]
-crypto/src/blake2s/delegated_extended.rs
-fn finalize_impl
-unsafe {
-    // write zeroes
-    let start = self
-        .state
-        .input_buffer
-        .as_mut_ptr()
-        .cast::<u8>()
-        .add(self.buffer_filled_bytes);
-    let end = self.state.input_buffer.as_mut_ptr_range().end.cast::<u8>();
-    core::hint::assert_unchecked(start <= end);
-    core::ptr::write_bytes(start, 0, end.offset_from_unsigned(start));
-    // and run round function
-    self.state
-        .run_round_function_with_byte_len::<false>(self.buffer_filled_bytes, true);
-
-    core::mem::transmute_copy::<_, [u8; 32]>(self.state.read_state_for_output_ref())
-}
-```
+<pre class="language-rust" data-attributes="filepath context highlight=[10]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/blake2s/delegated_extended.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">fn finalize_impl</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">unsafe {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">    // write zeroes</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    let start = self</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">        .state</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">        .input_buffer</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">        .as_mut_ptr()</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">        .cast::&lt;u8&gt;()</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">        .add(self.buffer_filled_bytes);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">    let end = self.state.input_buffer.as_mut_ptr_range().end.cast::&lt;u8&gt;();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">    core::hint::assert_unchecked(start &lt;= end);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">    core::ptr::write_bytes(start, 0, end.offset_from_unsigned(start));</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">    // and run round function</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">14</span><span style="font-family: monospace !important;">    self.state</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">15</span><span style="font-family: monospace !important;">        .run_round_function_with_byte_len::&lt;false&gt;(self.buffer_filled_bytes, true);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">16</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">17</span><span style="font-family: monospace !important;">    core::mem::transmute_copy::&lt;_, [u8; 32]&gt;(self.state.read_state_for_output_ref())</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">18</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 If `start <= end` is not guaranteed to hold and this can be influenced by user input, then `assert_unchecked` must be removed.
 
@@ -862,38 +802,34 @@ Deterministic panic if curve configuration constants and precomputation logic di
 
 In BLS12-381:
 
-```rust filepath context line=120 highlight=[3,5]
-crypto/src/bls12_381/curves/pairing_impl.rs
-fn multi_miller_loop
-for i in BitIteratorBE::without_leading_zeros(Config::X).skip(1) {
-    f.square_in_place();
-    Self::ell(&mut f, &ell_coeffs.next().unwrap(), &p.0);
-    if i {
-        Self::ell(&mut f, &ell_coeffs.next().unwrap(), &p.0);
-    }
-}
-```
+<pre class="language-rust" data-attributes="filepath context line=120 highlight=[3,5]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/bls12_381/curves/pairing_impl.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">120</span><span style="font-family: monospace !important;">fn multi_miller_loop</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">121</span><span style="font-family: monospace !important;">for i in BitIteratorBE::without_leading_zeros(Config::X).skip(1) {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">122</span><span style="font-family: monospace !important;">    f.square_in_place();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">123</span><span style="font-family: monospace !important;">    Self::ell(&amp;mut f, &amp;ell_coeffs.next().unwrap(), &amp;p.0);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">124</span><span style="font-family: monospace !important;">    if i {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">125</span><span style="font-family: monospace !important;">        Self::ell(&amp;mut f, &amp;ell_coeffs.next().unwrap(), &amp;p.0);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">126</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">127</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 In BN254:
 
-```rust filepath context line=115 highlight=[8,12]
-crypto/src/bn254/curves/pairing_impl.rs
-fn multi_miller_loop
-let mut ell_coeffs = q.ell_coeffs.iter();
-
-for i in (1..Config::ATE_LOOP_COUNT.len()).rev() {
-    if i != Config::ATE_LOOP_COUNT.len() - 1 {
-        f.square_in_place();
-    }
-
-    Self::ell(&mut f, ell_coeffs.next().unwrap(), &p.0);
-
-    let bit = Config::ATE_LOOP_COUNT[i - 1];
-    if bit == 1 || bit == -1 {
-        Self::ell(&mut f, &ell_coeffs.next().unwrap(), &p.0);
-    }
-}
-```
+<pre class="language-rust" data-attributes="filepath context line=115 highlight=[8,12]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/bn254/curves/pairing_impl.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">115</span><span style="font-family: monospace !important;">fn multi_miller_loop</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">116</span><span style="font-family: monospace !important;">let mut ell_coeffs = q.ell_coeffs.iter();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">117</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">118</span><span style="font-family: monospace !important;">for i in (1..Config::ATE_LOOP_COUNT.len()).rev() {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">119</span><span style="font-family: monospace !important;">    if i != Config::ATE_LOOP_COUNT.len() - 1 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">120</span><span style="font-family: monospace !important;">        f.square_in_place();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">121</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">122</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">123</span><span style="font-family: monospace !important;">    Self::ell(&amp;mut f, ell_coeffs.next().unwrap(), &amp;p.0);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">124</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">125</span><span style="font-family: monospace !important;">    let bit = Config::ATE_LOOP_COUNT[i - 1];</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">126</span><span style="font-family: monospace !important;">    if bit == 1 || bit == -1 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">127</span><span style="font-family: monospace !important;">        Self::ell(&amp;mut f, &amp;ell_coeffs.next().unwrap(), &amp;p.0);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">128</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">129</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 Validate `ell_coeffs.len()` against `EXPECTED_ELL_COEFFS` using a debug assertion. This would improve diagnosticability.
 
@@ -909,29 +845,25 @@ Validate `ell_coeffs.len()` against `EXPECTED_ELL_COEFFS` using a debug assertio
 
 The library is designed using global static variables that must be initialized before calling the functions defined by the library:
 
-```rust filepath context line=82
-crypto/src/lib.rs
-pub fn init_lib
-bn254::fields::init();
-bls12_381::fields::init();
-secp256k1::init();
-bigint_delegation::init();
-secp256r1::init();
-```
+<pre class="language-rust" data-attributes="filepath context line=82"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/lib.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">82</span><span style="font-family: monospace !important;">pub fn init_lib</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">83</span><span style="font-family: monospace !important;">bn254::fields::init();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">84</span><span style="font-family: monospace !important;">bls12_381::fields::init();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">85</span><span style="font-family: monospace !important;">secp256k1::init();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">86</span><span style="font-family: monospace !important;">bigint_delegation::init();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">87</span><span style="font-family: monospace !important;">secp256r1::init();</span></span></code></pre>
 
 
 
 The crates themselves contain multiple global static variables:
-```rust filepath line=7
-crypto/src/bigint_delegation/u256.rs
-static mut COPY_PLACE_0: MaybeUninit<U256> = MaybeUninit::uninit();
-static mut COPY_PLACE_1: MaybeUninit<U256> = MaybeUninit::uninit();
-static mut COPY_PLACE_2: MaybeUninit<U256> = MaybeUninit::uninit();
-static mut COPY_PLACE_3: MaybeUninit<U256> = MaybeUninit::uninit();
-static mut ONE: MaybeUninit<U256> = MaybeUninit::uninit();
-static mut ZERO: MaybeUninit<U256> = MaybeUninit::uninit();
-static mut SCRATCH: MaybeUninit<U256> = MaybeUninit::uninit();
-```
+<pre class="language-rust" data-attributes="filepath line=7"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/bigint_delegation/u256.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">static mut COPY_PLACE_0: MaybeUninit&lt;U256&gt; = MaybeUninit::uninit();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">static mut COPY_PLACE_1: MaybeUninit&lt;U256&gt; = MaybeUninit::uninit();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">static mut COPY_PLACE_2: MaybeUninit&lt;U256&gt; = MaybeUninit::uninit();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">static mut COPY_PLACE_3: MaybeUninit&lt;U256&gt; = MaybeUninit::uninit();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">static mut ONE: MaybeUninit&lt;U256&gt; = MaybeUninit::uninit();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">static mut ZERO: MaybeUninit&lt;U256&gt; = MaybeUninit::uninit();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">static mut SCRATCH: MaybeUninit&lt;U256&gt; = MaybeUninit::uninit();</span></span></code></pre>
 
 Such declarations have been identified in modules `secp256k1`, `secp256r1`, `bigint_delegation`, `bls12_381` and `bn254`.
 
@@ -969,17 +901,15 @@ This observation is relevant for both `secp256k1` and `secp256r1` modules. See t
 
 The argument-dependent timing of the `mul_shift_384_vartime` function comes from the conditional branch at the end. The variable `l` is derived from the parameter `b`. The `if` statement decides whether to execute `self.add_in_place(&Self::ONE)`based on that bit. This creates data-dependent control flow: one path does the addition, the other does not.
 
-```rust filepath line=149 highlight=[6]
-src/secp256k1/scalars/scalar64.rs
-pub(super) fn mul_shift_384_vartime(&mut self, b: &Self)
-let words = b.0.as_words();
-let l = words[1];
-self.0 = U256::from_words([words[2], words[3], 0, 0]);
-
-if (l >> 63) & 1 != 0 {
-    self.add_in_place(&Self::ONE);
-}
-```
+<pre class="language-rust" data-attributes="filepath line=149 highlight=[6]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">src/secp256k1/scalars/scalar64.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">149</span><span style="font-family: monospace !important;">pub(super) fn mul_shift_384_vartime(&amp;mut self, b: &amp;Self)</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">150</span><span style="font-family: monospace !important;">let words = b.0.as_words();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">151</span><span style="font-family: monospace !important;">let l = words[1];</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">152</span><span style="font-family: monospace !important;">self.0 = U256::from_words([words[2], words[3], 0, 0]);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">153</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">154</span><span style="font-family: monospace !important;">if (l &gt;&gt; 63) &amp; 1 != 0 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">155</span><span style="font-family: monospace !important;">    self.add_in_place(&amp;Self::ONE);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">156</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 The function is used in the `decompose` function, which implements the scalar decomposition operation, which in its turn affects the scalar multiplication operation.
 
@@ -989,18 +919,16 @@ The function is used in the `decompose` function, which implements the scalar de
 
 Scalar inversion, implemented by the `invert_assign` function, uses the function `pow_vartime` which performs variable-time exponentiation, creating potential timing side-channels:
 
-```rust filepath context line=86 highlight=[5]
-src/secp256r1/scalar/mod.rs
-pub fn pow_vartime(&self, exp: &[u64])
-while j > 0 {
-    j -= 1;
-    res.square_assign();
-
-    if ((exp[i] >> j) & 1) == 1 {
-        res.mul_assign(self);
-    }
-}
-```
+<pre class="language-rust" data-attributes="filepath context line=86 highlight=[5]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">src/secp256r1/scalar/mod.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">86</span><span style="font-family: monospace !important;">pub fn pow_vartime(&amp;self, exp: &amp;[u64])</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">87</span><span style="font-family: monospace !important;">while j &gt; 0 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">88</span><span style="font-family: monospace !important;">    j -= 1;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">89</span><span style="font-family: monospace !important;">    res.square_assign();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">90</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">91</span><span style="font-family: monospace !important;">    if ((exp[i] &gt;&gt; j) &amp; 1) == 1 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">92</span><span style="font-family: monospace !important;">        res.mul_assign(self);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">93</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">94</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 Timing variability affects the functions relying on scalar inversion:
 - `invert_assign` calls `pow_vartime` in `src/secp256r1/scalar/mod.rs:68`
@@ -1018,15 +946,13 @@ Timing variability affects the functions relying on scalar inversion:
 
 In module `secp256k1`, the function `normalize_in_place` is defined, conditioning on values of the `normalized` flag and `magnitude` tracker:
 
-```rust filepath context line=129
-crypto/src/secp256k1/field/field_impl.rs
-pub(super) fn normalize_in_place
-if !self.normalized || self.magnitude > 1 {
-    self.value.normalize_in_place();
-    self.magnitude = 1;
-    self.normalized = true;
-}
-```
+<pre class="language-rust" data-attributes="filepath context line=129"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256k1/field/field_impl.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">129</span><span style="font-family: monospace !important;">pub(super) fn normalize_in_place</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">130</span><span style="font-family: monospace !important;">if !self.normalized || self.magnitude &gt; 1 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">131</span><span style="font-family: monospace !important;">    self.value.normalize_in_place();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">132</span><span style="font-family: monospace !important;">    self.magnitude = 1;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">133</span><span style="font-family: monospace !important;">    self.normalized = true;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">134</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 However, this condition has a minor logical flaw — it assumes that it is potentially possible that `self.normalized` is true but `self.magnitude` is not `1`. When a value is normalized, its magnitude must always be `1`.
 
@@ -1034,17 +960,15 @@ However, this condition has a minor logical flaw — it assumes that it is poten
 
 Replace this code with:
 
-```rust
-if self.normalized {
-    debug_assert!(self.magnitude == 1);
-} else {
-    debug_assert!(self.magnitude > 1);
-
-    self.value.normalize_in_place();
-    self.magnitude = 1;
-    self.normalized = true;
-}
-```
+<pre class="language-rust"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">if self.normalized {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">    debug_assert!(self.magnitude == 1);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">} else {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">    debug_assert!(self.magnitude &gt; 1);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">    self.value.normalize_in_place();</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">    self.magnitude = 1;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">    self.normalized = true;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 <div id="issue-12-unit_tests" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">12. Unit tests issues</h2>
@@ -1065,9 +989,7 @@ Examples of such test cases:
 - `fibish_sol`
 
 After inspecting the project’s CI workflows, we have discovered that the script `dump_bin.sh` should be executed with `--type for-tests` flag now, in order to include new test cases into the coverage:
-```sh
-./dump_bin.sh --type for-tests
-```
+<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">./dump_bin.sh --type for-tests</span></span></code></pre>
 
 ### Some of the unit tests are not executed during CI
 
@@ -1076,35 +998,29 @@ The following modules are not executed during regular CI runs:
 - `secp256k1::scalars::scalar32_delegation`
 
 Additional workflow should be created that runs the test suite in single-threaded mode, filtering only those modules that require this:
-```sh
-cargo test --release -p crypto secp256k1::field::field_8x32 -- --test-threads=1 --ignored
-cargo test --release -p crypto secp256k1::scalars::scalar32_delegation -- --test-threads=1 --ignored
-```
+<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">cargo test --release -p crypto secp256k1::field::field_8x32 -- --test-threads=1 --ignored</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">cargo test --release -p crypto secp256k1::scalars::scalar32_delegation -- --test-threads=1 --ignored</span></span></code></pre>
 
 
 
 ### Some of the unit tests require larger stack
 
 The test case `secp256k1::field::field_8x32::tests::test_invert` overflows the stack of standard size (8MB):
-```sh
-$ cargo test -p crypto secp256k1::field::field_8x32::tests::test_invert -- --test-threads=1 --ignored
-...
-test secp256k1::field::field_8x32::tests::test_invert ... 
-thread '<unknown>' has overflowed its stack
-fatal runtime error: stack overflow, aborting
-```
+<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">$ cargo test -p crypto secp256k1::field::field_8x32::tests::test_invert -- --test-threads=1 --ignored</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">...</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">test secp256k1::field::field_8x32::tests::test_invert ... </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">thread '&lt;unknown&gt;' has overflowed its stack</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">fatal runtime error: stack overflow, aborting</span></span></code></pre>
 
 It does succeed in case of bigger stack:
-```sh
-$ RUST_MIN_STACK=33554432 cargo test -p crypto secp256k1::field::field_8x32::tests::test_invert -- --test-threads=1 --ignored
-...
-running 1 test
-test secp256k1::field::field_8x32::tests::test_invert ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 110 filtered out; finished in 0.57s
-
-     Running tests/secp256k1.rs
-```
+<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;">$ RUST_MIN_STACK=33554432 cargo test -p crypto secp256k1::field::field_8x32::tests::test_invert -- --test-threads=1 --ignored</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">...</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;">running 1 test</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;">test secp256k1::field::field_8x32::tests::test_invert ... ok</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;">test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 110 filtered out; finished in 0.57s</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">     Running tests/secp256k1.rs</span></span></code></pre>
 
 ### Insufficient Test Coverage in `callable_oracles` Crate
 
@@ -1134,15 +1050,13 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 110 filtered out; fi
 
 In the `secp256k1` module, the function `add_int_in_place` overestimates the magnitude increase of a field element:
 
-```rust filepath context line=114 highlight=[1]
-src/secp256k1/field/field_impl.rs
-pub(super) fn add_int_in_place(&mut self, rhs: u32)
-self.magnitude += rhs;
-debug_assert!(self.magnitude <= Self::max_magnitude());
-
-self.value.add_int_in_place(rhs);
-self.normalized = false;
-```
+<pre class="language-rust" data-attributes="filepath context line=114 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">src/secp256k1/field/field_impl.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">114</span><span style="font-family: monospace !important;">pub(super) fn add_int_in_place(&amp;mut self, rhs: u32)</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">115</span><span style="font-family: monospace !important;">self.magnitude += rhs;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">116</span><span style="font-family: monospace !important;">debug_assert!(self.magnitude &lt;= Self::max_magnitude());</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">117</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">118</span><span style="font-family: monospace !important;">self.value.add_int_in_place(rhs);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">119</span><span style="font-family: monospace !important;">self.normalized = false;</span></span></code></pre>
 
 Here, the field element is incremented by a small scalar `rhs`. However, the correct magnitude increment should be `ceil(rhs / radix)`, where the radix depends on the limb representation: 2^52 for the 5x52 backend, 2^26 for 10x26 backend, etc.
 
@@ -1172,32 +1086,24 @@ Instances of magic numbers have been discovered in the following locations.
 
 Hard-coded literal `8` is used as the limit for magnitudes.
 
-```rust line=69 highlight=[2,3]
-pub(super) fn mul_in_place(&mut self, rhs: &Self) {
-    debug_assert!(self.magnitude <= 8);
-    debug_assert!(rhs.magnitude <= 8);
+<pre class="language-rust" data-attributes="line=69 highlight=[2,3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">69</span><span style="font-family: monospace !important;">pub(super) fn mul_in_place(&amp;mut self, rhs: &amp;Self) {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">70</span><span style="font-family: monospace !important;">    debug_assert!(self.magnitude &lt;= 8);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">71</span><span style="font-family: monospace !important;">    debug_assert!(rhs.magnitude &lt;= 8);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">72</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">73</span><span style="font-family: monospace !important;">    self.value.mul_in_place(&amp;rhs.value);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">74</span><span style="font-family: monospace !important;">    self.magnitude = 1;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">75</span><span style="font-family: monospace !important;">    self.normalized = false;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">76</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
-    self.value.mul_in_place(&rhs.value);
-    self.magnitude = 1;
-    self.normalized = false;
-}
-```
+<pre class="language-rust" data-attributes="line=86 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">86</span><span style="font-family: monospace !important;">pub(super) fn square_in_place(&amp;mut self) {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">87</span><span style="font-family: monospace !important;">    debug_assert!(self.magnitude &lt;= 8);</span></span></code></pre>
 
-```rust line=86 highlight=[2]
-pub(super) fn square_in_place(&mut self) {
-    debug_assert!(self.magnitude <= 8);
-```
+<pre class="language-rust" data-attributes="line=150 highlight=[2,3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">150</span><span style="font-family: monospace !important;">pub(super) const fn mul(&amp;self, rhs: &amp;Self) -&gt; Self {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">151</span><span style="font-family: monospace !important;">    debug_assert!(self.magnitude &lt;= 8);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">152</span><span style="font-family: monospace !important;">    debug_assert!(rhs.magnitude &lt;= 8);</span></span></code></pre>
 
-```rust line=150 highlight=[2,3]
-pub(super) const fn mul(&self, rhs: &Self) -> Self {
-    debug_assert!(self.magnitude <= 8);
-    debug_assert!(rhs.magnitude <= 8);
-```
-
-```rust line=166 highlight=[2]
-pub(super) const fn square(&self) -> Self {
-    debug_assert!(self.magnitude <= 8);
-```
+<pre class="language-rust" data-attributes="line=166 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">166</span><span style="font-family: monospace !important;">pub(super) const fn square(&amp;self) -&gt; Self {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">167</span><span style="font-family: monospace !important;">    debug_assert!(self.magnitude &lt;= 8);</span></span></code></pre>
 
 
 
@@ -1205,18 +1111,16 @@ pub(super) const fn square(&self) -> Self {
 
 Hard-coded literal `32` is used as the limit for magnitudes, but also it is redundant code since `Self::X_MAGNITUDE_MAX` and `Self::Y_MAGNITUDE_MAX` are defined as a lesser number `4`.
 
-```rust filepath line=41 highlight=[5,7]
-crypto/src/secp256k1/points/affine.rs
-pub(crate) const fn assert_verify(&self) {
-    #[cfg(all(debug_assertions, not(feature = "bigint_ops")))]
-    {
-        debug_assert!(self.x.0.magnitude <= Self::X_MAGNITUDE_MAX);
-        debug_assert!(self.x.0.magnitude <= 32);
-        debug_assert!(self.y.0.magnitude <= Self::Y_MAGNITUDE_MAX);
-        debug_assert!(self.y.0.magnitude <= 32);
-    }
-}
-```
+<pre class="language-rust" data-attributes="filepath line=41 highlight=[5,7]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256k1/points/affine.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">41</span><span style="font-family: monospace !important;">pub(crate) const fn assert_verify(&amp;self) {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">42</span><span style="font-family: monospace !important;">    #[cfg(all(debug_assertions, not(feature = "bigint_ops")))]</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">43</span><span style="font-family: monospace !important;">    {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">44</span><span style="font-family: monospace !important;">        debug_assert!(self.x.0.magnitude &lt;= Self::X_MAGNITUDE_MAX);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">45</span><span style="font-family: monospace !important;">        debug_assert!(self.x.0.magnitude &lt;= 32);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">46</span><span style="font-family: monospace !important;">        debug_assert!(self.y.0.magnitude &lt;= Self::Y_MAGNITUDE_MAX);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">47</span><span style="font-family: monospace !important;">        debug_assert!(self.y.0.magnitude &lt;= 32);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">48</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">49</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 Same code snippet is also implemented in lines 122-130 in the same file.
 
@@ -1224,20 +1128,18 @@ Same code snippet is also implemented in lines 122-130 in the same file.
 
 Similarly, same literal `32` is hard-coded and also has no effect because of stronger equations involving `X_MAGNITUDE_MAX`, `Y_MAGNITUDE_MAX` and `Z_MAGNITUDE_MAX`:
 
-```rust filepath line=28  highlight=[5,7,9]
-crypto/src/secp256k1/points/jacobian.rs
-pub(super) const fn assert_verify(&self) {
-    #[cfg(all(debug_assertions, not(feature = "bigint_ops")))]
-    {
-        debug_assert!(self.x.0.magnitude <= Self::X_MAGNITUDE_MAX);
-        debug_assert!(self.x.0.magnitude <= 32);
-        debug_assert!(self.y.0.magnitude <= Self::Y_MAGNITUDE_MAX);
-        debug_assert!(self.y.0.magnitude <= 32);
-        debug_assert!(self.z.0.magnitude <= Self::Z_MAGNITUDE_MAX);
-        debug_assert!(self.z.0.magnitude <= 32);
-    }
-}
-```
+<pre class="language-rust" data-attributes="filepath line=28 highlight=[5,7,9]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256k1/points/jacobian.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">28</span><span style="font-family: monospace !important;">pub(super) const fn assert_verify(&amp;self) {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">29</span><span style="font-family: monospace !important;">    #[cfg(all(debug_assertions, not(feature = "bigint_ops")))]</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">30</span><span style="font-family: monospace !important;">    {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">31</span><span style="font-family: monospace !important;">        debug_assert!(self.x.0.magnitude &lt;= Self::X_MAGNITUDE_MAX);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">32</span><span style="font-family: monospace !important;">        debug_assert!(self.x.0.magnitude &lt;= 32);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">33</span><span style="font-family: monospace !important;">        debug_assert!(self.y.0.magnitude &lt;= Self::Y_MAGNITUDE_MAX);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">34</span><span style="font-family: monospace !important;">        debug_assert!(self.y.0.magnitude &lt;= 32);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">35</span><span style="font-family: monospace !important;">        debug_assert!(self.z.0.magnitude &lt;= Self::Z_MAGNITUDE_MAX);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">36</span><span style="font-family: monospace !important;">        debug_assert!(self.z.0.magnitude &lt;= 32);</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">37</span><span style="font-family: monospace !important;">    }</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">38</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 Same code snippet is also implemented in lines 195-205 in the same file.
 
@@ -1293,25 +1195,21 @@ We recommend extracting common code into auxiliary functions in order to improve
 
 In the function `mul_assign`, the "schoolbook" algorithm is implemented. Right after iterating `j` up to `4`, the `if` splits execution depending on the value of `i + j`: 
 
-```rust filepath context line=101
-crypto/src/secp256r1/scalar/scalar64.rs
-pub(super) fn mul_assign
-while j < 4 {
-    let k = i + j;
+<pre class="language-rust" data-attributes="filepath context line=101"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">crypto/src/secp256r1/scalar/scalar64.rs</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">101</span><span style="font-family: monospace !important;">pub(super) fn mul_assign</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">102</span><span style="font-family: monospace !important;">while j &lt; 4 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">103</span><span style="font-family: monospace !important;">    let k = i + j;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">104</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">105</span><span style="font-family: monospace !important;">    ...</span></span></code></pre>
 
-    ...
-```
-
-```rust line=114
-    j += 1;
-}
-
-if i + j >= 4 {
-    hi[i + j - 4] = carry;
-} else {
-    lo[i + j] = carry;
-}
-```
+<pre class="language-rust" data-attributes="line=114"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">114</span><span style="font-family: monospace !important;">    j += 1;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">115</span><span style="font-family: monospace !important;">}</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">116</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">117</span><span style="font-family: monospace !important;">if i + j &gt;= 4 {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">118</span><span style="font-family: monospace !important;">    hi[i + j - 4] = carry;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">119</span><span style="font-family: monospace !important;">} else {</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">120</span><span style="font-family: monospace !important;">    lo[i + j] = carry;</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">121</span><span style="font-family: monospace !important;">}</span></span></code></pre>
 
 If `i + j < 4`, the `else` branch would execute. However, this condition is never satisfied because after the `while` loop, `j` is guaranteed to equal `4`, and `i` is always greater than or equal to zero.
 
@@ -1882,20 +1780,18 @@ Generated using the command `./fuzz.sh coverage`.
 The unit test suite has been executed with the `e2e_proving` feature disabled since enabling it caused the suite to crash (see the description of this issue in the main part of the report). To collect coverage data, `llvm-cov` has been used.
 
 Since the test suite of the `crypto` crate is built in "property testing" fashion, each new pass can result in slightly different coverage. This means that to compute realistic coverage, it is necessary to aggregate results from multiple runs. Multiple `llvm-cov` passes have been performed in parallel, on same machine used for fuzzing (48 cores). Each pass has been performed in single-threaded mode since some of the test cases require it:
-```sh
-# first, we ensure that all test code is compiled
-cargo llvm-cov -p crypto --no-report -- --list
-
-# bigger stack is needed for `field_8x32::tests::test_invert`
-export RUST_MIN_STACK=33554432
-
-seq 1 96 \
-| xargs -P48 -n1 sh -c '
-  cargo llvm-cov -p crypto --no-report -- --test-threads=1 --ignored || true
-'
-
-cargo llvm-cov report -p crypto --html
-```
+<pre class="language-sh"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1</span><span style="font-family: monospace !important;"># first, we ensure that all test code is compiled</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">2</span><span style="font-family: monospace !important;">cargo llvm-cov -p crypto --no-report -- --list</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">3</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">4</span><span style="font-family: monospace !important;"># bigger stack is needed for `field_8x32::tests::test_invert`</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">5</span><span style="font-family: monospace !important;">export RUST_MIN_STACK=33554432</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">6</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">7</span><span style="font-family: monospace !important;">seq 1 96 \</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">| xargs -P48 -n1 sh -c '</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">  cargo llvm-cov -p crypto --no-report -- --test-threads=1 --ignored || true</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">'</span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;"> </span></span>
+<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">cargo llvm-cov report -p crypto --html</span></span></code></pre>
 
 Following are the coverage statistics produced by the commands above.
 
