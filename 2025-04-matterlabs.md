@@ -40,9 +40,9 @@ The audit has been performed on the following target:
 
 ### High-level Scope of the Audit
 
-- **Bootloader** (crate `basic_bootloader`): Only the EOA account model is included in the scope. The modules related to account abstraction are not included in the detailed scope. This means that the `AA_ENABLED` configuration flag can be assumed to be always `false`. The audit includes the bootloader with both the compilation flag `evm-compatibility` enabled and disabled.
-- **System Hooks** (crate `system_hooks` and corresponding implementations): precompiles hooks and their underlying implementations in the `basic_system/src/system_functions` and the `crypto` directories.
-- **Basic system implementation and system interface** (crate `basic_system`): the focus is on the basic system implementation. To make sense of it, the system interface of some common structures are also included, which are defined in the `zk_ee` and the `storage_models` directories.
+- <strong>Bootloader</strong> (crate `basic_bootloader`): Only the EOA account model is included in the scope. The modules related to account abstraction are not included in the detailed scope. This means that the `AA_ENABLED` configuration flag can be assumed to be always `false`. The audit includes the bootloader with both the compilation flag `evm-compatibility` enabled and disabled.
+- <strong>System Hooks</strong> (crate `system_hooks` and corresponding implementations): precompiles hooks and their underlying implementations in the `basic_system/src/system_functions` and the `crypto` directories.
+- <strong>Basic system implementation and system interface</strong> (crate `basic_system`): the focus is on the basic system implementation. To make sense of it, the system interface of some common structures are also included, which are defined in the `zk_ee` and the `storage_models` directories.
 
 The concrete system implementations (`forward_system` and `proof_running_system`) are out of scope themselves, but both running environments and compilation targets should be considered.
 
@@ -229,14 +229,40 @@ supporting_crates
 
 # Summary of the Audit
 
-| Component                  | Status                            |
-| -------------------------- | --------------------------------- |
-| `basic_bootloader`         | Reviewed by both auditors         |
-| `basic_system`             | Time-boxed review by Kirill Taran |
-| `supporting_crates/modexp` | Reviewed by Tarek Elsayed         |
-| `zk_ee`                    | Partially reviewed                |
-| `system_hooks`             | Partially reviewed                |
-| Fuzzing and unit tests     | Executed                          |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Component</th>
+  <th style="border: 1px solid white; padding: 8px;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`basic_bootloader`</td>
+  <td style="border: 1px solid white; padding: 8px;">Reviewed by both auditors</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`basic_system`</td>
+  <td style="border: 1px solid white; padding: 8px;">Time-boxed review by Kirill Taran</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`supporting_crates/modexp`</td>
+  <td style="border: 1px solid white; padding: 8px;">Reviewed by Tarek Elsayed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`zk_ee`</td>
+  <td style="border: 1px solid white; padding: 8px;">Partially reviewed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">`system_hooks`</td>
+  <td style="border: 1px solid white; padding: 8px;">Partially reviewed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">Fuzzing and unit tests</td>
+  <td style="border: 1px solid white; padding: 8px;">Executed</td>
+</tr>
+</tbody>
+</table>
 
 ## Review Limitations
 
@@ -257,7 +283,165 @@ The changes made in this fork are safe in isolation. They do not introduce any d
 
 The corresponding fuzz test has been executed and has not revealed any issues.
 
-# Positive-value transfers to the kernel space are not rejected
+<h1 id="summary-of-issues">Summary of Issues</h1>
+
+<table style="border-collapse: collapse; border: 1px solid white; width: 100%;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px; text-align: left;">Title</th>
+  <th style="border: 1px solid white; padding: 8px; text-align: left;">Severity</th>
+  <th style="border: 1px solid white; padding: 8px; text-align: left;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-1-2-maj2" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">1. Positive-value transfers to the kernel space are not rejected</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #f97316;">High</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-2-2-maj1" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">2. Sender is charged for positive-value self-transfers via CALLCODE</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #f97316;">High</td>
+  <td style="border: 1px solid white; padding: 8px; color: #ef4444;">Invalid</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-3-2-min3" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">3. Unimplemented functionality</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Medium</td>
+  <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-4-2-min1" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">4. Incorrect pubdata size calculation</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Medium</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-5-2-inf1" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">5. AccountProperties difference can be encoded using one byte less</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-6-2-crit1" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">6. Incorrect implementation of `UsizeSerializable` for `BasicBlockMetadataFromOracle`</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-7-2-inf3" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">7. Insufficient overflow protection</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-8-1-inf2" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">8. Missing validations</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-9-2-inf2" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">9. Potential for optimization</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-10-1-min1" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">10. Using EOA account model as a fallback for smart contracts</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #ef4444;">Invalid</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-11-2-min2" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">11. Inconsistent flushing of the caches</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-12-1-inf1" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">12. Inaccuracy in fees calculation</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #84cc16;">Low</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-13-2-qa5" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">13. Code duplication</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-14-1-fuzz" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">14. Crashes in fuzzing test suite</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-15-2-qa1" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">15. Equalities with boolean constants</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-16-2-qa3" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">16. Error handling issues</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #00acc1;">Addressed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-17-2-qa8" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">17. Large function definitions</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #10b981;">Fixed</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-18-2-qa7" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">18. Magic numbers</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-19-1-qa1" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">19. Misleading names and messages</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-20-1-qa9" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">20. Outstanding TODO comments</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-21-1-qa6" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">21. Redundant parameters</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-22-1-qa2" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">22. Some conditions for branching are always `true`</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-23-2-qa2" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">23. Suboptimal types</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-24-1-qa11" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">24. Unit test suite fails in `e2e_proving` mode</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-25-2-qa6" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">25. Unused code</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-26-1-inf3" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">26. Unused error messages</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;"><a href="#issue-27-1-qa3" style="color: white; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">27. Variable can be declared in a more specific scope</a></td>
+  <td style="border: 1px solid white; padding: 8px; color: #22c55e;">QA</td>
+  <td style="border: 1px solid white; padding: 8px; color: #fbc02d;">Notified</td>
+</tr>
+</tbody>
+</table>
+
+
+<div id="issue-1-2-maj2" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">1. Positive-value transfers to the kernel space are not rejected</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 ```rust filepath line=555 highlight=[6]
 basic_bootloader/src/bootloader/runner.rs
@@ -315,7 +499,15 @@ Additionally, the condition to fail the call and return `CallResult::Failed` is 
 
 The conjunction of the two conditions is equivalent to `call_values.nominal_token_value != U256::ZERO && callee != BOOTLOADER_FORMAL_ADDRESS && cfg!(feature = "transfers_to_kernel_space")`, which contradicts the intention behind the function.
 
-# Sender is charged for positive-value self-transfers via CALLCODE
+<div id="issue-2-2-maj1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">2. Sender is charged for positive-value self-transfers via CALLCODE</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #f97316; border-radius: 4px; padding: 4px 8px; color: #f97316;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #ef4444; border-radius: 4px; padding: 4px 8px; color: #ef4444;">Invalid</span></span>
+  </div>
+</div>
 
 ```rust filepath line=523
 basic_system/src/system_implementation/system/mod.rs
@@ -330,7 +522,15 @@ resources
 
 The opcode `CALLCODE` is allowed to have non-zero `value` parameter, even in static context. However, this is not considered to be a state change since the transfer is to the sender itself. This edge case is not handled by the function `prepare_for_call` currently.
 
-# Unimplemented functionality
+<div id="issue-3-2-min3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">3. Unimplemented functionality</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
+  </div>
+</div>
 
 ```rust filepath context line=233 highlight=[1]
 zk_ee/src/system/system_trait/system.rs
@@ -360,7 +560,15 @@ fn emit_l1_message(
 
 Sending L1 messages does not incur charges for the computation spent.
 
-# Incorrect pubdata size calculation
+<div id="issue-4-2-min1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">4. Incorrect pubdata size calculation</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">High</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 ```rust filepath line=306
 basic_system/src/system_implementation/io/account_cache_entry.rs
@@ -371,7 +579,15 @@ In the function `get_encoded_size`, called by the function `net_pubdata_used`, t
 
 As a consequence, the transaction sender is charged a little bit less than necessary. This is a minor DoS vector.
 
-# AccountProperties difference can be encoded using one byte less
+<div id="issue-5-2-inf1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">5. AccountProperties difference can be encoded using one byte less</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath highlight=[5] line=308
 basic_system/src/system_implementation/io/account_cache_entry.rs
@@ -390,7 +606,15 @@ It is possible to encode the `AddressDataDiff::Partial` using only one extra byt
 - Both nonce and balance have been increased
 - Nonce has been increased, and balance has been decreased
 
-# Incorrect implementation of `UsizeSerializable` for `BasicBlockMetadataFromOracle`
+<div id="issue-6-2-crit1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">6. Incorrect implementation of `UsizeSerializable` for `BasicBlockMetadataFromOracle`</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 ```rust filepath line=111 highlight=[2, 14,16, 28]
 basic_system/src/system_implementation/system/basic_metadata.rs
@@ -433,7 +657,15 @@ The value of `USIZE_LEN` currently accounts for 1 value of type `B160`, 4 values
 
 There is currently no consequence of this oversight, since the constant `USIZE_LEN` is not utilized in the current version of the codebase. However, it can become used in a future versions.
 
-# Insufficient overflow protection
+<div id="issue-7-2-inf3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">7. Insufficient overflow protection</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
+  </div>
+</div>
 
 Feasibility of these attacks is restricted only by the gas costs. Consider enforcing explicit limits on the amount of events, messages and preimage references that a single transaction can generate in case of non-EVM execution environments.
 
@@ -459,7 +691,15 @@ pub fn mark_use(&mut self) {
 
 Although it is practically very difficult to perform an attack that submits a thousand transactions, where millions of duplicate accounts with different addresses are accessed, theoretically this could be possible in future with non-EVM execution environments. The variable `num_uses` is declared as `usize`, i.e. its maximum value on 32-bit architecture is `4,294,967,295`.
 
-# Missing validations
+<div id="issue-8-1-inf2" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">8. Missing validations</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 Within the file `basic_bootloader/src/bootloader/transaction/mod.rs`, condition `reserved[1].read().is_zero()` is checked numerous times. But the address is never compared to the constant `SPECIAL_ADDRESS_TO_WASM_DEPLOY`, which is almost unused. Only deployment to EVM is supported right now. Defining an auxiliary function that not only performs the additional validation, but also allows handling different EE types, would ease upgrading later.
 
@@ -487,7 +727,15 @@ let result = match reverted {
 
 As expected, `reverted` is always `true` for `RevertedNoAddress`. However, it would be better to assert that it doesn't leak into the `Success` branch.
 
-# Potential for optimization
+<div id="issue-9-2-inf2" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">9. Potential for optimization</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
+  </div>
+</div>
 
 ```rust filepath line=585
 basic_bootloader/src/bootloader/process_transaction.rs
@@ -537,7 +785,15 @@ The optimized code could simply filter only one type of `Appearance` and multipl
     .sum();
 ```
 
-# Using EOA account model as a fallback for smart contracts
+<div id="issue-10-1-min1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">10. Using EOA account model as a fallback for smart contracts</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #ef4444; border-radius: 4px; padding: 4px 8px; color: #ef4444;">Invalid</span></span>
+  </div>
+</div>
 
 ```rust filepath line=34
 basic_bootloader/src/bootloader/account_models/abstract_account.rs
@@ -552,7 +808,15 @@ It would be safer to support such a scenario by immediately rejecting transactio
 
 This issue is reported with Low severity since only the node operator can cause it.
 
-# Inconsistent flushing of the caches
+<div id="issue-11-2-min2" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">11. Inconsistent flushing of the caches</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Medium</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath context line=256
 basic_bootloader/src/bootloader/mod.rs
@@ -593,13 +857,29 @@ pub fn begin_new_tx(&mut self) {
 
 Similarly, `GenericPubdataAwarePlainStorage` implements flushing the cache in `begin_new_tx`. In contrast to the `NewModelAccountCache` it does not implement the function `finish_tx`.
 
-# Inaccuracy in fees calculation
+<div id="issue-12-1-inf1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">12. Inaccuracy in fees calculation</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #84cc16; border-radius: 4px; padding: 4px 8px; color: #84cc16;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 In `basic_bootloader/src/bootloader/account_models/eoa.rs:355`, the value `transaction.max_fee_per_gas` is used to compute the charged amount. However, the gas price is calculated more precisely in the paymaster flow as `core::cmp::min(max_priority_fee_per_gas, max_fee_per_gas - base_fee)`, see the functions `ensure_payment` and `get_gas_price`.
 
 The impact is not significant since the excess is refunded later, but if both flows are intended to follow the same logic, consider extracting the common code into a function.
 
-# Code duplication
+<div id="issue-13-2-qa5" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">13. Code duplication</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 These two code snippets are equivalent with variable names as the only exception:
 
@@ -677,7 +957,15 @@ ergs: VALUE_TO_EMPTY_ACCOUNT_COST * ERGS_PER_GAS,
 
 The constant `VALUE_TO_EMPTY_ACCOUNT_COST` is a duplicate of `NEWACCOUNT`. Both are defined in the file `evm_interpreter/src/gas_constants.rs` (out of scope) as `25_000`.
 
-# Crashes in fuzzing test suite
+<div id="issue-14-1-fuzz" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">14. Crashes in fuzzing test suite</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 Fuzzing has been performed for all targets, with 32 parallel jobs on a machine with 48 CPU cores. Each fuzzing session was configured with a timeout of 12 hours (43,200 seconds) per target:
 
@@ -750,7 +1038,15 @@ error[E0599]: no method named `eip1559_tx_calculate_signed_hash` found for struc
 ⚠️ Failed to generate coverage data
 ```
 
-# Equalities with boolean constants
+<div id="issue-15-2-qa1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">15. Equalities with boolean constants</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath line=74
 basic_system/src/system_implementation/system/io_subsystem.rs
@@ -771,7 +1067,15 @@ Examples:
 - `assert!(!self.storage.storage_cache.has_frames_opened());`
 - `if !is_warm`
 
-# Error handling issues
+<div id="issue-16-2-qa3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">16. Error handling issues</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #00acc1; border-radius: 4px; padding: 4px 8px; color: #00acc1;">Addressed</span></span>
+  </div>
+</div>
 
 ```rust filepath line=504
 basic_system/src/system_implementation/system/mod.rs
@@ -822,7 +1126,15 @@ zk_ee/src/common_structs/messages_storage.rs
 
 Throughout the codebase, there are many `unwrap()` calls and assertions instead of typed errors. Panics hinder issues investigation when they happen in production.
 
-# Large function definitions
+<div id="issue-17-2-qa8" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">17. Large function definitions</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; color: #10b981;">Fixed</span></span>
+  </div>
+</div>
 
 ```rust filepath line=111
 basic_system/src/system_implementation/io/account_cache.rs
@@ -855,7 +1167,15 @@ Additionally, the condition to fail the call and return CallResult::Failed is in
 
 The conjunction of the two conditions is equivalent to `call_values.nominal_token_value != U256::ZERO && callee != BOOTLOADER_FORMAL_ADDRESS && cfg!(feature = "transfers_to_kernel_space")`, which contradicts the intention behind the function.
 
-# Magic numbers
+<div id="issue-18-2-qa7" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">18. Magic numbers</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath line=306
 basic_system/src/system_implementation/io/account_cache_entry.rs
@@ -902,7 +1222,15 @@ Some(Bytes32::from_u256_be(U256::from_limbs([
 
 This 32‑byte value is the well‐known “empty code hash” and should be declared as a named constant.
 
-# Misleading names and messages
+<div id="issue-19-1-qa1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">19. Misleading names and messages</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath line=21
 basic_system/src/system_implementation/io/account_cache_entry.rs
@@ -1065,7 +1393,15 @@ The type `InternalError` is intended to be used only with errors that must never
 
 While these errors are not user-facing, and the error code is exactly enough to locate the place in the codebase, readable error messages would still be valuable for quicker understanding of the codebase by new developers. Ideally, error messages should be informative enough to understand why the program has crashed without reviewing related code.
 
-# Outstanding TODO comments
+<div id="issue-20-1-qa9" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">20. Outstanding TODO comments</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 The codebase contains numerous TODO comments. This approach to documenting issues and outstanding work has a few disadvantages:
 
@@ -1085,7 +1421,15 @@ Here is the non-exhaustive list of files containing TODO comments:
 
 Some of such comments represent significant features and should be tracked in a dedicated software.
 
-# Redundant parameters
+<div id="issue-21-1-qa6" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">21. Redundant parameters</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath
 basic_bootloader/src/bootloader/runner.rs
@@ -1129,7 +1473,15 @@ if caller_is_code {
 
 The parameter `caller_is_code` can have the only value `false` since the `Contract` and `EOA` account models are correctly routed from the abstract type. This also means that `Err(InvalidTransaction::RejectCallerWithCode.into())` is never actually thrown.
 
-# Some conditions for branching are always `true`
+<div id="issue-22-1-qa2" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">22. Some conditions for branching are always `true`</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath context line=62
 basic_bootloader/src/bootloader/runner.rs
@@ -1162,7 +1514,15 @@ Err(SystemError::OutOfResources) => fail_deployment(callstack, system, true),
 
 The value of the parameter `finish_callee_frame` is explicitly `true` in the current version of the codebase.
 
-# Suboptimal types
+<div id="issue-23-2-qa2" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">23. Suboptimal types</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath line=263
 basic_bootloader/src/bootloader/account_models/eoa.rs
@@ -1205,7 +1565,15 @@ let call_parameters = CallParameters {
 
 Using type `Option<Address>` would be clearer and more error-proof, compared to using the default value.
 
-# Unit test suite fails in `e2e_proving` mode
+<div id="issue-24-1-qa11" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">24. Unit test suite fails in `e2e_proving` mode</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 The unit test suite is intended to support both forward running and proof-running. The latter is expressed using the `e2e_proving` compiler feature. This mode of testing is important for verifying the ZK proof-related execution paths.
 
@@ -1232,7 +1600,15 @@ failures:
 
 As a consequence, no coverage report has been produced in `e2e_proving` mode.
 
-# Unused code
+<div id="issue-25-2-qa6" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">25. Unused code</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath line=21
 basic_bootloader/src/bootloader/supported_ees.rs
@@ -1348,7 +1724,15 @@ zk_ee/src/common_structs/messages_storage.rs
 pub fn net_diff(
 ```
 
-# Unused error messages
+<div id="issue-26-1-inf3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">26. Unused error messages</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 The following error messages are not utilized anywhere in the codebase. While no security issues related to these errors have been discovered, they could indicate unhandled errors.
 
@@ -1366,7 +1750,15 @@ PaymasterContextInvalid,
 PaymasterContextOffsetTooLong,
 ```
 
-# Variable can be declared in a more specific scope
+<div id="issue-27-1-qa3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
+  <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">27. Variable can be declared in a more specific scope</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+    <span style="font-size: 0.875rem;"><strong>Severity:</strong> <span style="border: 1px solid #22c55e; border-radius: 4px; padding: 4px 8px; color: #22c55e;">QA</span></span>
+    <span style="font-size: 0.875rem;"><strong>Impact:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Likelihood:</strong> <span style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 4px 8px; color: #e5e7eb;">Low</span></span>
+    <span style="font-size: 0.875rem;"><strong>Status:</strong> <span style="border: 1px solid #fbc02d; border-radius: 4px; padding: 4px 8px; color: #fbc02d;">Notified</span></span>
+  </div>
+</div>
 
 ```rust filepath line=840
 basic_bootloader/src/bootloader/process_transaction.rs
@@ -1401,100 +1793,444 @@ This run includes the fix for the `bootloader_tx_parser` fuzzing target.
 
 ### Module `basic_bootloader`
 
-| Filename | Lines | Line Coverage |
-| --- | --- | --- |
-| account_models/abstract_account.rs | 125/213 | 58.7% |
-| account_models/eoa.rs | 334/676 | 49.4% |
-| account_models/mod.rs | 0/38 | 0.0% |
-| errors.rs | 3/18 | 16.7% |
-| gas_helpers.rs | 74/79 | 93.7% |
-| mod.rs | 165/207 | 79.7% |
-| process_transaction.rs | 448/737 | 60.8% |
-| result_keeper.rs | 0/2 | 0.0% |
-| rlp.rs | 51/51 | 100.0% |
-| run_single_interaction.rs | 111/124 | 89.5% |
-| runner.rs | 502/883 | 56.9% |
-| supported_ees.rs | 39/91 | 42.9% |
-| transaction/abi_utils.rs | 0/29 | 0.0% |
-| transaction/mod.rs | 561/672 | 83.5% |
-| transaction/u256be_ptr.rs | 46/51 | 90.2% |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Lines</th>
+  <th style="border: 1px solid white; padding: 8px;">Line Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">account_models/abstract_account.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">125/213</td>
+  <td style="border: 1px solid white; padding: 8px;">58.7%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">account_models/eoa.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">334/676</td>
+  <td style="border: 1px solid white; padding: 8px;">49.4%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">account_models/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/38</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">errors.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">3/18</td>
+  <td style="border: 1px solid white; padding: 8px;">16.7%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">gas_helpers.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">74/79</td>
+  <td style="border: 1px solid white; padding: 8px;">93.7%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">165/207</td>
+  <td style="border: 1px solid white; padding: 8px;">79.7%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">process_transaction.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">448/737</td>
+  <td style="border: 1px solid white; padding: 8px;">60.8%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">result_keeper.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/2</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">rlp.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">51/51</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">run_single_interaction.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">111/124</td>
+  <td style="border: 1px solid white; padding: 8px;">89.5%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">runner.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">502/883</td>
+  <td style="border: 1px solid white; padding: 8px;">56.9%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">supported_ees.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">39/91</td>
+  <td style="border: 1px solid white; padding: 8px;">42.9%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">transaction/abi_utils.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/29</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">transaction/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">561/672</td>
+  <td style="border: 1px solid white; padding: 8px;">83.5%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">transaction/u256be_ptr.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">46/51</td>
+  <td style="border: 1px solid white; padding: 8px;">90.2%</td>
+</tr>
+</tbody>
+</table>
 
 ### Module `basic_system`
 
-| Filename | Lines | Line Coverage |
-| --- | --- | --- |
-| system_functions/bn254_ecadd.rs | 86/86 | 100.0% |
-| system_functions/bn254_ecmul.rs | 60/60 | 100.0% |
-| system_functions/bn254_pairing_check.rs | 91/94 | 96.8% |
-| system_functions/ecrecover.rs | 67/68 | 98.5% |
-| system_functions/keccak256.rs | 26/26 | 100.0% |
-| system_functions/mod.rs | 7/7 | 100.0% |
-| system_functions/modexp.rs | 122/124 | 98.4% |
-| system_functions/p256_verify.rs | 0/68 | 0.0% |
-| system_functions/ripemd160.rs | 26/26 | 100.0% |
-| system_functions/sha256.rs | 26/26 | 100.0% |
-| system_implementation/io/account_cache.rs | 439/610 | 72.0% |
-| system_implementation/io/account_cache_entry.rs | 104/180 | 57.8 |
-| system_implementation/io/history_map.rs | 344/488 | 70.5% |
-| system_implementation/io/mod.rs | 206/270 | 76.3% |
-| system_implementation/io/preimage_cache.rs | 142/187 | 75.9% |
-| system_implementation/io/rollbackable_stack.rs | 33/42 | 78.6% |
-| system_implementation/io/simple_growable_storage.rs | 721/981 | 73.5% |
-| system_implementation/io/storage_cache.rs | 248/318 | 78.0% |
-| system_implementation/memory/basic_memory.rs | 162/168 | 96.4% |
-| system_implementation/system/basic_metadata.rs | 72/88 | 81.8% |
-| system_implementation/system/io_subsystem.rs | 212/436 | 48.6% |
-| system_implementation/system/mod.rs | 264/382 | 69.1% |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Lines</th>
+  <th style="border: 1px solid white; padding: 8px;">Line Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/bn254_ecadd.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">86/86</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/bn254_ecmul.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">60/60</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/bn254_pairing_check.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">91/94</td>
+  <td style="border: 1px solid white; padding: 8px;">96.8%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/ecrecover.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">67/68</td>
+  <td style="border: 1px solid white; padding: 8px;">98.5%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/keccak256.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">26/26</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">7/7</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/modexp.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">122/124</td>
+  <td style="border: 1px solid white; padding: 8px;">98.4%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/p256_verify.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/68</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/ripemd160.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">26/26</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/sha256.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">26/26</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/account_cache.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">439/610</td>
+  <td style="border: 1px solid white; padding: 8px;">72.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/account_cache_entry.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">104/180</td>
+  <td style="border: 1px solid white; padding: 8px;">57.8</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/history_map.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">344/488</td>
+  <td style="border: 1px solid white; padding: 8px;">70.5%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">206/270</td>
+  <td style="border: 1px solid white; padding: 8px;">76.3%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/preimage_cache.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">142/187</td>
+  <td style="border: 1px solid white; padding: 8px;">75.9%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/rollbackable_stack.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">33/42</td>
+  <td style="border: 1px solid white; padding: 8px;">78.6%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/simple_growable_storage.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">721/981</td>
+  <td style="border: 1px solid white; padding: 8px;">73.5%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/storage_cache.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">248/318</td>
+  <td style="border: 1px solid white; padding: 8px;">78.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/memory/basic_memory.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">162/168</td>
+  <td style="border: 1px solid white; padding: 8px;">96.4%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/system/basic_metadata.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">72/88</td>
+  <td style="border: 1px solid white; padding: 8px;">81.8%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/system/io_subsystem.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">212/436</td>
+  <td style="border: 1px solid white; padding: 8px;">48.6%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/system/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">264/382</td>
+  <td style="border: 1px solid white; padding: 8px;">69.1%</td>
+</tr>
+</tbody>
+</table>
 
 ### Module `zk_ee`
 
-| Filename | Lines | Line Coverage |
-| --- | --- | --- |
-| common_structs/events_storage.rs | 39/68 | 57.4% |
-| common_structs/generic_ethereum_like_fsm_state.rs | 26/34 | 76.5% |
-| common_structs/messages_storage.rs | 56/100 | 56.0% |
-| common_structs/new_preimages_publication_storage.rs | 84/98 | 85.7% |
-| common_structs/pubdata_compression.rs | 0/49 | 0.0% |
-| common_structs/warm_storage_key.rs | 17/18 | 94.4% |
-| common_structs/warm_storage_value.rs | 0/27 | 0.0% |
-| oracle/usize_rw.rs | 15/71 | 21.1% |
-| system/kv_markers/kv_impls.rs | 140/201 | 69.7% |
-| system/kv_markers/mod.rs | 60/98 | 61.2% |
-| system/memory/byte_slice.rs | 19/38 | 50.0% |
-| system/memory/stack_trait.rs | 42/56 | 75.0% |
-| system/mod.rs | 4/69 | 5.8% |
-| system/reference_implementations/mod.rs | 33/47 | 70.2% |
-| system/system_io_oracle/dyn_usize_iterator.rs | 46/49 | 93.9% |
-| system/system_io_oracle/mod.rs | 34/45 | 75.6% |
-| system/system_trait/base_system_functions.rs | 8/112 | 7.1% |
-| system/system_trait/errors.rs | 3/21 | 14.3% |
-| system/system_trait/execution_environment/call_params.rs | 7/99 | 7.1% |
-| system/system_trait/execution_environment/interaction_params.rs | 0/13 | 0.0% |
-| system/system_trait/execution_environment/mod.rs | 8/8 | 100.0% |
-| system/system_trait/logger.rs | 6/12 | 50.0% |
-| system/system_trait/resources.rs | 6/6 | 100.0% |
-| system/system_trait/result_keeper.rs | 22/22 | 100.0% |
-| system/types_config/mod.rs | 0/6 | 0.0% |
-| utils/aligned_buffer.rs | 0/138 | 0.0% |
-| utils/aligned_vector.rs | 70/97 | 72.2% |
-| utils/bytes32.rs | 73/161 | 45.3% |
-| utils/convenience/memcopy.rs | 5/5 | 100.0% |
-| utils/integer_utils.rs | 24/85 | 28.2% |
-| utils/mod.rs | 0/13 | 0.0% |
-| utils/stack_linked_list.rs | 23/29 | 79.3% |
-| utils/type_assert.rs | 0/13 | 0.0% |
-| utils/usize_aligner.rs | 0/46 | 0.0% |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Lines</th>
+  <th style="border: 1px solid white; padding: 8px;">Line Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/events_storage.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">39/68</td>
+  <td style="border: 1px solid white; padding: 8px;">57.4%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/generic_ethereum_like_fsm_state.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">26/34</td>
+  <td style="border: 1px solid white; padding: 8px;">76.5%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/messages_storage.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">56/100</td>
+  <td style="border: 1px solid white; padding: 8px;">56.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/new_preimages_publication_storage.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">84/98</td>
+  <td style="border: 1px solid white; padding: 8px;">85.7%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/pubdata_compression.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/49</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/warm_storage_key.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">17/18</td>
+  <td style="border: 1px solid white; padding: 8px;">94.4%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/warm_storage_value.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/27</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">oracle/usize_rw.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">15/71</td>
+  <td style="border: 1px solid white; padding: 8px;">21.1%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/kv_markers/kv_impls.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">140/201</td>
+  <td style="border: 1px solid white; padding: 8px;">69.7%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/kv_markers/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">60/98</td>
+  <td style="border: 1px solid white; padding: 8px;">61.2%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/memory/byte_slice.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">19/38</td>
+  <td style="border: 1px solid white; padding: 8px;">50.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/memory/stack_trait.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">42/56</td>
+  <td style="border: 1px solid white; padding: 8px;">75.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">4/69</td>
+  <td style="border: 1px solid white; padding: 8px;">5.8%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/reference_implementations/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">33/47</td>
+  <td style="border: 1px solid white; padding: 8px;">70.2%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_io_oracle/dyn_usize_iterator.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">46/49</td>
+  <td style="border: 1px solid white; padding: 8px;">93.9%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_io_oracle/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">34/45</td>
+  <td style="border: 1px solid white; padding: 8px;">75.6%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/base_system_functions.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">8/112</td>
+  <td style="border: 1px solid white; padding: 8px;">7.1%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/errors.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">3/21</td>
+  <td style="border: 1px solid white; padding: 8px;">14.3%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/execution_environment/call_params.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">7/99</td>
+  <td style="border: 1px solid white; padding: 8px;">7.1%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/execution_environment/interaction_params.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/13</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/execution_environment/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">8/8</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/logger.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">6/12</td>
+  <td style="border: 1px solid white; padding: 8px;">50.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/resources.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">6/6</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/result_keeper.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">22/22</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/types_config/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/6</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/aligned_buffer.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/138</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/aligned_vector.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">70/97</td>
+  <td style="border: 1px solid white; padding: 8px;">72.2%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/bytes32.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">73/161</td>
+  <td style="border: 1px solid white; padding: 8px;">45.3%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/convenience/memcopy.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">5/5</td>
+  <td style="border: 1px solid white; padding: 8px;">100.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/integer_utils.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">24/85</td>
+  <td style="border: 1px solid white; padding: 8px;">28.2%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/13</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/stack_linked_list.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">23/29</td>
+  <td style="border: 1px solid white; padding: 8px;">79.3%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/type_assert.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/13</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/usize_aligner.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/46</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+</tbody>
+</table>
 
 ### Other files
 
-| Filename | Lines | Line Coverage |
-| --- | --- | --- |
-| system_hooks/src/l1_messenger.rs | 0/168 | 0.0% |
-| system_hooks/src/lib.rs | 88/89 | 98.9% |
-| system_hooks/src/precompiles.rs | 118/120 | 98.3% |
-| supporting_crates/modexp/src/arith.rs | 280/309 | 90.6% |
-| supporting_crates/modexp/src/lib.rs | 14/22 | 63.6% |
-| supporting_crates/modexp/src/mpnat.rs | 427/488 | 87.5% |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Lines</th>
+  <th style="border: 1px solid white; padding: 8px;">Line Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_hooks/src/l1_messenger.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0/168</td>
+  <td style="border: 1px solid white; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_hooks/src/lib.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">88/89</td>
+  <td style="border: 1px solid white; padding: 8px;">98.9%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_hooks/src/precompiles.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">118/120</td>
+  <td style="border: 1px solid white; padding: 8px;">98.3%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">supporting_crates/modexp/src/arith.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">280/309</td>
+  <td style="border: 1px solid white; padding: 8px;">90.6%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">supporting_crates/modexp/src/lib.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">14/22</td>
+  <td style="border: 1px solid white; padding: 8px;">63.6%</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">supporting_crates/modexp/src/mpnat.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">427/488</td>
+  <td style="border: 1px solid white; padding: 8px;">87.5%</td>
+</tr>
+</tbody>
+</table>
 
 ## Unit tests coverage
 
@@ -1505,97 +2241,441 @@ cargo llvm-cov --workspace --html
 
 ### Module `basic_bootloader`
 
-| Filename | Function Coverage | Region Coverage |
-| --- | --- | --- |
-| account_models/abstract_account.rs | 87.50% (7/8) | 67.65% (23/34) |
-| account_models/eoa.rs | 63.64% (7/11) | 43.72% (87/199) |
-| account_models/mod.rs | 75.00% (3/4) | 56.25% (9/16) |
-| errors.rs | 25.00% (1/4) | 10.00% (1/10) |
-| gas_helpers.rs | 100.00% (5/5) | 75.61% (31/41) |
-| mod.rs | 85.71% (6/7) | 70.59% (24/34) |
-| process_transaction.rs | 52.63% (10/19) | 60.07% (182/303) |
-| result_keeper.rs | 0.00% (0/2) | 0.00% (0/2) |
-| rlp.rs | 100.00% (11/11) | 100.00% (29/29) |
-| run_single_interaction.rs | 33.33% (2/6) | 64.71% (33/51) |
-| runner.rs | 35.71% (10/28) | 52.05% (152/292) |
-| supported_ees.rs | 80.00% (8/10) | 77.78% (14/18) |
-| transaction/abi_utils.rs | 0.00% (0/2) | 0.00% (0/44) |
-| transaction/mod.rs | 85.29% (29/34) | 75.98% (253/333) |
-| transaction/u256be_ptr.rs | 100.00% (7/7) | 87.23% (41/47) |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Function Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Region Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">account_models/abstract_account.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">87.50% (7/8)</td>
+  <td style="border: 1px solid white; padding: 8px;">67.65% (23/34)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">account_models/eoa.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">63.64% (7/11)</td>
+  <td style="border: 1px solid white; padding: 8px;">43.72% (87/199)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">account_models/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">75.00% (3/4)</td>
+  <td style="border: 1px solid white; padding: 8px;">56.25% (9/16)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">errors.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">25.00% (1/4)</td>
+  <td style="border: 1px solid white; padding: 8px;">10.00% (1/10)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">gas_helpers.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (5/5)</td>
+  <td style="border: 1px solid white; padding: 8px;">75.61% (31/41)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">85.71% (6/7)</td>
+  <td style="border: 1px solid white; padding: 8px;">70.59% (24/34)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">process_transaction.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">52.63% (10/19)</td>
+  <td style="border: 1px solid white; padding: 8px;">60.07% (182/303)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">result_keeper.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/2)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/2)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">rlp.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (11/11)</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (29/29)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">run_single_interaction.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">33.33% (2/6)</td>
+  <td style="border: 1px solid white; padding: 8px;">64.71% (33/51)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">runner.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">35.71% (10/28)</td>
+  <td style="border: 1px solid white; padding: 8px;">52.05% (152/292)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">supported_ees.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">80.00% (8/10)</td>
+  <td style="border: 1px solid white; padding: 8px;">77.78% (14/18)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">transaction/abi_utils.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/2)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/44)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">transaction/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">85.29% (29/34)</td>
+  <td style="border: 1px solid white; padding: 8px;">75.98% (253/333)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">transaction/u256be_ptr.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (7/7)</td>
+  <td style="border: 1px solid white; padding: 8px;">87.23% (41/47)</td>
+</tr>
+</tbody>
+</table>
 
 ### Module `basic_system`
 
-| Filename | Function Coverage | Region Coverage |
-| --- | --- | --- |
-| system_functions/bn254_ecadd.rs | 60.00% (6/10) | 82.46% (47/57) |
-| system_functions/bn254_ecmul.rs | 50.00% (5/10) | 77.78% (42/54) |
-| system_functions/bn254_pairing_check.rs | 26.67% (4/15) | 67.31% (70/104) |
-| system_functions/ecrecover.rs | 83.33% (10/12) | 79.37% (50/63) |
-| system_functions/keccak256.rs | 100.00% (5/5) | 65.00% (13/20) |
-| system_functions/mod.rs | 100.00% (1/1) | 100.00% (6/6) |
-| system_functions/modexp.rs | 50.00% (3/6) | 84.04% (79/94) |
-| system_functions/p256_verify.rs | 0.00% (0/5) | 0.00% (0/33) |
-| system_functions/ripemd160.rs | 100.00% (2/2) | 100.00% (5/5) |
-| system_functions/sha256.rs | 100.00% (5/5) | 70.00% (14/20) |
-| system_implementation/io/account_cache.rs | 81.25% (26/32) | 60.22% (168/279) |
-| system_implementation/io/account_cache_entry.rs | 60.00% (15/25) | 66.67% (36/54) |
-| system_implementation/io/history_map.rs | 82.67% (62/75) | 80.00% (204/255) |
-| system_implementation/io/mod.rs | 80.00% (16/20) | 79.17% (19/24) |
-| system_implementation/io/preimage_cache.rs | 90.91% (10/11) | 74.29% (26/35) |
-| system_implementation/io/rollbackable_stack.rs | 83.33% (5/6) | 81.82% (9/11) |
-| system_implementation/io/simple_growable_storage.rs | 81.58% (62/76) | 80.00% (448/560) |
-| system_implementation/io/storage_cache.rs | 88.89% (24/27) | 77.00% (77/100) |
-| system_implementation/memory/basic_memory.rs | 94.44% (17/18) | 87.50% (35/40) |
-| system_implementation/system/basic_metadata.rs | 75.00% (9/12) | 60.00% (30/50) |
-| system_implementation/system/io_subsystem.rs | 70.37% (19/27) | 43.80% (53/121) |
-| system_implementation/system/mod.rs | 83.78% (31/37) | 75.00% (114/152) |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Function Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Region Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/bn254_ecadd.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">60.00% (6/10)</td>
+  <td style="border: 1px solid white; padding: 8px;">82.46% (47/57)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/bn254_ecmul.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">50.00% (5/10)</td>
+  <td style="border: 1px solid white; padding: 8px;">77.78% (42/54)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/bn254_pairing_check.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">26.67% (4/15)</td>
+  <td style="border: 1px solid white; padding: 8px;">67.31% (70/104)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/ecrecover.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">83.33% (10/12)</td>
+  <td style="border: 1px solid white; padding: 8px;">79.37% (50/63)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/keccak256.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (5/5)</td>
+  <td style="border: 1px solid white; padding: 8px;">65.00% (13/20)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (1/1)</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (6/6)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/modexp.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">50.00% (3/6)</td>
+  <td style="border: 1px solid white; padding: 8px;">84.04% (79/94)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/p256_verify.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/5)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/33)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/ripemd160.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (2/2)</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (5/5)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_functions/sha256.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (5/5)</td>
+  <td style="border: 1px solid white; padding: 8px;">70.00% (14/20)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/account_cache.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">81.25% (26/32)</td>
+  <td style="border: 1px solid white; padding: 8px;">60.22% (168/279)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/account_cache_entry.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">60.00% (15/25)</td>
+  <td style="border: 1px solid white; padding: 8px;">66.67% (36/54)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/history_map.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">82.67% (62/75)</td>
+  <td style="border: 1px solid white; padding: 8px;">80.00% (204/255)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">80.00% (16/20)</td>
+  <td style="border: 1px solid white; padding: 8px;">79.17% (19/24)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/preimage_cache.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">90.91% (10/11)</td>
+  <td style="border: 1px solid white; padding: 8px;">74.29% (26/35)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/rollbackable_stack.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">83.33% (5/6)</td>
+  <td style="border: 1px solid white; padding: 8px;">81.82% (9/11)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/simple_growable_storage.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">81.58% (62/76)</td>
+  <td style="border: 1px solid white; padding: 8px;">80.00% (448/560)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/io/storage_cache.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">88.89% (24/27)</td>
+  <td style="border: 1px solid white; padding: 8px;">77.00% (77/100)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/memory/basic_memory.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">94.44% (17/18)</td>
+  <td style="border: 1px solid white; padding: 8px;">87.50% (35/40)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/system/basic_metadata.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">75.00% (9/12)</td>
+  <td style="border: 1px solid white; padding: 8px;">60.00% (30/50)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/system/io_subsystem.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">70.37% (19/27)</td>
+  <td style="border: 1px solid white; padding: 8px;">43.80% (53/121)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_implementation/system/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">83.78% (31/37)</td>
+  <td style="border: 1px solid white; padding: 8px;">75.00% (114/152)</td>
+</tr>
+</tbody>
+</table>
 
 ### Module `zk_ee`
 
-| Filename | Function Coverage | Region Coverage |
-| --- | --- | --- |
-| common_structs/events_storage.rs | 87.50% (7/8) | 86.67% (13/15) |
-| common_structs/generic_ethereum_like_fsm_state.rs | 66.67% (2/3) | 66.67% (12/18) |
-| common_structs/messages_storage.rs | 62.50% (5/8) | 73.33% (11/15) |
-| common_structs/new_preimages_publication_storage.rs | 100.00% (16/16) | 98.48% (65/66) |
-| common_structs/pubdata_compression.rs | 0.00% (0/3) | 0.00% (0/18) |
-| common_structs/warm_storage_key.rs | 100.00% (3/3) | 100.00% (7/7) |
-| common_structs/warm_storage_value.rs | 0.00% (0/2) | 0.00% (0/10) |
-| oracle/usize_rw.rs | 17.65% (3/17) | 23.08% (9/39) |
-| system/kv_markers/kv_impls.rs | 70.83% (17/24) | 55.00% (55/100) |
-| system/kv_markers/mod.rs | 75.00% (15/20) | 81.82% (54/66) |
-| system/memory/byte_slice.rs | 87.50% (7/8) | 90.00% (18/20) |
-| system/memory/stack_trait.rs | 73.33% (11/15) | 60.00% (12/20) |
-| system/mod.rs | 16.67% (1/6) | 6.98% (3/43) |
-| system/reference_implementations/mod.rs | 69.23% (9/13) | 75.00% (12/16) |
-| system/system_io_oracle/dyn_usize_iterator.rs | 85.71% (6/7) | 94.74% (18/19) |
-| system/system_io_oracle/mod.rs | 66.67% (4/6) | 75.00% (12/16) |
-| system/system_trait/base_system_functions.rs | 14.29% (2/14) | 14.29% (2/14) |
-| system/system_trait/errors.rs | 14.29% (1/7) | 14.29% (1/7) |
-| system/system_trait/execution_environment/call_params.rs | 46.67% (7/15) | 31.25% (15/48) |
-| system/system_trait/execution_environment/interaction_params.rs | 100.00% (2/2) | 66.67% (8/12) |
-| system/system_trait/execution_environment/mod.rs | 50.00% (1/2) | 75.00% (6/8) |
-| system/system_trait/logger.rs | 25.00% (1/4) | 25.00% (1/4) |
-| system/system_trait/resources.rs | 100.00% (1/1) | 100.00% (6/6) |
-| system/system_trait/result_keeper.rs | 0.00% (0/4) | 0.00% (0/4) |
-| system/types_config/mod.rs | 0.00% (0/2) | 0.00% (0/2) |
-| utils/aligned_buffer.rs | 0.00% (0/14) | 0.00% (0/66) |
-| utils/aligned_vector.rs | 66.67% (8/12) | 72.73% (16/22) |
-| utils/bytes32.rs | 60.00% (18/30) | 57.14% (24/42) |
-| utils/convenience/memcopy.rs | 100.00% (1/1) | 100.00% (1/1) |
-| utils/integer_utils.rs | 56.25% (9/16) | 48.84% (21/43) |
-| utils/mod.rs | 0.00% (0/1) | 0.00% (0/1) |
-| utils/stack_linked_list.rs | 83.33% (5/6) | 88.89% (8/9) |
-| utils/type_assert.rs | 0.00% (0/3) | 0.00% (0/10) |
-| utils/usize_aligner.rs | 0.00% (0/8) | 0.00% (0/15) |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Function Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Region Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/events_storage.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">87.50% (7/8)</td>
+  <td style="border: 1px solid white; padding: 8px;">86.67% (13/15)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/generic_ethereum_like_fsm_state.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">66.67% (2/3)</td>
+  <td style="border: 1px solid white; padding: 8px;">66.67% (12/18)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/messages_storage.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">62.50% (5/8)</td>
+  <td style="border: 1px solid white; padding: 8px;">73.33% (11/15)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/new_preimages_publication_storage.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (16/16)</td>
+  <td style="border: 1px solid white; padding: 8px;">98.48% (65/66)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/pubdata_compression.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/3)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/18)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/warm_storage_key.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (3/3)</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (7/7)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">common_structs/warm_storage_value.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/2)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/10)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">oracle/usize_rw.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">17.65% (3/17)</td>
+  <td style="border: 1px solid white; padding: 8px;">23.08% (9/39)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/kv_markers/kv_impls.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">70.83% (17/24)</td>
+  <td style="border: 1px solid white; padding: 8px;">55.00% (55/100)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/kv_markers/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">75.00% (15/20)</td>
+  <td style="border: 1px solid white; padding: 8px;">81.82% (54/66)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/memory/byte_slice.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">87.50% (7/8)</td>
+  <td style="border: 1px solid white; padding: 8px;">90.00% (18/20)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/memory/stack_trait.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">73.33% (11/15)</td>
+  <td style="border: 1px solid white; padding: 8px;">60.00% (12/20)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">16.67% (1/6)</td>
+  <td style="border: 1px solid white; padding: 8px;">6.98% (3/43)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/reference_implementations/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">69.23% (9/13)</td>
+  <td style="border: 1px solid white; padding: 8px;">75.00% (12/16)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_io_oracle/dyn_usize_iterator.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">85.71% (6/7)</td>
+  <td style="border: 1px solid white; padding: 8px;">94.74% (18/19)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_io_oracle/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">66.67% (4/6)</td>
+  <td style="border: 1px solid white; padding: 8px;">75.00% (12/16)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/base_system_functions.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">14.29% (2/14)</td>
+  <td style="border: 1px solid white; padding: 8px;">14.29% (2/14)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/errors.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">14.29% (1/7)</td>
+  <td style="border: 1px solid white; padding: 8px;">14.29% (1/7)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/execution_environment/call_params.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">46.67% (7/15)</td>
+  <td style="border: 1px solid white; padding: 8px;">31.25% (15/48)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/execution_environment/interaction_params.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (2/2)</td>
+  <td style="border: 1px solid white; padding: 8px;">66.67% (8/12)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/execution_environment/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">50.00% (1/2)</td>
+  <td style="border: 1px solid white; padding: 8px;">75.00% (6/8)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/logger.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">25.00% (1/4)</td>
+  <td style="border: 1px solid white; padding: 8px;">25.00% (1/4)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/resources.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (1/1)</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (6/6)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/system_trait/result_keeper.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/4)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/4)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system/types_config/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/2)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/2)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/aligned_buffer.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/14)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/66)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/aligned_vector.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">66.67% (8/12)</td>
+  <td style="border: 1px solid white; padding: 8px;">72.73% (16/22)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/bytes32.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">60.00% (18/30)</td>
+  <td style="border: 1px solid white; padding: 8px;">57.14% (24/42)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/convenience/memcopy.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (1/1)</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (1/1)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/integer_utils.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">56.25% (9/16)</td>
+  <td style="border: 1px solid white; padding: 8px;">48.84% (21/43)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/mod.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/1)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/1)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/stack_linked_list.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">83.33% (5/6)</td>
+  <td style="border: 1px solid white; padding: 8px;">88.89% (8/9)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/type_assert.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/3)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/10)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">utils/usize_aligner.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/8)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/15)</td>
+</tr>
+</tbody>
+</table>
 
 ### Other files
 
-| Filename | Function Coverage | Region Coverage |
-| --- | --- | --- |
-| system_hooks/src/l1_messenger.rs | 0.00% (0/2) | 0.00% (0/58) |
-| system_hooks/src/lib.rs | 88.89% (8/9) | 83.33% (15/18) |
-| system_hooks/src/precompiles.rs | 100.00% (4/4) | 92.31% (24/26) |
-| supporting_crates/modexp/src/arith.rs | 100.00% (37/37) | 91.74% (222/242) |
-| supporting_crates/modexp/src/lib.rs | 50.00% (1/2) | 83.33% (5/6) |
-| supporting_crates/modexp/src/mpnat.rs | 100.00% (28/28) | 89.84% (230/256) |
+<table style="border-collapse: collapse; border: 1px solid white;">
+<thead>
+<tr>
+  <th style="border: 1px solid white; padding: 8px;">Filename</th>
+  <th style="border: 1px solid white; padding: 8px;">Function Coverage</th>
+  <th style="border: 1px solid white; padding: 8px;">Region Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_hooks/src/l1_messenger.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/2)</td>
+  <td style="border: 1px solid white; padding: 8px;">0.00% (0/58)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_hooks/src/lib.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">88.89% (8/9)</td>
+  <td style="border: 1px solid white; padding: 8px;">83.33% (15/18)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">system_hooks/src/precompiles.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (4/4)</td>
+  <td style="border: 1px solid white; padding: 8px;">92.31% (24/26)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">supporting_crates/modexp/src/arith.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (37/37)</td>
+  <td style="border: 1px solid white; padding: 8px;">91.74% (222/242)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">supporting_crates/modexp/src/lib.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">50.00% (1/2)</td>
+  <td style="border: 1px solid white; padding: 8px;">83.33% (5/6)</td>
+</tr>
+<tr>
+  <td style="border: 1px solid white; padding: 8px;">supporting_crates/modexp/src/mpnat.rs</td>
+  <td style="border: 1px solid white; padding: 8px;">100.00% (28/28)</td>
+  <td style="border: 1px solid white; padding: 8px;">89.84% (230/256)</td>
+</tr>
+</tbody>
+</table>
