@@ -374,7 +374,7 @@ Impacts include:
 - Potential memory corruption if subsequent processing expects the actual data size to match the truncated count
 - Potential DoS caused by non-determinism, if other protocol participants handle the truncation differently
 
-[page-break]
+
 
 ## Recommendation
 
@@ -968,7 +968,7 @@ assert!(it.next().is_none());
 let data_from_oracle = unsafe { dst.assume_init() } ;
 ```
 
-[page-break]
+
 
 The `init_from_iter` function, in its turn, relies on the correct implementation of the `from_iter` method from the trait `UsizeDeserializable`:
 
@@ -1416,7 +1416,7 @@ let current_heap_capacity = unsafe {
 };
 ```
 
-[page-break]
+
 
 However, the function `offset_from_unsigned` is unsafe and requires the following condition to be validated before the call:
 
@@ -1582,7 +1582,7 @@ if !check_enough_resources_for_pubdata(
     Ok(execution_result.reverted())
 ```
 
-[page-break]
+
 
 ```rust filepath context line=160 highlight=[2]
 basic_bootloader/src/bootloader/gas_helpers.rs
@@ -1849,7 +1849,7 @@ if error {
 }
 ```
 
-[page-break]
+
 
 The same or very similar code snippets can also be observed in:
 
@@ -1979,7 +1979,7 @@ pub(crate) fn log2floor
 
 These panic conditions complicate maintenance. In contrast, other errors in the same files are handled appropriately, returning `FatalError::Internal`.
 
-[page-break]
+
 
 ## Examples in the rest of the system
 
@@ -2277,7 +2277,7 @@ In the description of the `identity` system function, it is stated that the exec
 let snapshot = system.memory.start_memory_frame();
 ```
 
-[page-break]
+
 
 ## Miscellaneous outdated comments
 
@@ -2470,7 +2470,7 @@ system.memory.start_memory_frame();
 system.memory.finish_memory_frame(None);
 ```
 
-[page-break]
+
 
 ## Unnecessary validations
 
@@ -2512,7 +2512,7 @@ for (key, value) in reads_iter {
 
 As a consequence, the validation of the `initial_value_used` field, located in the batch verification code, is redundant.
 
-[page-break]
+
 
 ## Commented-out code
 
@@ -2562,7 +2562,7 @@ InvalidChainId,
 AccessListNotSupported,
 ```
 
-[page-break]
+
 
 ## Recommendation
 
