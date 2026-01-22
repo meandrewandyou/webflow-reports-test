@@ -442,7 +442,8 @@ The corresponding fuzz test has been executed and has not revealed any issues.
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath line=555 highlight=[6]" data-start-line="555"><code>// Transfers are forbidden to kernel space unless for bootloader or
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath line=555 highlight=[6]" data-start-line="555"><code>// Transfers are forbidden to kernel space unless for bootloader or
 // explicitly allowed by a feature
 let transfer_allowed =
     callee == BOOTLOADER_FORMAL_ADDRESS || cfg!(feature = "transfers_to_kernel_space");
@@ -450,8 +451,7 @@ let nominal_token_value = if transfer_allowed {
     call_values.nominal_token_value
 } else {
     U256::ZERO
-};
-</code></pre>
+};</code></pre>
 
 <pre class="language-rust" data-attributes="line=573 highlight=[7]" data-start-line="573"><code>} = match run_call_preparation(
     callstack,
@@ -464,23 +464,23 @@ let nominal_token_value = if transfer_allowed {
 ) {
 </code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath context line=720" data-start-line="720"><code>fn run_call_preparation&lt;
-} = match system.prepare_for_call(
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=720" data-start-line="720"><code>fn run_call_preparation&lt;
+} = match system.prepare_for_call(</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath context line=585" data-start-line="585"><code>fn prepare_for_call(
-match SystemExt::io(self).transfer_nominal_token_value(
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=585" data-start-line="585"><code>fn prepare_for_call(
+match SystemExt::io(self).transfer_nominal_token_value(</code></pre>
 
 The function `handle_requested_external_call_to_special_address_space` is intended to prevent positive-value transfers to kernel space unless the configuration flag `transfers_to_kernel_space` is engaged or the `callee` is explicitly set to `BOOTLOADER_FORMAL_ADDRESS`.
 
 However, the actual callpath to the function `transfer_nominal_token_value` is still performed with the unchanged value `call_values.nominal_token_value`. While the conditions for the transfer are evaluated and variable `nominal_token_value` is correctly set to zero when the conditions are not met, the variable is not actually utilized with the exception at the very end of the handler, after the token transfer is already performed.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath line=650" data-start-line="650"><code>let call_result =
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath line=650" data-start-line="650"><code>let call_result =
     if nominal_token_value != U256::ZERO &amp;&amp; callee != BOOTLOADER_FORMAL_ADDRESS {
         CallResult::Failed { return_values }
-    } else {
-</code></pre>
+    } else {</code></pre>
 
 Additionally, the condition to fail the call and return `CallResult::Failed` is incorrect:
 
@@ -499,8 +499,8 @@ The conjunction of the two conditions is equivalent to `call_values.nominal_toke
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath line=523" data-start-line="523"><code>let stipend = if !is_delegate &amp;&amp; !nominal_token_value.is_zero() {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=523" data-start-line="523"><code>let stipend = if !is_delegate &amp;&amp; !nominal_token_value.is_zero() {</code></pre>
 
 <pre class="language-rust" data-attributes="line=527" data-start-line="527"><code>resources
 	.spendable_part_mut()
@@ -519,23 +519,23 @@ The opcode `CALLCODE` is allowed to have non-zero `value` parameter, even in sta
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/system/system_trait/system.rs</div><pre class="language-rust" data-attributes="filepath context line=233 highlight=[1]" data-start-line="233"><code>fn prepare_for_call(
-    is_call_to_precompile: bool,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/system/system_trait/system.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=233 highlight=[1]" data-start-line="233"><code>fn prepare_for_call(
+    is_call_to_precompile: bool,</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath context line=474 highlight=[1]" data-start-line="474"><code>fn prepare_for_call(
-    is_call_to_precomile: bool, // typo here
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=474 highlight=[1]" data-start-line="474"><code>fn prepare_for_call(
+    is_call_to_precomile: bool, // typo here</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath line=726" data-start-line="726"><code>} = match system.prepare_for_call(
-    false,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath line=726" data-start-line="726"><code>} = match system.prepare_for_call(
+    false,</code></pre>
 
 Calls to precompiles are not implemented yet, the `is_call_to_precompile` flag is always set to `false`.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/io_subsystem.rs</div><pre class="language-rust" data-attributes="filepath context line=260" data-start-line="260"><code>fn emit_l1_message(
-// TODO: we should charge gas for computation needed to emit: at least to hash log(L2_TO_L1_LOG_SERIALIZE_SIZE) and build tree(~32)
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/io_subsystem.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=260" data-start-line="260"><code>fn emit_l1_message(
+// TODO: we should charge gas for computation needed to emit: at least to hash log(L2_TO_L1_LOG_SERIALIZE_SIZE) and build tree(~32)</code></pre>
 
 Sending L1 messages does not incur charges for the computation spent.
 
@@ -549,8 +549,8 @@ Sending L1 messages does not incur charges for the computation spent.
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div><pre class="language-rust" data-attributes="filepath line=306" data-start-line="306"><code>AddressDataDiff::Full =&gt; 118,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div>
+<pre class="language-rust" data-attributes="filepath line=306" data-start-line="306"><code>AddressDataDiff::Full =&gt; 118,</code></pre>
 
 In the function `get_encoded_size`, called by the function `net_pubdata_used`, the size of full update is defined as `118`. However, this must coincide with the size of the `AccountProperties` structure which is `124`.
 
@@ -566,12 +566,12 @@ As a consequence, the transaction sender is charged a little bit less than neces
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div><pre class="language-rust" data-attributes="filepath highlight=[5] line=308" data-start-line="308"><code>AddressDataDiff::Partial(x) =&gt; {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div>
+<pre class="language-rust" data-attributes="filepath highlight=[5] line=308" data-start-line="308"><code>AddressDataDiff::Partial(x) =&gt; {
     match (&amp;x.nonce, &amp;x.balance) {
         (None, Some(x)) =&gt; x.bytes_touched as usize + 1,
         (Some(x), None) =&gt; x.bytes_touched as usize + 1,
-        (Some(x), Some(y)) =&gt; 2 + x.bytes_touched as usize + y.bytes_touched as usize,
-</code></pre>
+        (Some(x), Some(y)) =&gt; 2 + x.bytes_touched as usize + y.bytes_touched as usize,</code></pre>
 
 It is possible to encode the `AddressDataDiff::Partial` using only one extra byte for all cases. The extra byte should be used to label which of 5 cases is being handled:
 
@@ -591,7 +591,8 @@ It is possible to encode the `AddressDataDiff::Partial` using only one extra byt
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/basic_metadata.rs</div><pre class="language-rust" data-attributes="filepath line=111 highlight=[2, 14,16, 28]" data-start-line="111"><code>impl UsizeSerializable for BasicBlockMetadataFromOracle {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/basic_metadata.rs</div>
+<pre class="language-rust" data-attributes="filepath line=111 highlight=[2, 14,16, 28]" data-start-line="111"><code>impl UsizeSerializable for BasicBlockMetadataFromOracle {
 const USIZE_LEN: usize = &lt;U256 as UsizeSerializable&gt;::USIZE_LEN * (3 + 256)
       + &lt;u64 as UsizeSerializable&gt;::USIZE_LEN * 4
       + &lt;B160 as UsizeDeserializable&gt;::USIZE_LEN;
@@ -621,8 +622,7 @@ fn iter(&amp;self) -&gt; impl ExactSizeIterator&lt;Item = usize&gt; {
         UsizeSerializable::iter(&amp;self.block_hashes),
         )
     }
-}
-</code></pre>
+}</code></pre>
 
 The structure `BasicBlockMetadataFromOracle` implements trait `UsizeSerializable` and its function `iter` returning an iterator or type `ExactSizeIterator`. Such an iterator can provide its consumer with information about its length. While the function is implemented correctly, the related constant `USIZE_LEN` is defined incorrectly.
 
@@ -642,19 +642,19 @@ There is currently no consequence of this oversight, since the constant `USIZE_L
 
 Feasibility of these attacks is restricted only by the gas costs. Consider enforcing explicit limits on the amount of events, messages and preimage references that a single transaction can generate in case of non-EVM execution environments.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/events_storage.rs</div><pre class="language-rust" data-attributes="filepath line=65" data-start-line="65"><code>self.rollback_depth_in_current_frame += 1;
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/events_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=65" data-start-line="65"><code>self.rollback_depth_in_current_frame += 1;</code></pre>
 
 The variable `rollback_depth_in_current_frame` is declared as `usize`, i.e. its maximum value on 32-bit architecture is `4,294,967,295`. This could potentially overflow given that the events storage is initialized only once per block.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/messages_storage.rs</div><pre class="language-rust" data-attributes="filepath line=143" data-start-line="143"><code>self.rollback_depth_in_current_frame += 1;
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/messages_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=143" data-start-line="143"><code>self.rollback_depth_in_current_frame += 1;</code></pre>
 
 Similar to the issue in the events storage with the difference that messages are more expensive than events.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/new_preimages_publication_storage.rs</div><pre class="language-rust" data-attributes="filepath line=23" data-start-line="23"><code>pub fn mark_use(&amp;mut self) {
-    self.num_uses += 1;
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/new_preimages_publication_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=23" data-start-line="23"><code>pub fn mark_use(&amp;mut self) {
+    self.num_uses += 1;</code></pre>
 
 Although it is practically very difficult to perform an attack that submits a thousand transactions, where millions of duplicate accounts with different addresses are accessed, theoretically this could be possible in future with non-EVM execution environments. The variable `num_uses` is declared as `usize`, i.e. its maximum value on 32-bit architecture is `4,294,967,295`.
 
@@ -670,13 +670,14 @@ Although it is practically very difficult to perform an attack that submits a th
 
 Within the file `basic_bootloader/src/bootloader/transaction/mod.rs`, condition `reserved[1].read().is_zero()` is checked numerous times. But the address is never compared to the constant `SPECIAL_ADDRESS_TO_WASM_DEPLOY`, which is almost unused. Only deployment to EVM is supported right now. Defining an auxiliary function that not only performs the additional validation, but also allows handling different EE types, would ease upgrading later.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div><pre class="language-rust" data-attributes="filepath line=37" data-start-line="37"><code>/// We are passing callstack from outside to reuse its memory space between different transactions.
-/// It's expected to be empty.
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath line=37" data-start-line="37"><code>/// We are passing callstack from outside to reuse its memory space between different transactions.
+/// It's expected to be empty.</code></pre>
 
 Although there is no issue in the current version of the codebase, this assumption should be asserted.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div><pre class="language-rust" data-attributes="filepath context line=286" data-start-line="286"><code>let result = match reverted {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=286" data-start-line="286"><code>let result = match reverted {
     false =&gt; {
         // Safe to do so by construction.
         match deployed_address {
@@ -685,8 +686,7 @@ Although there is no issue in the current version of the codebase, this assumpti
             },
             _ =&gt; ExecutionResult::Success {
                 output: ExecutionOutput::Call(returndata_region),
-            },
-</code></pre>
+            },</code></pre>
 
 As expected, `reverted` is always `true` for `RevertedNoAddress`. However, it would be better to assert that it doesn't leak into the `Success` branch.
 
@@ -700,15 +700,15 @@ As expected, `reverted` is always `true` for `RevertedNoAddress`. However, it wo
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div><pre class="language-rust" data-attributes="filepath line=585" data-start-line="585"><code>let validation_pubdata = system.net_pubdata_used();`
-let ergs_for_pubdata = get_ergs_spent_for_pubdata(system, gas_per_pubdata, None)?;
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath line=585" data-start-line="585"><code>let validation_pubdata = system.net_pubdata_used();`
+let ergs_for_pubdata = get_ergs_spent_for_pubdata(system, gas_per_pubdata, None)?;</code></pre>
 
 The function `get_ergs_spent_for_pubdata` calls `system.net_pubdata_used()` again, recomputing the value of `validation_pubdata`. Consider passing it as a parameter.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=315" data-start-line="315"><code>self.cache.for_total_diff_operands(|_, r, addr| {
-    // We don't care of the left side, since we're storing the entire snapshot.
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=315" data-start-line="315"><code>self.cache.for_total_diff_operands(|_, r, addr| {
+    // We don't care of the left side, since we're storing the entire snapshot.</code></pre>
 
 If the historical values are not required, it is slightly more efficient to define one more auxiliary function that skips calls to `diff_operands_total`:
 
@@ -720,7 +720,8 @@ If the historical values are not required, it is slightly more efficient to defi
 
 Similarly, the following snippet can be optimized:
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/storage_cache.rs</div><pre class="language-rust" data-attributes="filepath line=152" data-start-line="152"><code>pub fn net_pubdata_used(&amp;self) -&gt; u64 {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/storage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=152" data-start-line="152"><code>pub fn net_pubdata_used(&amp;self) -&gt; u64 {
     let mut size = 0;
     self.cache
             .for_total_diff_operands::&lt;_, ()&gt;(|_l, r, _| {
@@ -728,8 +729,7 @@ Similarly, the following snippet can be optimized:
                     Appearance::Retrieved =&gt; size += 0,
                     Appearance::Unset =&gt; size += 0,
                     Appearance::Updated =&gt; size += 32,
-                };
-</code></pre>
+                };</code></pre>
 
 The optimized code could simply filter only one type of `Appearance` and multiply number of such items by `32`:
 
@@ -750,8 +750,8 @@ The optimized code could simply filter only one type of `Appearance` and multipl
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/abstract_account.rs</div><pre class="language-rust" data-attributes="filepath line=34" data-start-line="34"><code>if tx.is_eip_712() &amp;&amp; aa_enabled &amp;&amp; is_contract {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/abstract_account.rs</div>
+<pre class="language-rust" data-attributes="filepath line=34" data-start-line="34"><code>if tx.is_eip_712() &amp;&amp; aa_enabled &amp;&amp; is_contract {</code></pre>
 
 Smart Contracts are implicitly routed to the EOA account model when the Account Abstraction is disabled, i.e. when `AA_ENABLED` is `false`, but `is_contract` is `true`.
 
@@ -771,34 +771,34 @@ This issue is reported with Low severity since only the node operator can cause 
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/mod.rs</div><pre class="language-rust" data-attributes="filepath context line=256" data-start-line="256"><code>pub fn run_prepared&lt;Config: BasicBootloaderExecutionConfig&gt;(
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=256" data-start-line="256"><code>pub fn run_prepared&lt;Config: BasicBootloaderExecutionConfig&gt;(
 while let Some(next_tx_data_len_bytes) = {
     let mut writable = initial_calldata_buffer.into_writable();
     system
-        .try_begin_next_tx(&amp;mut writable)
-</code></pre>
+        .try_begin_next_tx(&amp;mut writable)</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath line=399" data-start-line="399"><code>fn try_begin_next_tx(
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=399" data-start-line="399"><code>fn try_begin_next_tx(
     &amp;mut self,
     tx_write_iter: &amp;mut impl zk_ee::oracle::SafeUsizeWritable,
 ) -&gt; Result&lt;Option&lt;usize&gt;, ()&gt; {
     let next_tx_len_bytes = match self.io.oracle.try_begin_next_tx() {
                 None =&gt; return Ok(None),
                 Some(size) =&gt; size.get() as usize,
-};
-</code></pre>
+};</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath context line=385 highlight=[1]" data-start-line="385"><code>fn begin_new_tx(&amp;mut self) {
-self.cache.commit();
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=385 highlight=[1]" data-start-line="385"><code>fn begin_new_tx(&amp;mut self) {
+self.cache.commit();</code></pre>
 
 The `NewModelAccountCache` implements the functions `begin_new_tx` and `finish_tx`, similarly to other kinds of cache in the codebase. However, flushing the inner `cache` structure is implemented during the function `begin_new_tx` instead of the function `finish_tx`.
 
 As a consequence, the function `run_prepared` flushes the inner `cache` of `NewModelAccountCache` right after initializing the very first transaction, when it is not needed yet. On the other hand, after processing the last transaction, it does not flush it, because the call to `self.io.oracle.try_begin_next_tx()` returns `None`, so `try_begin_next_tx` does not reach `begin_new_tx`.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/storage_cache.rs</div><pre class="language-rust" data-attributes="filepath context line=127 highlight=[1]" data-start-line="127"><code>pub fn begin_new_tx(&amp;mut self) {
-    self.cache.commit();
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/storage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=127 highlight=[1]" data-start-line="127"><code>pub fn begin_new_tx(&amp;mut self) {
+    self.cache.commit();</code></pre>
 
 Similarly, `GenericPubdataAwarePlainStorage` implements flushing the cache in `begin_new_tx`. In contrast to the `NewModelAccountCache` it does not implement the function `finish_tx`.
 
@@ -828,7 +828,8 @@ The impact is not significant since the excess is refunded later, but if both fl
 
 These two code snippets are equivalent with variable names as the only exception:
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath line=744" data-start-line="744"><code>let mut resources_to_pass = match callstack
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath line=744" data-start-line="744"><code>let mut resources_to_pass = match callstack
     .top()
     .unwrap()
     .clarify_passed_resources(desired_resources_to_pass)
@@ -845,10 +846,10 @@ These two code snippets are equivalent with variable names as the only exception
     Err(SystemError::Internal(error)) =&gt; {
         return Err(error);
     }
-};
-</code></pre>
+};</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath line=792" data-start-line="792"><code>actual_resources_to_pass = match callstack
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath line=792" data-start-line="792"><code>actual_resources_to_pass = match callstack
     .top()
     .unwrap()
     .clarify_passed_resources(actual_resources_to_pass)
@@ -865,13 +866,12 @@ These two code snippets are equivalent with variable names as the only exception
     Err(SystemError::Internal(error)) =&gt; {
         return Err(error);
     }
-}
-</code></pre>
+}</code></pre>
 
 Consider extracting the common code as an auxiliary function.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath line=546" data-start-line="546"><code>ergs: VALUE_TO_EMPTY_ACCOUNT_COST * ERGS_PER_GAS,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=546" data-start-line="546"><code>ergs: VALUE_TO_EMPTY_ACCOUNT_COST * ERGS_PER_GAS,</code></pre>
 
 Code duplication (about 30 lines) can be avoided by moving `assert_eq!` from inside of the `match` expression and extracting the rest as function `fn recompute_hash(preimage_type: PreimageType, buffered: UsizeAlignedByteBox<Global>) -> Bytes32`.
 
@@ -888,8 +888,8 @@ Then there would be something like:
 }
 </code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath line=546" data-start-line="546"><code>ergs: VALUE_TO_EMPTY_ACCOUNT_COST * ERGS_PER_GAS,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=546" data-start-line="546"><code>ergs: VALUE_TO_EMPTY_ACCOUNT_COST * ERGS_PER_GAS,</code></pre>
 
 The constant `VALUE_TO_EMPTY_ACCOUNT_COST` is a duplicate of `NEWACCOUNT`. Both are defined in the file `evm_interpreter/src/gas_constants.rs` (out of scope) as `25_000`.
 
@@ -981,13 +981,13 @@ error[E0599]: no method named `eip1559_tx_calculate_signed_hash` found for struc
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/io_subsystem.rs</div><pre class="language-rust" data-attributes="filepath line=74" data-start-line="74"><code>assert!(self.storage.storage_cache.has_frames_opened() == false);
-assert!(self.storage.account_data_cache.has_frames_opened() == false);
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/io_subsystem.rs</div>
+<pre class="language-rust" data-attributes="filepath line=74" data-start-line="74"><code>assert!(self.storage.storage_cache.has_frames_opened() == false);
+assert!(self.storage.account_data_cache.has_frames_opened() == false);</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=204" data-start-line="204"><code>if is_warm == false {
-    if cold_read_charged == false {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=204" data-start-line="204"><code>if is_warm == false {
+    if cold_read_charged == false {</code></pre>
 
 Negating predicates is more readable than comparing to `false`.
 
@@ -1006,8 +1006,8 @@ Examples:
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath line=504" data-start-line="504"><code>return Err(CallPreparationError::System(SystemError::OutOfResources));
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=504" data-start-line="504"><code>return Err(CallPreparationError::System(SystemError::OutOfResources));</code></pre>
 
 There can be other kinds of error returned by the `read_account_properties` function from the `account_cache.rs` file, since it calls `self.materialize_element` which can return:
 
@@ -1016,30 +1016,30 @@ There can be other kinds of error returned by the `read_account_properties` func
 - `InternalError("Unsupported EE")`  
   Converting all of them into `OutOfResources` can hinder future crashes investigation.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath line=575" data-start-line="575"><code>return Err(CallPreparationError::System(SystemError::OutOfResources));
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=575" data-start-line="575"><code>return Err(CallPreparationError::System(SystemError::OutOfResources));</code></pre>
 
 The error name is misleading since the reason for failure is positive-value transfer with an inappropriate modifier.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/preimage_cache.rs</div><pre class="language-rust" data-attributes="filepath context line=73" data-start-line="73"><code>fn expose_preimage&lt;const PROOF_ENV: bool&gt;(
-) -&gt; Result&lt;&amp;'static [u8], InternalError&gt; {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/preimage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=73" data-start-line="73"><code>fn expose_preimage&lt;const PROOF_ENV: bool&gt;(
+) -&gt; Result&lt;&amp;'static [u8], InternalError&gt; {</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/preimage_cache.rs</div><pre class="language-rust" data-attributes="filepath context line=224" data-start-line="224"><code>fn get_preimage&lt;const PROOF_ENV: bool&gt;(
-) -&gt; Result&lt;&amp;'static [u8], InternalError&gt; {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/preimage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=224" data-start-line="224"><code>fn get_preimage&lt;const PROOF_ENV: bool&gt;(
+) -&gt; Result&lt;&amp;'static [u8], InternalError&gt; {</code></pre>
 
 The return types of functions `expose_preimage` and `get_preimage` are declared as the `Result` type, however the `Err` variant of it is never actually returned. On the other hand, both function definitions contain many potential panics.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/io_subsystem.rs</div><pre class="language-rust" data-attributes="filepath line=575" data-start-line="575"><code>if of {
-    return Err(
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/io_subsystem.rs</div>
+<pre class="language-rust" data-attributes="filepath line=575" data-start-line="575"><code>if of {
+    return Err(</code></pre>
 
 Using `checked_add` and `checked_sub` instead of `overflowing_add` and `overflowing_sub` is more concise and error-proof due to inability to use the wrapped value. There are many other usages like this in the codebase.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/messages_storage.rs</div><pre class="language-rust" data-attributes="filepath line=138" data-start-line="138"><code>    .checked_add(total_pubdata as u32 as i32)
-    .unwrap();
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/messages_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=138" data-start-line="138"><code>    .checked_add(total_pubdata as u32 as i32)
+    .unwrap();</code></pre>
 
 Throughout the codebase, there are many `unwrap()` calls and assertions instead of typed errors. Panics hinder issues investigation when they happen in production.
 
@@ -1053,13 +1053,13 @@ Throughout the codebase, there are many `unwrap()` calls and assertions instead 
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=111" data-start-line="111"><code>fn materialize_element&lt;const PROOF_ENV: bool&gt;(
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=111" data-start-line="111"><code>fn materialize_element&lt;const PROOF_ENV: bool&gt;(</code></pre>
 
 This function is too big (100 lines).
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath context line=585" data-start-line="585"><code>fn prepare_for_call(
-    match SystemExt::io(self).transfer_nominal_token_value(
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=585" data-start-line="585"><code>fn prepare_for_call(
+    match SystemExt::io(self).transfer_nominal_token_value(</code></pre>
 
 The function `handle_requested_external_call_to_special_address_space` is intended to prevent positive-value transfers to kernel space unless the configuration flag `transfers_to_kernel_space` is engaged or the `callee` is explicitly set to `BOOTLOADER_FORMAL_ADDRESS`.
 
@@ -1089,36 +1089,36 @@ The conjunction of the two conditions is equivalent to `call_values.nominal_toke
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div><pre class="language-rust" data-attributes="filepath line=306" data-start-line="306"><code>AddressDataDiff::Full =&gt; 118,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div>
+<pre class="language-rust" data-attributes="filepath line=306" data-start-line="306"><code>AddressDataDiff::Full =&gt; 118,</code></pre>
 
 Should the constant `ENCODED_SIZE` be used instead?
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=92" data-start-line="92"><code>const COLD_PROPERTIES_ACCESS_EXTRA_COST: BaseResources = BaseResources {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=92" data-start-line="92"><code>const COLD_PROPERTIES_ACCESS_EXTRA_COST: BaseResources = BaseResources {
     spendable: BaseComputationalResources {
-        ergs: 2500 * ERGS_PER_GAS,
-</code></pre>
+        ergs: 2500 * ERGS_PER_GAS,</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath line=120" data-start-line="120"><code>if is_warm_write == false { total_cost + 100 }
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=120" data-start-line="120"><code>if is_warm_write == false { total_cost + 100 }</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/storage_cache.rs</div><pre class="language-rust" data-attributes="filepath line=159" data-start-line="159"><code>Appearance::Updated =&gt; size += 32,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/storage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=159" data-start-line="159"><code>Appearance::Updated =&gt; size += 32,</code></pre>
 
 Constants `2500`, `100` and `32` should be declared and documented better.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div><pre class="language-rust" data-attributes="filepath line=222" data-start-line="222"><code>|| block_number &lt; current_block_number.saturating_sub(256)
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=222" data-start-line="222"><code>|| block_number &lt; current_block_number.saturating_sub(256)</code></pre>
 
 Although the number `256` is clear and correct, it's still better to declare it as a named constant.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=512" data-start-line="512"><code>Some(Bytes32::from_u256_be(U256::from_limbs([
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=512" data-start-line="512"><code>Some(Bytes32::from_u256_be(U256::from_limbs([
     0x7bfad8045d85a470,
     0xe500b653ca82273b,
     0x927e7db2dcc703c0,
     0xc5d2460186f7233c,
-])));
-</code></pre>
+])));</code></pre>
 
 This 32‑byte value is the well‐known “empty code hash” and should be declared as a named constant.
 
@@ -1132,102 +1132,103 @@ This 32‑byte value is the well‐known “empty code hash” and should be dec
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div><pre class="language-rust" data-attributes="filepath line=21" data-start-line="21"><code>impl&lt;const N: u8&gt; VersioningData&lt;N&gt; {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div>
+<pre class="language-rust" data-attributes="filepath line=21" data-start-line="21"><code>impl&lt;const N: u8&gt; VersioningData&lt;N&gt; {</code></pre>
 
 This declaration can be made more readable:
 
 - Use a descriptive name instead of `N`, for example `DEPLOYED` since the parameter is used to denote the deployed state
 - The constructor name `empty` can be too ambiguous, it might be suitable to call it `deployed` to contrast it with `non_deployed`
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/mod.rs</div><pre class="language-rust" data-attributes="filepath line=47" data-start-line="47"><code>pub trait BasicBootloaderExecutionConfig: 'static + Clone + Copy + core::fmt::Debug
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=47" data-start-line="47"><code>pub trait BasicBootloaderExecutionConfig: 'static + Clone + Copy + core::fmt::Debug
 {
-    const SKIP_AA_AND_EXECUTE_CALL: bool;
-</code></pre>
+    const SKIP_AA_AND_EXECUTE_CALL: bool;</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/mod.rs</div><pre class="language-rust" data-attributes="filepath context line=202" data-start-line="202"><code>fn apply_persistent_changes(
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=202" data-start-line="202"><code>fn apply_persistent_changes(
 // storage can now write all the changes to tree if needed
 if verify_io {
 let it = storage_cache.net_diffs_iter();
 
 tree_view
-    .verify_and_apply_batch(oracle, it, allocator, logger)
-</code></pre>
+    .verify_and_apply_batch(oracle, it, allocator, logger)</code></pre>
 
 The name of `SKIP_AA_AND_EXECUTE_CALL` configuration parameter can be misleading for new developers. When this flag is set to `true`, strictly speaking, only validation and refunding are skipped. Such configuration is used for call simulation.
 
 Additionally, the inverted value of this parameter is passed as the `verify_io` parameter of `fn finish`, it would add clarity if the name of the parameter reflected it, e.g. `ONLY_SIMULATE` or `SKIP_VALIDATION`.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=423" data-start-line="423"><code>fn read_account_balance_assuming_warm(
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=423" data-start-line="423"><code>fn read_account_balance_assuming_warm(</code></pre>
 
 It would be better to be explicit that it is intended to be used only in the context of the `SELFBALANCE` opcode. Similarly about the `KNOWN_TO_BE_WARM_PROPERTIES_ACCESS_COST` constant.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/abstract_account.rs</div><pre class="language-rust" data-attributes="filepath line=34" data-start-line="34"><code>if tx.is_eip_712() &amp;&amp; aa_enabled &amp;&amp; is_contract {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/abstract_account.rs</div>
+<pre class="language-rust" data-attributes="filepath line=34" data-start-line="34"><code>if tx.is_eip_712() &amp;&amp; aa_enabled &amp;&amp; is_contract {
     AA::Contract(PhantomData)
 } else {
     AA::EOA(PhantomData)
-}
-</code></pre>
+}</code></pre>
 
 The name `EOA` is misleading here since the EOA is not the only account type it can handle, the `EOA` account model simply represents the “classical” Ethereum account model. Smart contracts are implicitly routed to this account model when the Account Abstraction is disabled, i.e. when `AA_ENABLED` is `false`, but `is_contract` is `true`.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs:746</div><pre class="language-rust" data-attributes="filepath context line=746" data-start-line="746"><code>UpdateQueryError::NumericBoundsError =&gt; {
-TxError::Validation(InvalidTransaction::LackOfFundForMaxFee {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs:746</div>
+<pre class="language-rust" data-attributes="filepath context line=746" data-start-line="746"><code>UpdateQueryError::NumericBoundsError =&gt; {
+TxError::Validation(InvalidTransaction::LackOfFundForMaxFee {</code></pre>
 
 The `NumericBoundsError` can be caused also by an overflow.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/run_single_interaction.rs</div><pre class="language-rust" data-attributes="filepath line=43" data-start-line="43"><code>InternalError("Insufficient balance while minting").into()
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/run_single_interaction.rs</div>
+<pre class="language-rust" data-attributes="filepath line=43" data-start-line="43"><code>InternalError("Insufficient balance while minting").into()</code></pre>
 
 The error is actually about overflows, not about insufficient balance.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath line=45" data-start-line="45"><code>/// Helper to revert the caller's frame in case of a failure
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath line=45" data-start-line="45"><code>/// Helper to revert the caller's frame in case of a failure
 /// while preparing to execute an external call.
 /// If [callstack] is empty, then we're in the entry frame.
 ///
-fn fail_deployment
-</code></pre>
+fn fail_deployment</code></pre>
 
 The commentary by the function `fail_deployment` is a duplicate of the commentary by the function `fail_external_call` in the same file. The words “external call” should be replaced with “deployment”.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/events_storage.rs</div><pre class="language-rust" data-attributes="filepath line=66" data-start-line="66"><code>rollback_depths_and_pubdata_stack
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/events_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=66" data-start-line="66"><code>rollback_depths_and_pubdata_stack</code></pre>
 
 The structure `EventsStorage` does not use pubdata, so this field should be renamed.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/supported_ees.rs</div><pre class="language-rust" data-attributes="filepath line=39" data-start-line="39"><code>pub fn clarify_passed_resources
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/supported_ees.rs</div>
+<pre class="language-rust" data-attributes="filepath line=39" data-start-line="39"><code>pub fn clarify_passed_resources</code></pre>
 
 This function seems to only apply the 63/64 rule and should be named accordingly.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/supported_ees.rs</div><pre class="language-rust" data-attributes="filepath line=33" data-start-line="33"><code>pub fn ee_version(&amp;self) -&gt; u8 {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/supported_ees.rs</div>
+<pre class="language-rust" data-attributes="filepath line=33" data-start-line="33"><code>pub fn ee_version(&amp;self) -&gt; u8 {
 	match self {
-    	Self::EVM(..) =&gt; ExecutionEnvironmentType::EVM as u8,
-</code></pre>
+    	Self::EVM(..) =&gt; ExecutionEnvironmentType::EVM as u8,</code></pre>
 
 The function is called as `ee_version` but it actually returns the type identifying the execution environment. The same value is produced by `ee_type`. This can be slightly misleading since usually the term “version” denotes the incremental number used to track evolution of the product.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div><pre class="language-rust" data-attributes="filepath line=212" data-start-line="212"><code>let to_ee_type = if !transaction.reserved[1].read().is_zero()
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div>
+<pre class="language-rust" data-attributes="filepath line=212" data-start-line="212"><code>let to_ee_type = if !transaction.reserved[1].read().is_zero()</code></pre>
 
 Slightly misleading name `to_ee_type`, something like `deployment_to_ee_type` would be more understandable.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/preimage_cache.rs</div><pre class="language-rust" data-attributes="filepath line=203" data-start-line="203"><code>type PreimageType = PreimageRequest;
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/preimage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=203" data-start-line="203"><code>type PreimageType = PreimageRequest;</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/new_preimages_publication_storage.rs</div><pre class="language-rust" data-attributes="filepath line=11" data-start-line="11"><code>pub enum PreimageType {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/new_preimages_publication_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=11" data-start-line="11"><code>pub enum PreimageType {
     Bytecode = 0,
     AccountData = 1,
-}
-</code></pre>
+}</code></pre>
 
 The name `PreimageRequest` seems to be perfectly suitable for something that is passed into getter/setter functions.
 
 ## Incomprehensible error messages
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div><pre class="language-rust" data-attributes="filepath"><code>.ok_or(InternalError("gp*gl"))?;
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath"><code>.ok_or(InternalError("gp*gl"))?;
 .ok_or(InternalError("td-pto"))
 .ok_or(InternalError("v+tic"))?;
 .ok_or(InternalError("gc*gp"))?;
@@ -1238,13 +1239,13 @@ The name `PreimageRequest` seems to be perfectly suitable for something that is 
 .ok_or(InternalError("bba-bbb"))?;
 .ok_or(InternalError("tgf*gp"))?;
 .ok_or(InternalError("fa+v"))
-.ok_or(InternalError("mfpg*gl"))?;
-</code></pre>
+.ok_or(InternalError("mfpg*gl"))?;</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div><pre class="language-rust" data-attributes="filepath"><code>.ok_or(InternalError("mfpg*gl"))?;
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div>
+<pre class="language-rust" data-attributes="filepath"><code>.ok_or(InternalError("mfpg*gl"))?;</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/gas_helpers.rs</div><pre class="language-rust" data-attributes="filepath"><code>.ok_or(InternalError("gpp*LTIP"))?;
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/gas_helpers.rs</div>
+<pre class="language-rust" data-attributes="filepath"><code>.ok_or(InternalError("gpp*LTIP"))?;
 .ok_or(InternalError("ipo+LTIG"))?;
 .ok_or(InternalError("tuo+io"))?;
 .ok_or(InternalError("glft*EPF"))?,
@@ -1252,8 +1253,7 @@ The name `PreimageRequest` seems to be perfectly suitable for something that is 
 .ok_or(InternalError("nzb*CNZBGC"))?;
 .ok_or(InternalError("zc+nzc"))
 .ok_or(InternalError("gc*gp"))?;
-.ok_or(InternalError("cps*epp"))
-</code></pre>
+.ok_or(InternalError("cps*epp"))</code></pre>
 
 The type `InternalError` is intended to be used only with errors that must never actually happen, and it is not intended to be reported to users. The messages attached to such errors are strictly enough to locate them in case such errors happen.
 
@@ -1297,10 +1297,10 @@ Some of such comments represent significant features and should be tracked in a 
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath"><code>CS: Stack&lt;SupportedEEVMState&lt;S::UsermodeSystem&gt;, S::Allocator&gt;,
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath"><code>CS: Stack&lt;SupportedEEVMState&lt;S::UsermodeSystem&gt;, S::Allocator&gt;,
 ...
-callstack: &amp;mut CS,
-</code></pre>
+callstack: &amp;mut CS,</code></pre>
 
 In many functions, the `callstack` parameter is used only to query the frame at the top, i.e. as `callstack.top()`. It can be replaced by a minimalistic parameter `topframe: Option<&mut SupportedEEVMState<S::UsermodeSystem>>`. The type parameter `CS` can be removed from such functions, too. Such a refactoring would make code easier to review and maintain.
 
@@ -1313,16 +1313,16 @@ List of functions that can be improved by such refactoring:
 - `handle_requested_external_call_to_special_address_space`
 - `run_call_preparation`
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath line=697" data-start-line="697"><code>let is_entry_frame = callstack.top().is_none();
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath line=697" data-start-line="697"><code>let is_entry_frame = callstack.top().is_none();</code></pre>
 
 The boolean `is_entry_frame` is inverse of `should_finish_callee_frame_on_error`, because `callstack` has not been modified since the last time `callstack.top().is_none()` was computed.
 
 The parameter `should_finish_callee_frame_on_error` is redundant.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div><pre class="language-rust" data-attributes="filepath context line=78" data-start-line="78"><code>fn validate&lt;
-    caller_is_code: bool,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=78" data-start-line="78"><code>fn validate&lt;
+    caller_is_code: bool,</code></pre>
 
 <pre class="language-rust" data-attributes="line=85" data-start-line="85"><code>// EIP-3607: Reject transactions from senders with deployed code
 if caller_is_code {
@@ -1342,9 +1342,9 @@ The parameter `caller_is_code` can have the only value `false` since the `Contra
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath context line=62" data-start-line="62"><code>fn fail_external_call&lt;
-match callstack.top() {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=62" data-start-line="62"><code>fn fail_external_call&lt;
+match callstack.top() {</code></pre>
 
 <pre class="language-rust" data-attributes="line=70" data-start-line="70"><code>Some(vm) =&gt; {
     if finish_callee_frame {
@@ -1352,9 +1352,9 @@ match callstack.top() {
 
 Variable `finish_callee_frame` always holds the same value as `callstack.top().is_some()` which is exactly the case already matched before.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div><pre class="language-rust" data-attributes="filepath context line=184" data-start-line="184"><code>fn fail_deployment&lt;
-match callstack.top() {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=184" data-start-line="184"><code>fn fail_deployment&lt;
+match callstack.top() {</code></pre>
 
 <pre class="language-rust" data-attributes="line=191" data-start-line="191"><code>Some(vm) =&gt; {
     if finish_callee_frame {
@@ -1376,32 +1376,32 @@ The value of the parameter `finish_callee_frame` is explicitly `true` in the cur
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div><pre class="language-rust" data-attributes="filepath line=263" data-start-line="263"><code>deployed_address: DeployedAddress::CallNoAddress,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div>
+<pre class="language-rust" data-attributes="filepath line=263" data-start-line="263"><code>deployed_address: DeployedAddress::CallNoAddress,</code></pre>
 
 Using type `Option<DeployedAddress>`` would be clearer compared to the fake variant of `DeployedAddress`enumeration. Alternatively, consider changing struct`TxExecutionResult` to an enumeration with explicit separation between calls and deployments.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div><pre class="language-rust" data-attributes="filepath line=148" data-start-line="148"><code>let spent_on_pubdata = get_ergs_spent_for_pubdata(system, gas_per_pubdata, None)?; // TODO: should it be in ergs or gas?
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath line=148" data-start-line="148"><code>let spent_on_pubdata = get_ergs_spent_for_pubdata(system, gas_per_pubdata, None)?; // TODO: should it be in ergs or gas?</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div><pre class="language-rust" data-attributes="filepath line=906" data-start-line="906"><code>let spent_on_pubdata = u256_to_u64_saturated(&amp;spent_on_pubdata);
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath line=906" data-start-line="906"><code>let spent_on_pubdata = u256_to_u64_saturated(&amp;spent_on_pubdata);</code></pre>
 
 The type `U256` is used temporarily for multiplication, this value is being cast into `u64`. It would be better to cast it in the same place, in order to be certain about fitting into the 64 bits.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/preimage_cache.rs</div><pre class="language-rust" data-attributes="filepath line=186" data-start-line="186"><code>.add_preimage(hash, preimage.len() as u32 as i32, preimage_type)?;
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/preimage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=186" data-start-line="186"><code>.add_preimage(hash, preimage.len() as u32 as i32, preimage_type)?;</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/new_preimages_publication_storage.rs</div><pre class="language-rust" data-attributes="filepath line=19" data-start-line="19"><code>pub publication_net_bytes: i32,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/new_preimages_publication_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=19" data-start-line="19"><code>pub publication_net_bytes: i32,</code></pre>
 
 The value `preimage.len()`, of type `usize`, is first cast to `u32` and then to `i32`. Although overflow during these conversions is highly improbable—given that a preimage's size is practically limited and cannot reach 2GB—it is nonetheless unnecessary to perform any conversions.
 
 The type `usize` would be perfectly adequate for the `publication_net_bytes` field. Semantically, this value is never meant to be signed. Moreover, since `usize` can vary across different machines, it is more prudent to mirror the type, unless serialization of the `publication_net_bytes` field is explicitly required.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/run_single_interaction.rs</div><pre class="language-rust" data-attributes="filepath line=113" data-start-line="113"><code>let call_parameters = CallParameters {
-    callers_caller: B160::ZERO, // Fine to use placeholder
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/run_single_interaction.rs</div>
+<pre class="language-rust" data-attributes="filepath line=113" data-start-line="113"><code>let call_parameters = CallParameters {
+    callers_caller: B160::ZERO, // Fine to use placeholder</code></pre>
 
 Using type `Option<Address>` would be clearer and more error-proof, compared to using the default value.
 
@@ -1448,14 +1448,14 @@ As a consequence, no coverage report has been produced in `e2e_proving` mode.
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/supported_ees.rs</div><pre class="language-rust" data-attributes="filepath line=21" data-start-line="21"><code>pub fn needs_scratch_space(&amp;self) -&gt; bool {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/supported_ees.rs</div>
+<pre class="language-rust" data-attributes="filepath line=21" data-start-line="21"><code>pub fn needs_scratch_space(&amp;self) -&gt; bool {</code></pre>
 
 The function is unused and always returns `false`.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div><pre class="language-rust" data-attributes="filepath line=756" data-start-line="756"><code>require!(
-    bootloader_received_funds &gt;= required_funds,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath line=756" data-start-line="756"><code>require!(
+    bootloader_received_funds &gt;= required_funds,</code></pre>
 
 <pre class="language-rust" data-attributes="line=764" data-start-line="764"><code>let excessive_funds = bootloader_received_funds
     .checked_sub(required_funds)
@@ -1464,72 +1464,72 @@ The function is unused and always returns `false`.
 
 The error is never thrown because of the assertion.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/basic_metadata.rs</div><pre class="language-rust" data-attributes="filepath line=92" data-start-line="92"><code>// TODO: gas_limit needed?
-pub gas_limit: u64,
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/basic_metadata.rs</div>
+<pre class="language-rust" data-attributes="filepath line=92" data-start-line="92"><code>// TODO: gas_limit needed?
+pub gas_limit: u64,</code></pre>
 
 The field `gas_limit` is initialized during deserialization, but is not practically utilized.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/memory/basic_memory.rs</div><pre class="language-rust" data-attributes="filepath line=220" data-start-line="220"><code>unsafe fn clear_returndata_region(&amp;mut self) {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/memory/basic_memory.rs</div>
+<pre class="language-rust" data-attributes="filepath line=220" data-start-line="220"><code>unsafe fn clear_returndata_region(&amp;mut self) {</code></pre>
 
 The function `clear_returndata_region` is safe, the modifier `unsafe` is redundant.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=410" data-start-line="410"><code>fn tx_stats(&amp;self) -&gt; Self::TxStats {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=410" data-start-line="410"><code>fn tx_stats(&amp;self) -&gt; Self::TxStats {</code></pre>
 
 There are 10 declarations with the name `tx_stats`. None of them is actually called.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div><pre class="language-rust" data-attributes="filepath context line=254" data-start-line="254"><code>let (delta, op) = match lv.cmp(&amp;rv) {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache_entry.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=254" data-start-line="254"><code>let (delta, op) = match lv.cmp(&amp;rv) {
     core::cmp::Ordering::Equal =&gt; (U256::ZERO, CompressionStrategy::Add),
 };
 if delta == U256::ZERO {
-    break 'arm None;
-</code></pre>
+    break 'arm None;</code></pre>
 
 Statement `break 'arm None` can be inlined into the pattern matching expression. There is no need to return intermediary value and immediately compare it to already known value.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=205" data-start-line="205"><code>if cold_read_charged == false {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=205" data-start-line="205"><code>if cold_read_charged == false {</code></pre>
 
 Unreachable since `cold_read_charged` is always `true` after the call to `materialize`. The only case when it is not set by the `materialize` is when the call to `charge_cold_storage_read_extra` results in an error.
 
 The 15 lines inside the branching statement is a duplicate.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=138" data-start-line="138"><code>let mut cold_read_charged = false;
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=138" data-start-line="138"><code>let mut cold_read_charged = false;</code></pre>
 
 In fact, the variable `cold_read_charged` does not affect anything and can be removed.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div><pre class="language-rust" data-attributes="filepath line=322" data-start-line="322"><code>let _ = preimages_cache.record_preimage::&lt;false&gt;(
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath line=322" data-start-line="322"><code>let _ = preimages_cache.record_preimage::&lt;false&gt;(</code></pre>
 
 Enforcing `PROOF_ENV = false` here, but in fact the function `record_preimage` does not utilize this parameter. It can be removed from its declaration.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/warm_storage_key.rs</div><pre class="language-rust" data-attributes="filepath line=26" data-start-line="26"><code>pub struct StorageDiff {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/warm_storage_key.rs</div>
+<pre class="language-rust" data-attributes="filepath line=26" data-start-line="26"><code>pub struct StorageDiff {</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/mod.rs</div><pre class="language-rust" data-attributes="filepath line=39" data-start-line="39"><code>pub type StorageDiff = GenericPlainStorageRollbackData&lt;WarmStorageKey, WarmStorageValue&gt;;
-pub type TransientStorageDiff =
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=39" data-start-line="39"><code>pub type StorageDiff = GenericPlainStorageRollbackData&lt;WarmStorageKey, WarmStorageValue&gt;;
+pub type TransientStorageDiff =</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/mod.rs</div><pre class="language-rust" data-attributes="filepath line=160" data-start-line="160"><code>fn all_diffs&lt;'a&gt;(&amp;'a self) -&gt; impl Iterator&lt;Item = Self::Diff&lt;'a&gt;&gt; {
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/io/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=160" data-start-line="160"><code>fn all_diffs&lt;'a&gt;(&amp;'a self) -&gt; impl Iterator&lt;Item = Self::Diff&lt;'a&gt;&gt; {
     core::iter::empty()
-}
-</code></pre>
+}</code></pre>
 
 Declarations `type Diff`, `all_diffs`, `StorageDiff` and `TransientStorageDiff` are not used anywhere.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/system/system_trait/execution_environment/environment_state.rs</div><pre class="language-rust" data-attributes="filepath line=24" data-start-line="24"><code>pub struct SelfDestructParams&lt;S: System&gt; {
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/system/system_trait/execution_environment/environment_state.rs</div>
+<pre class="language-rust" data-attributes="filepath line=24" data-start-line="24"><code>pub struct SelfDestructParams&lt;S: System&gt; {</code></pre>
 
 This structure is not used. Should it be used when a call or deployment is completed?
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/events_storage.rs</div><pre class="language-rust" data-attributes="filepath line=135" data-start-line="135"><code>pub fn net_diff(
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/events_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=135" data-start-line="135"><code>pub fn net_diff(</code></pre>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/messages_storage.rs</div><pre class="language-rust" data-attributes="filepath line=175" data-start-line="175"><code>pub fn net_diff(
-</code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/messages_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=175" data-start-line="175"><code>pub fn net_diff(</code></pre>
 
 <div id="issue-26-1-inf3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">26. Unused error messages</h2>
@@ -1543,7 +1543,8 @@ This structure is not used. Should it be used when a call or deployment is compl
 
 The following error messages are not utilized anywhere in the codebase. While no security issues related to these errors have been discovered, they could indicate unhandled errors.
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/errors.rs</div><pre class="language-rust" data-attributes="filepath"><code>InvalidStructure,
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/errors.rs</div>
+<pre class="language-rust" data-attributes="filepath"><code>InvalidStructure,
 GasPriceLessThanBasefee,
 CallGasCostMoreThanGasLimit,
 OverflowPaymentInTransaction,
@@ -1552,8 +1553,7 @@ AccessListNotSupported,
 PaymasterReturnDataTooShort,
 PaymasterInvalidMagic,
 PaymasterContextInvalid,
-PaymasterContextOffsetTooLong,
-</code></pre>
+PaymasterContextOffsetTooLong,</code></pre>
 
 <div id="issue-27-1-qa3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">27. Variable can be declared in a more specific scope</h2>
@@ -1565,7 +1565,8 @@ PaymasterContextOffsetTooLong,
   </div>
 </div>
 
-<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div><pre class="language-rust" data-attributes="filepath line=840" data-start-line="840"><code>let max_refunded_gas = resources.spendable.ergs.div_floor(ERGS_PER_GAS);
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath line=840" data-start-line="840"><code>let max_refunded_gas = resources.spendable.ergs.div_floor(ERGS_PER_GAS);
 let refund_recipient = if Config::AA_ENABLED &amp;&amp; paymaster != B160::ZERO {
     let _succeeded = Self::paymaster_post_op::&lt;_, { Config::SPECIAL_ADDRESS_SPACE_BOUND }&gt;(
         system,
@@ -1580,8 +1581,7 @@ let refund_recipient = if Config::AA_ENABLED &amp;&amp; paymaster != B160::ZERO 
         gas_per_pubdata,
         validation_pubdata,
         resources,
-    )?;
-</code></pre>
+    )?;</code></pre>
 
 The variable `max_refunded_gas` is utilized only in the paymaster flow, and can be moved into that branch. This would improve readability of the function.
 
