@@ -59,8 +59,7 @@ The following areas are outside the scope of this engagement:
 
 The Rust files included in the scope are:
 
-```text
-basic_bootloader
+<pre class="language-text"><code>basic_bootloader
 └── src
     ├── bootloader
     │   ├── account_models
@@ -220,7 +219,7 @@ supporting_crates
         ├── arith.rs
         ├── lib.rs
         └── mpnat.rs
-```
+</code></pre>
 
 ## Audit Team
 
@@ -443,8 +442,7 @@ The corresponding fuzz test has been executed and has not revealed any issues.
   </div>
 </div>
 
-```rust filepath line=555 highlight=[6]
-basic_bootloader/src/bootloader/runner.rs
+<pre class="language-rust" data-attributes="filepath line=555 highlight=[6]" data-start-line="555"><code>basic_bootloader/src/bootloader/runner.rs
 // Transfers are forbidden to kernel space unless for bootloader or
 // explicitly allowed by a feature
 let transfer_allowed =
@@ -454,43 +452,39 @@ let nominal_token_value = if transfer_allowed {
 } else {
     U256::ZERO
 };
-```
+</code></pre>
 
-```rust line=573 highlight=[7]
-} = match run_call_preparation(
+<pre class="language-rust" data-attributes="line=573 highlight=[7]" data-start-line="573"><code>} = match run_call_preparation(
     callstack,
     system,
     ee_type,
     desired_resources_to_pass,
-    &call_values,
-    &call_parameters,
+    &amp;call_values,
+    &amp;call_parameters,
     should_finish_callee_frame_on_error,
 ) {
-```
+</code></pre>
 
-```rust filepath context line=720
-basic_bootloader/src/bootloader/runner.rs
-fn run_call_preparation<
+<pre class="language-rust" data-attributes="filepath context line=720" data-start-line="720"><code>basic_bootloader/src/bootloader/runner.rs
+fn run_call_preparation&lt;
 } = match system.prepare_for_call(
-```
+</code></pre>
 
-```rust filepath context line=585
-basic_system/src/system_implementation/system/mod.rs
+<pre class="language-rust" data-attributes="filepath context line=585" data-start-line="585"><code>basic_system/src/system_implementation/system/mod.rs
 fn prepare_for_call(
 match SystemExt::io(self).transfer_nominal_token_value(
-```
+</code></pre>
 
 The function `handle_requested_external_call_to_special_address_space` is intended to prevent positive-value transfers to kernel space unless the configuration flag `transfers_to_kernel_space` is engaged or the `callee` is explicitly set to `BOOTLOADER_FORMAL_ADDRESS`.
 
 However, the actual callpath to the function `transfer_nominal_token_value` is still performed with the unchanged value `call_values.nominal_token_value`. While the conditions for the transfer are evaluated and variable `nominal_token_value` is correctly set to zero when the conditions are not met, the variable is not actually utilized with the exception at the very end of the handler, after the token transfer is already performed.
 
-```rust filepath line=650
-basic_bootloader/src/bootloader/runner.rs
+<pre class="language-rust" data-attributes="filepath line=650" data-start-line="650"><code>basic_bootloader/src/bootloader/runner.rs
 let call_result =
-    if nominal_token_value != U256::ZERO && callee != BOOTLOADER_FORMAL_ADDRESS {
+    if nominal_token_value != U256::ZERO &amp;&amp; callee != BOOTLOADER_FORMAL_ADDRESS {
         CallResult::Failed { return_values }
     } else {
-```
+</code></pre>
 
 Additionally, the condition to fail the call and return `CallResult::Failed` is incorrect:
 
@@ -509,16 +503,14 @@ The conjunction of the two conditions is equivalent to `call_values.nominal_toke
   </div>
 </div>
 
-```rust filepath line=523
-basic_system/src/system_implementation/system/mod.rs
-let stipend = if !is_delegate && !nominal_token_value.is_zero() {
-```
+<pre class="language-rust" data-attributes="filepath line=523" data-start-line="523"><code>basic_system/src/system_implementation/system/mod.rs
+let stipend = if !is_delegate &amp;&amp; !nominal_token_value.is_zero() {
+</code></pre>
 
-```rust line=527
-resources
+<pre class="language-rust" data-attributes="line=527" data-start-line="527"><code>resources
 	.spendable_part_mut()
-	.try_spend_or_floor_self(&positive_value_cost);
-```
+	.try_spend_or_floor_self(&amp;positive_value_cost);
+</code></pre>
 
 The opcode `CALLCODE` is allowed to have non-zero `value` parameter, even in static context. However, this is not considered to be a state change since the transfer is to the sender itself. This edge case is not handled by the function `prepare_for_call` currently.
 
@@ -532,31 +524,27 @@ The opcode `CALLCODE` is allowed to have non-zero `value` parameter, even in sta
   </div>
 </div>
 
-```rust filepath context line=233 highlight=[1]
-zk_ee/src/system/system_trait/system.rs
+<pre class="language-rust" data-attributes="filepath context line=233 highlight=[1]" data-start-line="233"><code>zk_ee/src/system/system_trait/system.rs
 fn prepare_for_call(
     is_call_to_precompile: bool,
-```
+</code></pre>
 
-```rust filepath context line=474 highlight=[1]
-basic_system/src/system_implementation/system/mod.rs
+<pre class="language-rust" data-attributes="filepath context line=474 highlight=[1]" data-start-line="474"><code>basic_system/src/system_implementation/system/mod.rs
 fn prepare_for_call(
     is_call_to_precomile: bool, // typo here
-```
+</code></pre>
 
-```rust filepath line=726
-basic_bootloader/src/bootloader/runner.rs
+<pre class="language-rust" data-attributes="filepath line=726" data-start-line="726"><code>basic_bootloader/src/bootloader/runner.rs
 } = match system.prepare_for_call(
     false,
-```
+</code></pre>
 
 Calls to precompiles are not implemented yet, the `is_call_to_precompile` flag is always set to `false`.
 
-```rust filepath context line=260
-basic_system/src/system_implementation/system/io_subsystem.rs
+<pre class="language-rust" data-attributes="filepath context line=260" data-start-line="260"><code>basic_system/src/system_implementation/system/io_subsystem.rs
 fn emit_l1_message(
 // TODO: we should charge gas for computation needed to emit: at least to hash log(L2_TO_L1_LOG_SERIALIZE_SIZE) and build tree(~32)
-```
+</code></pre>
 
 Sending L1 messages does not incur charges for the computation spent.
 
@@ -570,10 +558,9 @@ Sending L1 messages does not incur charges for the computation spent.
   </div>
 </div>
 
-```rust filepath line=306
-basic_system/src/system_implementation/io/account_cache_entry.rs
-AddressDataDiff::Full => 118,
-```
+<pre class="language-rust" data-attributes="filepath line=306" data-start-line="306"><code>basic_system/src/system_implementation/io/account_cache_entry.rs
+AddressDataDiff::Full =&gt; 118,
+</code></pre>
 
 In the function `get_encoded_size`, called by the function `net_pubdata_used`, the size of full update is defined as `118`. However, this must coincide with the size of the `AccountProperties` structure which is `124`.
 
@@ -589,14 +576,13 @@ As a consequence, the transaction sender is charged a little bit less than neces
   </div>
 </div>
 
-```rust filepath highlight=[5] line=308
-basic_system/src/system_implementation/io/account_cache_entry.rs
-AddressDataDiff::Partial(x) => {
-    match (&x.nonce, &x.balance) {
-        (None, Some(x)) => x.bytes_touched as usize + 1,
-        (Some(x), None) => x.bytes_touched as usize + 1,
-        (Some(x), Some(y)) => 2 + x.bytes_touched as usize + y.bytes_touched as usize,
-```
+<pre class="language-rust" data-attributes="filepath highlight=[5] line=308" data-start-line="308"><code>basic_system/src/system_implementation/io/account_cache_entry.rs
+AddressDataDiff::Partial(x) =&gt; {
+    match (&amp;x.nonce, &amp;x.balance) {
+        (None, Some(x)) =&gt; x.bytes_touched as usize + 1,
+        (Some(x), None) =&gt; x.bytes_touched as usize + 1,
+        (Some(x), Some(y)) =&gt; 2 + x.bytes_touched as usize + y.bytes_touched as usize,
+</code></pre>
 
 It is possible to encode the `AddressDataDiff::Partial` using only one extra byte for all cases. The extra byte should be used to label which of 5 cases is being handled:
 
@@ -616,14 +602,13 @@ It is possible to encode the `AddressDataDiff::Partial` using only one extra byt
   </div>
 </div>
 
-```rust filepath line=111 highlight=[2, 14,16, 28]
-basic_system/src/system_implementation/system/basic_metadata.rs
+<pre class="language-rust" data-attributes="filepath line=111 highlight=[2, 14,16, 28]" data-start-line="111"><code>basic_system/src/system_implementation/system/basic_metadata.rs
 impl UsizeSerializable for BasicBlockMetadataFromOracle {
-const USIZE_LEN: usize = <U256 as UsizeSerializable>::USIZE_LEN * (3 + 256)
-      + <u64 as UsizeSerializable>::USIZE_LEN * 4
-      + <B160 as UsizeDeserializable>::USIZE_LEN;
+const USIZE_LEN: usize = &lt;U256 as UsizeSerializable&gt;::USIZE_LEN * (3 + 256)
+      + &lt;u64 as UsizeSerializable&gt;::USIZE_LEN * 4
+      + &lt;B160 as UsizeDeserializable&gt;::USIZE_LEN;
 
-fn iter(&self) -> impl ExactSizeIterator<Item = usize> {
+fn iter(&amp;self) -&gt; impl ExactSizeIterator&lt;Item = usize&gt; {
         ExactSizeChain::new(
         ExactSizeChain::new(
             ExactSizeChain::new(
@@ -631,25 +616,25 @@ fn iter(&self) -> impl ExactSizeIterator<Item = usize> {
                 ExactSizeChain::new(
                           ExactSizeChain::new(
                           ExactSizeChain::new(
-  UsizeSerializable::iter(&self.eip1559_basefee),
+  UsizeSerializable::iter(&amp;self.eip1559_basefee),
 
-  UsizeSerializable::iter(&self.gas_per_pubdata),
+  UsizeSerializable::iter(&amp;self.gas_per_pubdata),
                           ),
-                          UsizeSerializable::iter(&self.block_number),
+                          UsizeSerializable::iter(&amp;self.block_number),
                           ),
-                          UsizeSerializable::iter(&self.timestamp),
+                          UsizeSerializable::iter(&amp;self.timestamp),
                 ),
-                UsizeSerializable::iter(&self.chain_id),
+                UsizeSerializable::iter(&amp;self.chain_id),
             ),
-            UsizeSerializable::iter(&self.gas_limit),
+            UsizeSerializable::iter(&amp;self.gas_limit),
             ),
-            UsizeSerializable::iter(&self.coinbase),
+            UsizeSerializable::iter(&amp;self.coinbase),
         ),
-        UsizeSerializable::iter(&self.block_hashes),
+        UsizeSerializable::iter(&amp;self.block_hashes),
         )
     }
 }
-```
+</code></pre>
 
 The structure `BasicBlockMetadataFromOracle` implements trait `UsizeSerializable` and its function `iter` returning an iterator or type `ExactSizeIterator`. Such an iterator can provide its consumer with information about its length. While the function is implemented correctly, the related constant `USIZE_LEN` is defined incorrectly.
 
@@ -669,25 +654,22 @@ There is currently no consequence of this oversight, since the constant `USIZE_L
 
 Feasibility of these attacks is restricted only by the gas costs. Consider enforcing explicit limits on the amount of events, messages and preimage references that a single transaction can generate in case of non-EVM execution environments.
 
-```rust filepath line=65
-zk_ee/src/common_structs/events_storage.rs
+<pre class="language-rust" data-attributes="filepath line=65" data-start-line="65"><code>zk_ee/src/common_structs/events_storage.rs
 self.rollback_depth_in_current_frame += 1;
-```
+</code></pre>
 
 The variable `rollback_depth_in_current_frame` is declared as `usize`, i.e. its maximum value on 32-bit architecture is `4,294,967,295`. This could potentially overflow given that the events storage is initialized only once per block.
 
-```rust filepath line=143
-zk_ee/src/common_structs/messages_storage.rs
+<pre class="language-rust" data-attributes="filepath line=143" data-start-line="143"><code>zk_ee/src/common_structs/messages_storage.rs
 self.rollback_depth_in_current_frame += 1;
-```
+</code></pre>
 
 Similar to the issue in the events storage with the difference that messages are more expensive than events.
 
-```rust filepath line=23
-zk_ee/src/common_structs/new_preimages_publication_storage.rs
-pub fn mark_use(&mut self) {
+<pre class="language-rust" data-attributes="filepath line=23" data-start-line="23"><code>zk_ee/src/common_structs/new_preimages_publication_storage.rs
+pub fn mark_use(&amp;mut self) {
     self.num_uses += 1;
-```
+</code></pre>
 
 Although it is practically very difficult to perform an attack that submits a thousand transactions, where millions of duplicate accounts with different addresses are accessed, theoretically this could be possible in future with non-EVM execution environments. The variable `num_uses` is declared as `usize`, i.e. its maximum value on 32-bit architecture is `4,294,967,295`.
 
@@ -703,27 +685,25 @@ Although it is practically very difficult to perform an attack that submits a th
 
 Within the file `basic_bootloader/src/bootloader/transaction/mod.rs`, condition `reserved[1].read().is_zero()` is checked numerous times. But the address is never compared to the constant `SPECIAL_ADDRESS_TO_WASM_DEPLOY`, which is almost unused. Only deployment to EVM is supported right now. Defining an auxiliary function that not only performs the additional validation, but also allows handling different EE types, would ease upgrading later.
 
-```rust filepath line=37
-basic_bootloader/src/bootloader/process_transaction.rs
+<pre class="language-rust" data-attributes="filepath line=37" data-start-line="37"><code>basic_bootloader/src/bootloader/process_transaction.rs
 /// We are passing callstack from outside to reuse its memory space between different transactions.
 /// It's expected to be empty.
-```
+</code></pre>
 
 Although there is no issue in the current version of the codebase, this assumption should be asserted.
 
-```rust filepath context line=286
-basic_bootloader/src/bootloader/account_models/eoa.rs
+<pre class="language-rust" data-attributes="filepath context line=286" data-start-line="286"><code>basic_bootloader/src/bootloader/account_models/eoa.rs
 let result = match reverted {
-    false => {
+    false =&gt; {
         // Safe to do so by construction.
         match deployed_address {
-            DeployedAddress::Address(at) => ExecutionResult::Success {
+            DeployedAddress::Address(at) =&gt; ExecutionResult::Success {
                 output: ExecutionOutput::Create(returndata_region, at),
             },
-            _ => ExecutionResult::Success {
+            _ =&gt; ExecutionResult::Success {
                 output: ExecutionOutput::Call(returndata_region),
             },
-```
+</code></pre>
 
 As expected, `reverted` is always `true` for `RevertedNoAddress`. However, it would be better to assert that it doesn't leak into the `Success` branch.
 
@@ -737,53 +717,48 @@ As expected, `reverted` is always `true` for `RevertedNoAddress`. However, it wo
   </div>
 </div>
 
-```rust filepath line=585
-basic_bootloader/src/bootloader/process_transaction.rs
+<pre class="language-rust" data-attributes="filepath line=585" data-start-line="585"><code>basic_bootloader/src/bootloader/process_transaction.rs
 let validation_pubdata = system.net_pubdata_used();`
 let ergs_for_pubdata = get_ergs_spent_for_pubdata(system, gas_per_pubdata, None)?;
-```
+</code></pre>
 
 The function `get_ergs_spent_for_pubdata` calls `system.net_pubdata_used()` again, recomputing the value of `validation_pubdata`. Consider passing it as a parameter.
 
-```rust filepath line=315
-basic_system/src/system_implementation/io/account_cache.rs
+<pre class="language-rust" data-attributes="filepath line=315" data-start-line="315"><code>basic_system/src/system_implementation/io/account_cache.rs
 self.cache.for_total_diff_operands(|_, r, addr| {
     // We don't care of the left side, since we're storing the entire snapshot.
-```
+</code></pre>
 
 If the historical values are not required, it is slightly more efficient to define one more auxiliary function that skips calls to `diff_operands_total`:
 
-```rust
-&self.btree.iter().for_each(|(k, elem)| {
+<pre class="language-rust"><code>&amp;self.btree.iter().for_each(|(k, elem)| {
     let r = unsafe { elem.head.as_ref() };
     // use `k` and `r`
 });
-```
+</code></pre>
 
 Similarly, the following snippet can be optimized:
 
-```rust filepath line=152
-basic_system/src/system_implementation/io/storage_cache.rs
-pub fn net_pubdata_used(&self) -> u64 {
+<pre class="language-rust" data-attributes="filepath line=152" data-start-line="152"><code>basic_system/src/system_implementation/io/storage_cache.rs
+pub fn net_pubdata_used(&amp;self) -&gt; u64 {
     let mut size = 0;
     self.cache
-            .for_total_diff_operands::<_, ()>(|_l, r, _| {
+            .for_total_diff_operands::&lt;_, ()&gt;(|_l, r, _| {
                 match r.appearance {
-                    Appearance::Retrieved => size += 0,
-                    Appearance::Unset => size += 0,
-                    Appearance::Updated => size += 32,
+                    Appearance::Retrieved =&gt; size += 0,
+                    Appearance::Unset =&gt; size += 0,
+                    Appearance::Updated =&gt; size += 32,
                 };
-```
+</code></pre>
 
 The optimized code could simply filter only one type of `Appearance` and multiply number of such items by `32`:
 
-```rust
-&self.btree.values().filter(|elem| {
+<pre class="language-rust"><code>&amp;self.btree.values().filter(|elem| {
     let r = unsafe { elem.head.as_ref() };
     r.value.appearance == Appearance::Updated
 }).map(|_| 32)
     .sum();
-```
+</code></pre>
 
 <div id="issue-10-1-min1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">10. Using EOA account model as a fallback for smart contracts</h2>
@@ -795,10 +770,9 @@ The optimized code could simply filter only one type of `Appearance` and multipl
   </div>
 </div>
 
-```rust filepath line=34
-basic_bootloader/src/bootloader/account_models/abstract_account.rs
-if tx.is_eip_712() && aa_enabled && is_contract {
-```
+<pre class="language-rust" data-attributes="filepath line=34" data-start-line="34"><code>basic_bootloader/src/bootloader/account_models/abstract_account.rs
+if tx.is_eip_712() &amp;&amp; aa_enabled &amp;&amp; is_contract {
+</code></pre>
 
 Smart Contracts are implicitly routed to the EOA account model when the Account Abstraction is disabled, i.e. when `AA_ENABLED` is `false`, but `is_contract` is `true`.
 
@@ -818,42 +792,38 @@ This issue is reported with Low severity since only the node operator can cause 
   </div>
 </div>
 
-```rust filepath context line=256
-basic_bootloader/src/bootloader/mod.rs
-pub fn run_prepared<Config: BasicBootloaderExecutionConfig>(
+<pre class="language-rust" data-attributes="filepath context line=256" data-start-line="256"><code>basic_bootloader/src/bootloader/mod.rs
+pub fn run_prepared&lt;Config: BasicBootloaderExecutionConfig&gt;(
 while let Some(next_tx_data_len_bytes) = {
     let mut writable = initial_calldata_buffer.into_writable();
     system
-        .try_begin_next_tx(&mut writable)
-```
+        .try_begin_next_tx(&amp;mut writable)
+</code></pre>
 
-```rust filepath line=399
-basic_system/src/system_implementation/system/mod.rs
+<pre class="language-rust" data-attributes="filepath line=399" data-start-line="399"><code>basic_system/src/system_implementation/system/mod.rs
 fn try_begin_next_tx(
-    &mut self,
-    tx_write_iter: &mut impl zk_ee::oracle::SafeUsizeWritable,
-) -> Result<Option<usize>, ()> {
+    &amp;mut self,
+    tx_write_iter: &amp;mut impl zk_ee::oracle::SafeUsizeWritable,
+) -&gt; Result&lt;Option&lt;usize&gt;, ()&gt; {
     let next_tx_len_bytes = match self.io.oracle.try_begin_next_tx() {
-                None => return Ok(None),
-                Some(size) => size.get() as usize,
+                None =&gt; return Ok(None),
+                Some(size) =&gt; size.get() as usize,
 };
-```
+</code></pre>
 
-```rust filepath context line=385 highlight=[1]
-basic_system/src/system_implementation/io/account_cache.rs
-fn begin_new_tx(&mut self) {
+<pre class="language-rust" data-attributes="filepath context line=385 highlight=[1]" data-start-line="385"><code>basic_system/src/system_implementation/io/account_cache.rs
+fn begin_new_tx(&amp;mut self) {
 self.cache.commit();
-```
+</code></pre>
 
 The `NewModelAccountCache` implements the functions `begin_new_tx` and `finish_tx`, similarly to other kinds of cache in the codebase. However, flushing the inner `cache` structure is implemented during the function `begin_new_tx` instead of the function `finish_tx`.
 
 As a consequence, the function `run_prepared` flushes the inner `cache` of `NewModelAccountCache` right after initializing the very first transaction, when it is not needed yet. On the other hand, after processing the last transaction, it does not flush it, because the call to `self.io.oracle.try_begin_next_tx()` returns `None`, so `try_begin_next_tx` does not reach `begin_new_tx`.
 
-```rust filepath context line=127 highlight=[1]
-basic_system/src/system_implementation/io/storage_cache.rs
-pub fn begin_new_tx(&mut self) {
+<pre class="language-rust" data-attributes="filepath context line=127 highlight=[1]" data-start-line="127"><code>basic_system/src/system_implementation/io/storage_cache.rs
+pub fn begin_new_tx(&amp;mut self) {
     self.cache.commit();
-```
+</code></pre>
 
 Similarly, `GenericPubdataAwarePlainStorage` implements flushing the cache in `begin_new_tx`. In contrast to the `NewModelAccountCache` it does not implement the function `finish_tx`.
 
@@ -883,15 +853,14 @@ The impact is not significant since the excess is refunded later, but if both fl
 
 These two code snippets are equivalent with variable names as the only exception:
 
-```rust filepath line=744
-basic_bootloader/src/bootloader/runner.rs
+<pre class="language-rust" data-attributes="filepath line=744" data-start-line="744"><code>basic_bootloader/src/bootloader/runner.rs
 let mut resources_to_pass = match callstack
     .top()
     .unwrap()
     .clarify_passed_resources(desired_resources_to_pass)
 {
-    Ok(resources_to_pass) => resources_to_pass,
-    Err(SystemError::OutOfResources) => {
+    Ok(resources_to_pass) =&gt; resources_to_pass,
+    Err(SystemError::OutOfResources) =&gt; {
         return fail_external_call(
             callstack,
             system,
@@ -899,21 +868,20 @@ let mut resources_to_pass = match callstack
         )
         .map(Either::Right)
     }
-    Err(SystemError::Internal(error)) => {
+    Err(SystemError::Internal(error)) =&gt; {
         return Err(error);
     }
 };
-```
+</code></pre>
 
-```rust filepath line=792
-basic_bootloader/src/bootloader/runner.rs
+<pre class="language-rust" data-attributes="filepath line=792" data-start-line="792"><code>basic_bootloader/src/bootloader/runner.rs
 actual_resources_to_pass = match callstack
     .top()
     .unwrap()
     .clarify_passed_resources(actual_resources_to_pass)
 {
-    Ok(x) => x,
-    Err(SystemError::OutOfResources) => {
+    Ok(x) =&gt; x,
+    Err(SystemError::OutOfResources) =&gt; {
         return fail_external_call(
             callstack,
             system,
@@ -921,25 +889,23 @@ actual_resources_to_pass = match callstack
         )
         .map(Either::Right)
     }
-    Err(SystemError::Internal(error)) => {
+    Err(SystemError::Internal(error)) =&gt; {
         return Err(error);
     }
 }
-```
+</code></pre>
 
 Consider extracting the common code as an auxiliary function.
 
-```rust filepath line=546
-basic_system/src/system_implementation/system/mod.rs
+<pre class="language-rust" data-attributes="filepath line=546" data-start-line="546"><code>basic_system/src/system_implementation/system/mod.rs
 ergs: VALUE_TO_EMPTY_ACCOUNT_COST * ERGS_PER_GAS,
-```
+</code></pre>
 
 Code duplication (about 30 lines) can be avoided by moving `assert_eq!` from inside of the `match` expression and extracting the rest as function `fn recompute_hash(preimage_type: PreimageType, buffered: UsizeAlignedByteBox<Global>) -> Bytes32`.
 
 Then there would be something like:
 
-```rust
-if PROOF_ENV {
+<pre class="language-rust"><code>if PROOF_ENV {
     assert_eq!({
         recompute_hash(preimage_type, buffered.clone()), *hash
     });
@@ -948,12 +914,11 @@ if PROOF_ENV {
         recompute_hash(preimage_type, buffered.clone()), *hash
     });
 }
-```
+</code></pre>
 
-```rust filepath line=546
-basic_system/src/system_implementation/system/mod.rs
+<pre class="language-rust" data-attributes="filepath line=546" data-start-line="546"><code>basic_system/src/system_implementation/system/mod.rs
 ergs: VALUE_TO_EMPTY_ACCOUNT_COST * ERGS_PER_GAS,
-```
+</code></pre>
 
 The constant `VALUE_TO_EMPTY_ACCOUNT_COST` is a duplicate of `NEWACCOUNT`. Both are defined in the file `evm_interpreter/src/gas_constants.rs` (out of scope) as `25_000`.
 
@@ -969,9 +934,8 @@ The constant `VALUE_TO_EMPTY_ACCOUNT_COST` is a duplicate of `NEWACCOUNT`. Both 
 
 Fuzzing has been performed for all targets, with 32 parallel jobs on a machine with 48 CPU cores. Each fuzzing session was configured with a timeout of 12 hours (43,200 seconds) per target:
 
-```sh
-./fuzz.sh parallel --jobs=32 --timeout=43200
-```
+<pre class="language-sh"><code>./fuzz.sh parallel --jobs=32 --timeout=43200
+</code></pre>
 
 ## Failing assertion in `bootloader_process_transaction`
 
@@ -979,64 +943,62 @@ A crash in the `bootloader_process_transaction` fuzz target has been discovered,
 
 Here is the abridged output of this crash:
 
-```
-$ ./fuzz.sh check
+<pre><code>$ ./fuzz.sh check
 🚨 Crash detected! 🚨
 ./fuzz/artifacts/bootloader_process_transaction/crash-225795e7619398feb58be0939c44029a26cc60a5
 root@fuzz:~/workspace/matter-labs-zk_ee/tests/fuzzer# cargo fuzz run -D bootloader_process_transaction fuzz/artifacts/bootloader_process_transaction/crash-225795e7619398feb58be0939c44029a26cc60a5
 ...
 Running: fuzz/artifacts/bootloader_process_transaction/crash-225795e7619398feb58be0939c44029a26cc60a5
 
-thread '<unnamed>' panicked at /root/workspace/matter-labs-zk_ee/basic_bootloader/src/bootloader/transaction/mod.rs:396:13:
+thread '&lt;unnamed&gt;' panicked at /root/workspace/matter-labs-zk_ee/basic_bootloader/src/bootloader/transaction/mod.rs:396:13:
 assertion failed: v == 27 || v == 28
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ==66280== ERROR: libFuzzer: deadly signal
 ...
 Error: Fuzz target exited with exit status: 77
-```
+</code></pre>
 
 ## Failure of coverage analysis
 
 Running the fuzzing coverage analysis via `./fuzz.sh coverage` failed consistently with the error:
 
-```text
-   Compiling fuzzer-fuzz v0.0.0 (/root/workspace/matter-labs-zk_ee/tests/fuzzer/fuzz)
+<pre class="language-text"><code>   Compiling fuzzer-fuzz v0.0.0 (/root/workspace/matter-labs-zk_ee/tests/fuzzer/fuzz)
 error[E0061]: this method takes 1 argument but 0 arguments were supplied
-   --> fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:29:29
+   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:29:29
     |
 29  |         let _ = transaction.calculate_hash();
     |                             ^^^^^^^^^^^^^^-- argument #1 of type `u64` is missing
     |
 ...
 error[E0061]: this method takes 1 argument but 0 arguments were supplied
-   --> fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:34:29
+   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:34:29
     |
 34  |         let _ = transaction.calculate_hash();
     |                             ^^^^^^^^^^^^^^-- argument #1 of type `u64` is missing
     |
 ...
 error[E0599]: no method named `legacy_tx_calculate_signed_hash` found for struct `ZkSyncTransaction` in the current scope
-  --> fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:47:29
+  --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:47:29
    |
 47 |                 transaction.legacy_tx_calculate_signed_hash(chain_id)
    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
 ...
 error[E0599]: no method named `eip2930_tx_calculate_signed_hash` found for struct `ZkSyncTransaction` in the current scope
-   --> fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:50:29
+   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:50:29
     |
 50  |                 transaction.eip2930_tx_calculate_signed_hash(chain_id)
     |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ...
 error[E0599]: no method named `eip1559_tx_calculate_signed_hash` found for struct `ZkSyncTransaction` in the current scope
-   --> fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:53:29
+   --&gt; fuzz/fuzz_targets/bootloader/bootloader_tx_parser.rs:53:29
     |
 53  |                 transaction.eip1559_tx_calculate_signed_hash(chain_id)
     |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
 ...
 ⚠️ Failed to generate coverage data
-```
+</code></pre>
 
 <div id="issue-15-2-qa1" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">15. Equalities with boolean constants</h2>
@@ -1048,17 +1010,15 @@ error[E0599]: no method named `eip1559_tx_calculate_signed_hash` found for struc
   </div>
 </div>
 
-```rust filepath line=74
-basic_system/src/system_implementation/system/io_subsystem.rs
+<pre class="language-rust" data-attributes="filepath line=74" data-start-line="74"><code>basic_system/src/system_implementation/system/io_subsystem.rs
 assert!(self.storage.storage_cache.has_frames_opened() == false);
 assert!(self.storage.account_data_cache.has_frames_opened() == false);
-```
+</code></pre>
 
-```rust filepath line=204
-basic_system/src/system_implementation/io/account_cache.rs
+<pre class="language-rust" data-attributes="filepath line=204" data-start-line="204"><code>basic_system/src/system_implementation/io/account_cache.rs
 if is_warm == false {
     if cold_read_charged == false {
-```
+</code></pre>
 
 Negating predicates is more readable than comparing to `false`.
 
@@ -1077,10 +1037,9 @@ Examples:
   </div>
 </div>
 
-```rust filepath line=504
-basic_system/src/system_implementation/system/mod.rs
+<pre class="language-rust" data-attributes="filepath line=504" data-start-line="504"><code>basic_system/src/system_implementation/system/mod.rs
 return Err(CallPreparationError::System(SystemError::OutOfResources));
-```
+</code></pre>
 
 There can be other kinds of error returned by the `read_account_properties` function from the `account_cache.rs` file, since it calls `self.materialize_element` which can return:
 
@@ -1089,40 +1048,35 @@ There can be other kinds of error returned by the `read_account_properties` func
 - `InternalError("Unsupported EE")`  
   Converting all of them into `OutOfResources` can hinder future crashes investigation.
 
-```rust filepath line=575
-basic_system/src/system_implementation/system/mod.rs
+<pre class="language-rust" data-attributes="filepath line=575" data-start-line="575"><code>basic_system/src/system_implementation/system/mod.rs
 return Err(CallPreparationError::System(SystemError::OutOfResources));
-```
+</code></pre>
 
 The error name is misleading since the reason for failure is positive-value transfer with an inappropriate modifier.
 
-```rust filepath context line=73
-basic_system/src/system_implementation/io/preimage_cache.rs
-fn expose_preimage<const PROOF_ENV: bool>(
-) -> Result<&'static [u8], InternalError> {
-```
+<pre class="language-rust" data-attributes="filepath context line=73" data-start-line="73"><code>basic_system/src/system_implementation/io/preimage_cache.rs
+fn expose_preimage&lt;const PROOF_ENV: bool&gt;(
+) -&gt; Result&lt;&amp;'static [u8], InternalError&gt; {
+</code></pre>
 
-```rust filepath context line=224
-basic_system/src/system_implementation/io/preimage_cache.rs
-fn get_preimage<const PROOF_ENV: bool>(
-) -> Result<&'static [u8], InternalError> {
-```
+<pre class="language-rust" data-attributes="filepath context line=224" data-start-line="224"><code>basic_system/src/system_implementation/io/preimage_cache.rs
+fn get_preimage&lt;const PROOF_ENV: bool&gt;(
+) -&gt; Result&lt;&amp;'static [u8], InternalError&gt; {
+</code></pre>
 
 The return types of functions `expose_preimage` and `get_preimage` are declared as the `Result` type, however the `Err` variant of it is never actually returned. On the other hand, both function definitions contain many potential panics.
 
-```rust filepath line=575
-basic_system/src/system_implementation/system/io_subsystem.rs
+<pre class="language-rust" data-attributes="filepath line=575" data-start-line="575"><code>basic_system/src/system_implementation/system/io_subsystem.rs
 if of {
     return Err(
-```
+</code></pre>
 
 Using `checked_add` and `checked_sub` instead of `overflowing_add` and `overflowing_sub` is more concise and error-proof due to inability to use the wrapped value. There are many other usages like this in the codebase.
 
-```rust filepath line=138
-zk_ee/src/common_structs/messages_storage.rs
+<pre class="language-rust" data-attributes="filepath line=138" data-start-line="138"><code>zk_ee/src/common_structs/messages_storage.rs
     .checked_add(total_pubdata as u32 as i32)
     .unwrap();
-```
+</code></pre>
 
 Throughout the codebase, there are many `unwrap()` calls and assertions instead of typed errors. Panics hinder issues investigation when they happen in production.
 
@@ -1136,29 +1090,26 @@ Throughout the codebase, there are many `unwrap()` calls and assertions instead 
   </div>
 </div>
 
-```rust filepath line=111
-basic_system/src/system_implementation/io/account_cache.rs
-fn materialize_element<const PROOF_ENV: bool>(
-```
+<pre class="language-rust" data-attributes="filepath line=111" data-start-line="111"><code>basic_system/src/system_implementation/io/account_cache.rs
+fn materialize_element&lt;const PROOF_ENV: bool&gt;(
+</code></pre>
 
 This function is too big (100 lines).
-```rust filepath context line=585
-basic_system/src/system_implementation/system/mod.rs
+<pre class="language-rust" data-attributes="filepath context line=585" data-start-line="585"><code>basic_system/src/system_implementation/system/mod.rs
 fn prepare_for_call(
     match SystemExt::io(self).transfer_nominal_token_value(
-```
+</code></pre>
 
 The function `handle_requested_external_call_to_special_address_space` is intended to prevent positive-value transfers to kernel space unless the configuration flag `transfers_to_kernel_space` is engaged or the `callee` is explicitly set to `BOOTLOADER_FORMAL_ADDRESS`.
 
 However, the actual callpath to the function `transfer_nominal_token_value` is still performed with the unchanged value `call_values.nominal_token_value`. While the conditions for the transfer are evaluated and variable `nominal_token_value` is correctly set to zero when the conditions are not met, the variable is not actually utilized with the exception at the very end of the handler, after the token transfer is already performed.
 
-```rust filename line=650
-basic_bootloader/src/bootloader/runner.rs
+<pre class="language-rust" data-attributes="filename line=650" data-start-line="650"><code>basic_bootloader/src/bootloader/runner.rs
 let call_result =
-    if nominal_token_value != U256::ZERO && callee != BOOTLOADER_FORMAL_ADDRESS {
+    if nominal_token_value != U256::ZERO &amp;&amp; callee != BOOTLOADER_FORMAL_ADDRESS {
         CallResult::Failed { return_values }
     } else {
-```
+</code></pre>
 
 Additionally, the condition to fail the call and return CallResult::Failed is incorrect:
 
@@ -1177,48 +1128,42 @@ The conjunction of the two conditions is equivalent to `call_values.nominal_toke
   </div>
 </div>
 
-```rust filepath line=306
-basic_system/src/system_implementation/io/account_cache_entry.rs
-AddressDataDiff::Full => 118,
-```
+<pre class="language-rust" data-attributes="filepath line=306" data-start-line="306"><code>basic_system/src/system_implementation/io/account_cache_entry.rs
+AddressDataDiff::Full =&gt; 118,
+</code></pre>
 
 Should the constant `ENCODED_SIZE` be used instead?
 
-```rust filepath line=92
-basic_system/src/system_implementation/io/account_cache.rs
+<pre class="language-rust" data-attributes="filepath line=92" data-start-line="92"><code>basic_system/src/system_implementation/io/account_cache.rs
 const COLD_PROPERTIES_ACCESS_EXTRA_COST: BaseResources = BaseResources {
     spendable: BaseComputationalResources {
         ergs: 2500 * ERGS_PER_GAS,
-```
+</code></pre>
 
-```rust filepath line=120
-basic_system/src/system_implementation/system/mod.rs
+<pre class="language-rust" data-attributes="filepath line=120" data-start-line="120"><code>basic_system/src/system_implementation/system/mod.rs
 if is_warm_write == false { total_cost + 100 }
-```
+</code></pre>
 
-```rust filepath line=159
-basic_system/src/system_implementation/io/storage_cache.rs
-Appearance::Updated => size += 32,
-```
+<pre class="language-rust" data-attributes="filepath line=159" data-start-line="159"><code>basic_system/src/system_implementation/io/storage_cache.rs
+Appearance::Updated =&gt; size += 32,
+</code></pre>
 
 Constants `2500`, `100` and `32` should be declared and documented better.
 
-```rust filepath line=222
-basic_system/src/system_implementation/system/mod.rs
-|| block_number < current_block_number.saturating_sub(256)
-```
+<pre class="language-rust" data-attributes="filepath line=222" data-start-line="222"><code>basic_system/src/system_implementation/system/mod.rs
+|| block_number &lt; current_block_number.saturating_sub(256)
+</code></pre>
 
 Although the number `256` is clear and correct, it's still better to declare it as a named constant.
 
-```rust filepath line=512
-basic_system/src/system_implementation/io/account_cache.rs
+<pre class="language-rust" data-attributes="filepath line=512" data-start-line="512"><code>basic_system/src/system_implementation/io/account_cache.rs
 Some(Bytes32::from_u256_be(U256::from_limbs([
     0x7bfad8045d85a470,
     0xe500b653ca82273b,
     0x927e7db2dcc703c0,
     0xc5d2460186f7233c,
 ])));
-```
+</code></pre>
 
 This 32‑byte value is the well‐known “empty code hash” and should be declared as a named constant.
 
@@ -1232,25 +1177,22 @@ This 32‑byte value is the well‐known “empty code hash” and should be dec
   </div>
 </div>
 
-```rust filepath line=21
-basic_system/src/system_implementation/io/account_cache_entry.rs
-impl<const N: u8> VersioningData<N> {
-```
+<pre class="language-rust" data-attributes="filepath line=21" data-start-line="21"><code>basic_system/src/system_implementation/io/account_cache_entry.rs
+impl&lt;const N: u8&gt; VersioningData&lt;N&gt; {
+</code></pre>
 
 This declaration can be made more readable:
 
 - Use a descriptive name instead of `N`, for example `DEPLOYED` since the parameter is used to denote the deployed state
 - The constructor name `empty` can be too ambiguous, it might be suitable to call it `deployed` to contrast it with `non_deployed`
 
-```rust filepath line=47
-basic_bootloader/src/bootloader/mod.rs
+<pre class="language-rust" data-attributes="filepath line=47" data-start-line="47"><code>basic_bootloader/src/bootloader/mod.rs
 pub trait BasicBootloaderExecutionConfig: 'static + Clone + Copy + core::fmt::Debug
 {
     const SKIP_AA_AND_EXECUTE_CALL: bool;
-```
+</code></pre>
 
-```rust filepath context line=202
-basic_system/src/system_implementation/io/mod.rs
+<pre class="language-rust" data-attributes="filepath context line=202" data-start-line="202"><code>basic_system/src/system_implementation/io/mod.rs
 fn apply_persistent_changes(
 // storage can now write all the changes to tree if needed
 if verify_io {
@@ -1258,105 +1200,93 @@ let it = storage_cache.net_diffs_iter();
 
 tree_view
     .verify_and_apply_batch(oracle, it, allocator, logger)
-```
+</code></pre>
 
 The name of `SKIP_AA_AND_EXECUTE_CALL` configuration parameter can be misleading for new developers. When this flag is set to `true`, strictly speaking, only validation and refunding are skipped. Such configuration is used for call simulation.
 
 Additionally, the inverted value of this parameter is passed as the `verify_io` parameter of `fn finish`, it would add clarity if the name of the parameter reflected it, e.g. `ONLY_SIMULATE` or `SKIP_VALIDATION`.
 
-```rust filepath line=423
-basic_system/src/system_implementation/io/account_cache.rs
+<pre class="language-rust" data-attributes="filepath line=423" data-start-line="423"><code>basic_system/src/system_implementation/io/account_cache.rs
 fn read_account_balance_assuming_warm(
-```
+</code></pre>
 
 It would be better to be explicit that it is intended to be used only in the context of the `SELFBALANCE` opcode. Similarly about the `KNOWN_TO_BE_WARM_PROPERTIES_ACCESS_COST` constant.
 
-```rust filepath line=34
-basic_bootloader/src/bootloader/account_models/abstract_account.rs
-if tx.is_eip_712() && aa_enabled && is_contract {
+<pre class="language-rust" data-attributes="filepath line=34" data-start-line="34"><code>basic_bootloader/src/bootloader/account_models/abstract_account.rs
+if tx.is_eip_712() &amp;&amp; aa_enabled &amp;&amp; is_contract {
     AA::Contract(PhantomData)
 } else {
     AA::EOA(PhantomData)
 }
-```
+</code></pre>
 
 The name `EOA` is misleading here since the EOA is not the only account type it can handle, the `EOA` account model simply represents the “classical” Ethereum account model. Smart contracts are implicitly routed to this account model when the Account Abstraction is disabled, i.e. when `AA_ENABLED` is `false`, but `is_contract` is `true`.
 
-```rust filepath context line=746
-basic_bootloader/src/bootloader/runner.rs:746
-UpdateQueryError::NumericBoundsError => {
+<pre class="language-rust" data-attributes="filepath context line=746" data-start-line="746"><code>basic_bootloader/src/bootloader/runner.rs:746
+UpdateQueryError::NumericBoundsError =&gt; {
 TxError::Validation(InvalidTransaction::LackOfFundForMaxFee {
-```
+</code></pre>
 
 The `NumericBoundsError` can be caused also by an overflow.
 
-```rust filepath line=43
-basic_bootloader/src/bootloader/run_single_interaction.rs
+<pre class="language-rust" data-attributes="filepath line=43" data-start-line="43"><code>basic_bootloader/src/bootloader/run_single_interaction.rs
 InternalError("Insufficient balance while minting").into()
-```
+</code></pre>
 
 The error is actually about overflows, not about insufficient balance.
 
-```rust filepath line=45
-basic_bootloader/src/bootloader/runner.rs
+<pre class="language-rust" data-attributes="filepath line=45" data-start-line="45"><code>basic_bootloader/src/bootloader/runner.rs
 /// Helper to revert the caller's frame in case of a failure
 /// while preparing to execute an external call.
 /// If [callstack] is empty, then we're in the entry frame.
 ///
 fn fail_deployment
-```
+</code></pre>
 
 The commentary by the function `fail_deployment` is a duplicate of the commentary by the function `fail_external_call` in the same file. The words “external call” should be replaced with “deployment”.
 
-```rust filepath line=66
-zk_ee/src/common_structs/events_storage.rs
+<pre class="language-rust" data-attributes="filepath line=66" data-start-line="66"><code>zk_ee/src/common_structs/events_storage.rs
 rollback_depths_and_pubdata_stack
-```
+</code></pre>
 
 The structure `EventsStorage` does not use pubdata, so this field should be renamed.
 
-```rust filepath line=39
-basic_bootloader/src/bootloader/supported_ees.rs
+<pre class="language-rust" data-attributes="filepath line=39" data-start-line="39"><code>basic_bootloader/src/bootloader/supported_ees.rs
 pub fn clarify_passed_resources
-```
+</code></pre>
 
 This function seems to only apply the 63/64 rule and should be named accordingly.
 
-```rust filepath line=33
-basic_bootloader/src/bootloader/supported_ees.rs
-pub fn ee_version(&self) -> u8 {
+<pre class="language-rust" data-attributes="filepath line=33" data-start-line="33"><code>basic_bootloader/src/bootloader/supported_ees.rs
+pub fn ee_version(&amp;self) -&gt; u8 {
 	match self {
-    	Self::EVM(..) => ExecutionEnvironmentType::EVM as u8,
-```
+    	Self::EVM(..) =&gt; ExecutionEnvironmentType::EVM as u8,
+</code></pre>
 
 The function is called as `ee_version` but it actually returns the type identifying the execution environment. The same value is produced by `ee_type`. This can be slightly misleading since usually the term “version” denotes the incremental number used to track evolution of the product.
 
-```rust filepath line=212
-basic_bootloader/src/bootloader/account_models/eoa.rs
+<pre class="language-rust" data-attributes="filepath line=212" data-start-line="212"><code>basic_bootloader/src/bootloader/account_models/eoa.rs
 let to_ee_type = if !transaction.reserved[1].read().is_zero()
-```
+</code></pre>
 
 Slightly misleading name `to_ee_type`, something like `deployment_to_ee_type` would be more understandable.
 
-```rust filepath line=203
-basic_system/src/system_implementation/io/preimage_cache.rs
+<pre class="language-rust" data-attributes="filepath line=203" data-start-line="203"><code>basic_system/src/system_implementation/io/preimage_cache.rs
 type PreimageType = PreimageRequest;
-```
+</code></pre>
 
-```rust filepath line=11
-zk_ee/src/common_structs/new_preimages_publication_storage.rs
+<pre class="language-rust" data-attributes="filepath line=11" data-start-line="11"><code>zk_ee/src/common_structs/new_preimages_publication_storage.rs
 pub enum PreimageType {
     Bytecode = 0,
     AccountData = 1,
 }
-```
+</code></pre>
 
 The name `PreimageRequest` seems to be perfectly suitable for something that is passed into getter/setter functions.
 
 ## Incomprehensible error messages
 
-```rust filepath
-basic_bootloader/src/bootloader/process_transaction.rs
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/process_transaction.rs
 .ok_or(InternalError("gp*gl"))?;
 .ok_or(InternalError("td-pto"))
 .ok_or(InternalError("v+tic"))?;
@@ -1369,15 +1299,13 @@ basic_bootloader/src/bootloader/process_transaction.rs
 .ok_or(InternalError("tgf*gp"))?;
 .ok_or(InternalError("fa+v"))
 .ok_or(InternalError("mfpg*gl"))?;
-```
+</code></pre>
 
-```rust filepath
-basic_bootloader/src/bootloader/account_models/eoa.rs
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/account_models/eoa.rs
 .ok_or(InternalError("mfpg*gl"))?;
-```
+</code></pre>
 
-```rust filepath
-basic_bootloader/src/bootloader/gas_helpers.rs
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/gas_helpers.rs
 .ok_or(InternalError("gpp*LTIP"))?;
 .ok_or(InternalError("ipo+LTIG"))?;
 .ok_or(InternalError("tuo+io"))?;
@@ -1387,7 +1315,7 @@ basic_bootloader/src/bootloader/gas_helpers.rs
 .ok_or(InternalError("zc+nzc"))
 .ok_or(InternalError("gc*gp"))?;
 .ok_or(InternalError("cps*epp"))
-```
+</code></pre>
 
 The type `InternalError` is intended to be used only with errors that must never actually happen, and it is not intended to be reported to users. The messages attached to such errors are strictly enough to locate them in case such errors happen.
 
@@ -1431,12 +1359,11 @@ Some of such comments represent significant features and should be tracked in a 
   </div>
 </div>
 
-```rust filepath
-basic_bootloader/src/bootloader/runner.rs
-CS: Stack<SupportedEEVMState<S::UsermodeSystem>, S::Allocator>,
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/runner.rs
+CS: Stack&lt;SupportedEEVMState&lt;S::UsermodeSystem&gt;, S::Allocator&gt;,
 ...
-callstack: &mut CS,
-```
+callstack: &amp;mut CS,
+</code></pre>
 
 In many functions, the `callstack` parameter is used only to query the frame at the top, i.e. as `callstack.top()`. It can be replaced by a minimalistic parameter `topframe: Option<&mut SupportedEEVMState<S::UsermodeSystem>>`. The type parameter `CS` can be removed from such functions, too. Such a refactoring would make code easier to review and maintain.
 
@@ -1449,27 +1376,24 @@ List of functions that can be improved by such refactoring:
 - `handle_requested_external_call_to_special_address_space`
 - `run_call_preparation`
 
-```rust filepath line=697
-basic_bootloader/src/bootloader/runner.rs
+<pre class="language-rust" data-attributes="filepath line=697" data-start-line="697"><code>basic_bootloader/src/bootloader/runner.rs
 let is_entry_frame = callstack.top().is_none();
-```
+</code></pre>
 
 The boolean `is_entry_frame` is inverse of `should_finish_callee_frame_on_error`, because `callstack` has not been modified since the last time `callstack.top().is_none()` was computed.
 
 The parameter `should_finish_callee_frame_on_error` is redundant.
 
-```rust filepath context line=78
-basic_bootloader/src/bootloader/account_models/eoa.rs
-fn validate<
+<pre class="language-rust" data-attributes="filepath context line=78" data-start-line="78"><code>basic_bootloader/src/bootloader/account_models/eoa.rs
+fn validate&lt;
     caller_is_code: bool,
-```
+</code></pre>
 
-```rust line=85
-// EIP-3607: Reject transactions from senders with deployed code
+<pre class="language-rust" data-attributes="line=85" data-start-line="85"><code>// EIP-3607: Reject transactions from senders with deployed code
 if caller_is_code {
     return Err(InvalidTransaction::RejectCallerWithCode.into());
 }
-```
+</code></pre>
 
 The parameter `caller_is_code` can have the only value `false` since the `Contract` and `EOA` account models are correctly routed from the abstract type. This also means that `Err(InvalidTransaction::RejectCallerWithCode.into())` is never actually thrown.
 
@@ -1483,34 +1407,29 @@ The parameter `caller_is_code` can have the only value `false` since the `Contra
   </div>
 </div>
 
-```rust filepath context line=62
-basic_bootloader/src/bootloader/runner.rs
-fn fail_external_call<
+<pre class="language-rust" data-attributes="filepath context line=62" data-start-line="62"><code>basic_bootloader/src/bootloader/runner.rs
+fn fail_external_call&lt;
 match callstack.top() {
-```
+</code></pre>
 
-```rust line=70
-Some(vm) => {
+<pre class="language-rust" data-attributes="line=70" data-start-line="70"><code>Some(vm) =&gt; {
     if finish_callee_frame {
-```
+</code></pre>
 
 Variable `finish_callee_frame` always holds the same value as `callstack.top().is_some()` which is exactly the case already matched before.
 
-```rust filepath context line=184
-basic_bootloader/src/bootloader/runner.rs
-fn fail_deployment<
+<pre class="language-rust" data-attributes="filepath context line=184" data-start-line="184"><code>basic_bootloader/src/bootloader/runner.rs
+fn fail_deployment&lt;
 match callstack.top() {
-```
+</code></pre>
 
-```rust line=191
-Some(vm) => {
+<pre class="language-rust" data-attributes="line=191" data-start-line="191"><code>Some(vm) =&gt; {
     if finish_callee_frame {
-```
+</code></pre>
 
-```rust context line=955
-fn handle_requested_deployment<
-Err(SystemError::OutOfResources) => fail_deployment(callstack, system, true),
-```
+<pre class="language-rust" data-attributes="context line=955" data-start-line="955"><code>fn handle_requested_deployment&lt;
+Err(SystemError::OutOfResources) =&gt; fail_deployment(callstack, system, true),
+</code></pre>
 
 The value of the parameter `finish_callee_frame` is explicitly `true` in the current version of the codebase.
 
@@ -1524,44 +1443,38 @@ The value of the parameter `finish_callee_frame` is explicitly `true` in the cur
   </div>
 </div>
 
-```rust filepath line=263
-basic_bootloader/src/bootloader/account_models/eoa.rs
+<pre class="language-rust" data-attributes="filepath line=263" data-start-line="263"><code>basic_bootloader/src/bootloader/account_models/eoa.rs
 deployed_address: DeployedAddress::CallNoAddress,
-```
+</code></pre>
 
 Using type `Option<DeployedAddress>`` would be clearer compared to the fake variant of `DeployedAddress`enumeration. Alternatively, consider changing struct`TxExecutionResult` to an enumeration with explicit separation between calls and deployments.
 
-```rust filepath line=148
-basic_bootloader/src/bootloader/process_transaction.rs
+<pre class="language-rust" data-attributes="filepath line=148" data-start-line="148"><code>basic_bootloader/src/bootloader/process_transaction.rs
 let spent_on_pubdata = get_ergs_spent_for_pubdata(system, gas_per_pubdata, None)?; // TODO: should it be in ergs or gas?
-```
+</code></pre>
 
-```rust filepath line=906
-basic_bootloader/src/bootloader/process_transaction.rs
-let spent_on_pubdata = u256_to_u64_saturated(&spent_on_pubdata);
-```
+<pre class="language-rust" data-attributes="filepath line=906" data-start-line="906"><code>basic_bootloader/src/bootloader/process_transaction.rs
+let spent_on_pubdata = u256_to_u64_saturated(&amp;spent_on_pubdata);
+</code></pre>
 
 The type `U256` is used temporarily for multiplication, this value is being cast into `u64`. It would be better to cast it in the same place, in order to be certain about fitting into the 64 bits.
 
-```rust filepath line=186
-basic_system/src/system_implementation/io/preimage_cache.rs
+<pre class="language-rust" data-attributes="filepath line=186" data-start-line="186"><code>basic_system/src/system_implementation/io/preimage_cache.rs
 .add_preimage(hash, preimage.len() as u32 as i32, preimage_type)?;
-```
+</code></pre>
 
-```rust filepath line=19
-zk_ee/src/common_structs/new_preimages_publication_storage.rs
+<pre class="language-rust" data-attributes="filepath line=19" data-start-line="19"><code>zk_ee/src/common_structs/new_preimages_publication_storage.rs
 pub publication_net_bytes: i32,
-```
+</code></pre>
 
 The value `preimage.len()`, of type `usize`, is first cast to `u32` and then to `i32`. Although overflow during these conversions is highly improbable—given that a preimage's size is practically limited and cannot reach 2GB—it is nonetheless unnecessary to perform any conversions.
 
 The type `usize` would be perfectly adequate for the `publication_net_bytes` field. Semantically, this value is never meant to be signed. Moreover, since `usize` can vary across different machines, it is more prudent to mirror the type, unless serialization of the `publication_net_bytes` field is explicitly required.
 
-```rust filepath line=113
-basic_bootloader/src/bootloader/run_single_interaction.rs
+<pre class="language-rust" data-attributes="filepath line=113" data-start-line="113"><code>basic_bootloader/src/bootloader/run_single_interaction.rs
 let call_parameters = CallParameters {
     callers_caller: B160::ZERO, // Fine to use placeholder
-```
+</code></pre>
 
 Using type `Option<Address>` would be clearer and more error-proof, compared to using the default value.
 
@@ -1579,16 +1492,14 @@ The unit test suite is intended to support both forward running and proof-runnin
 
 Running the test suite with the `e2e_proving` feature enabled should be possible using the command:
 
-```sh
-cargo +nightly llvm-cov --workspace --features e2e_proving --html
-```
+<pre class="language-sh"><code>cargo +nightly llvm-cov --workspace --features e2e_proving --html
+</code></pre>
 
 However, this run has resulted in the failure of the `test_add` test case.
 
 After allowing it to run for 18 hours, it failed with the following output:
 
-```
----- secp256k1::field::field_10x26::tests::test_add stdout ----
+<pre><code>---- secp256k1::field::field_10x26::tests::test_add stdout ----
 
 thread 'secp256k1::field::field_10x26::tests::test_add' panicked at crypto/src/secp256k1/field/field_10x26.rs:566:9:
 attempt to add with overflow
@@ -1596,7 +1507,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 failures:
     secp256k1::field::field_10x26::tests::test_add
-```
+</code></pre>
 
 As a consequence, no coverage report has been produced in `e2e_proving` mode.
 
@@ -1610,119 +1521,103 @@ As a consequence, no coverage report has been produced in `e2e_proving` mode.
   </div>
 </div>
 
-```rust filepath line=21
-basic_bootloader/src/bootloader/supported_ees.rs
-pub fn needs_scratch_space(&self) -> bool {
-```
+<pre class="language-rust" data-attributes="filepath line=21" data-start-line="21"><code>basic_bootloader/src/bootloader/supported_ees.rs
+pub fn needs_scratch_space(&amp;self) -&gt; bool {
+</code></pre>
 
 The function is unused and always returns `false`.
 
-```rust filepath line=756
-basic_bootloader/src/bootloader/process_transaction.rs
+<pre class="language-rust" data-attributes="filepath line=756" data-start-line="756"><code>basic_bootloader/src/bootloader/process_transaction.rs
 require!(
-    bootloader_received_funds >= required_funds,
-```
+    bootloader_received_funds &gt;= required_funds,
+</code></pre>
 
-```rust line=764
-let excessive_funds = bootloader_received_funds
+<pre class="language-rust" data-attributes="line=764" data-start-line="764"><code>let excessive_funds = bootloader_received_funds
     .checked_sub(required_funds)
     .ok_or(InternalError("brf-rf"))?;
-```
+</code></pre>
 
 The error is never thrown because of the assertion.
 
-```rust filepath line=92
-basic_system/src/system_implementation/system/basic_metadata.rs
+<pre class="language-rust" data-attributes="filepath line=92" data-start-line="92"><code>basic_system/src/system_implementation/system/basic_metadata.rs
 // TODO: gas_limit needed?
 pub gas_limit: u64,
-```
+</code></pre>
 
 The field `gas_limit` is initialized during deserialization, but is not practically utilized.
 
-```rust filepath line=220
-basic_system/src/system_implementation/memory/basic_memory.rs
-unsafe fn clear_returndata_region(&mut self) {
-```
+<pre class="language-rust" data-attributes="filepath line=220" data-start-line="220"><code>basic_system/src/system_implementation/memory/basic_memory.rs
+unsafe fn clear_returndata_region(&amp;mut self) {
+</code></pre>
 
 The function `clear_returndata_region` is safe, the modifier `unsafe` is redundant.
 
-```rust filepath line=410
-basic_system/src/system_implementation/io/account_cache.rs
-fn tx_stats(&self) -> Self::TxStats {
-```
+<pre class="language-rust" data-attributes="filepath line=410" data-start-line="410"><code>basic_system/src/system_implementation/io/account_cache.rs
+fn tx_stats(&amp;self) -&gt; Self::TxStats {
+</code></pre>
 
 There are 10 declarations with the name `tx_stats`. None of them is actually called.
 
-```rust filepath context line=254
-basic_system/src/system_implementation/io/account_cache_entry.rs
-let (delta, op) = match lv.cmp(&rv) {
-    core::cmp::Ordering::Equal => (U256::ZERO, CompressionStrategy::Add),
+<pre class="language-rust" data-attributes="filepath context line=254" data-start-line="254"><code>basic_system/src/system_implementation/io/account_cache_entry.rs
+let (delta, op) = match lv.cmp(&amp;rv) {
+    core::cmp::Ordering::Equal =&gt; (U256::ZERO, CompressionStrategy::Add),
 };
 if delta == U256::ZERO {
     break 'arm None;
-```
+</code></pre>
 
 Statement `break 'arm None` can be inlined into the pattern matching expression. There is no need to return intermediary value and immediately compare it to already known value.
 
-```rust filepath line=205
-basic_system/src/system_implementation/io/account_cache.rs
+<pre class="language-rust" data-attributes="filepath line=205" data-start-line="205"><code>basic_system/src/system_implementation/io/account_cache.rs
 if cold_read_charged == false {
-```
+</code></pre>
 
 Unreachable since `cold_read_charged` is always `true` after the call to `materialize`. The only case when it is not set by the `materialize` is when the call to `charge_cold_storage_read_extra` results in an error.
 
 The 15 lines inside the branching statement is a duplicate.
 
-```rust filepath line=138
-basic_system/src/system_implementation/io/account_cache.rs
+<pre class="language-rust" data-attributes="filepath line=138" data-start-line="138"><code>basic_system/src/system_implementation/io/account_cache.rs
 let mut cold_read_charged = false;
-```
+</code></pre>
 
 In fact, the variable `cold_read_charged` does not affect anything and can be removed.
 
-```rust filepath line=322
-basic_system/src/system_implementation/io/account_cache.rs
-let _ = preimages_cache.record_preimage::<false>(
-```
+<pre class="language-rust" data-attributes="filepath line=322" data-start-line="322"><code>basic_system/src/system_implementation/io/account_cache.rs
+let _ = preimages_cache.record_preimage::&lt;false&gt;(
+</code></pre>
 
 Enforcing `PROOF_ENV = false` here, but in fact the function `record_preimage` does not utilize this parameter. It can be removed from its declaration.
 
-```rust filepath line=26
-zk_ee/src/common_structs/warm_storage_key.rs
+<pre class="language-rust" data-attributes="filepath line=26" data-start-line="26"><code>zk_ee/src/common_structs/warm_storage_key.rs
 pub struct StorageDiff {
-```
+</code></pre>
 
-```rust filepath line=39
-basic_system/src/system_implementation/io/mod.rs
-pub type StorageDiff = GenericPlainStorageRollbackData<WarmStorageKey, WarmStorageValue>;
+<pre class="language-rust" data-attributes="filepath line=39" data-start-line="39"><code>basic_system/src/system_implementation/io/mod.rs
+pub type StorageDiff = GenericPlainStorageRollbackData&lt;WarmStorageKey, WarmStorageValue&gt;;
 pub type TransientStorageDiff =
-```
+</code></pre>
 
-```rust filepath line=160
-basic_system/src/system_implementation/io/mod.rs
-fn all_diffs<'a>(&'a self) -> impl Iterator<Item = Self::Diff<'a>> {
+<pre class="language-rust" data-attributes="filepath line=160" data-start-line="160"><code>basic_system/src/system_implementation/io/mod.rs
+fn all_diffs&lt;'a&gt;(&amp;'a self) -&gt; impl Iterator&lt;Item = Self::Diff&lt;'a&gt;&gt; {
     core::iter::empty()
 }
-```
+</code></pre>
 
 Declarations `type Diff`, `all_diffs`, `StorageDiff` and `TransientStorageDiff` are not used anywhere.
 
-```rust filepath line=24
-zk_ee/src/system/system_trait/execution_environment/environment_state.rs
-pub struct SelfDestructParams<S: System> {
-```
+<pre class="language-rust" data-attributes="filepath line=24" data-start-line="24"><code>zk_ee/src/system/system_trait/execution_environment/environment_state.rs
+pub struct SelfDestructParams&lt;S: System&gt; {
+</code></pre>
 
 This structure is not used. Should it be used when a call or deployment is completed?
 
-```rust filepath line=135
-zk_ee/src/common_structs/events_storage.rs
+<pre class="language-rust" data-attributes="filepath line=135" data-start-line="135"><code>zk_ee/src/common_structs/events_storage.rs
 pub fn net_diff(
-```
+</code></pre>
 
-```rust filepath line=175
-zk_ee/src/common_structs/messages_storage.rs
+<pre class="language-rust" data-attributes="filepath line=175" data-start-line="175"><code>zk_ee/src/common_structs/messages_storage.rs
 pub fn net_diff(
-```
+</code></pre>
 
 <div id="issue-26-1-inf3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">26. Unused error messages</h2>
@@ -1736,8 +1631,7 @@ pub fn net_diff(
 
 The following error messages are not utilized anywhere in the codebase. While no security issues related to these errors have been discovered, they could indicate unhandled errors.
 
-```rust filepath
-basic_bootloader/src/bootloader/errors.rs
+<pre class="language-rust" data-attributes="filepath"><code>basic_bootloader/src/bootloader/errors.rs
 InvalidStructure,
 GasPriceLessThanBasefee,
 CallGasCostMoreThanGasLimit,
@@ -1748,7 +1642,7 @@ PaymasterReturnDataTooShort,
 PaymasterInvalidMagic,
 PaymasterContextInvalid,
 PaymasterContextOffsetTooLong,
-```
+</code></pre>
 
 <div id="issue-27-1-qa3" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">27. Variable can be declared in a more specific scope</h2>
@@ -1760,11 +1654,10 @@ PaymasterContextOffsetTooLong,
   </div>
 </div>
 
-```rust filepath line=840
-basic_bootloader/src/bootloader/process_transaction.rs
+<pre class="language-rust" data-attributes="filepath line=840" data-start-line="840"><code>basic_bootloader/src/bootloader/process_transaction.rs
 let max_refunded_gas = resources.spendable.ergs.div_floor(ERGS_PER_GAS);
-let refund_recipient = if Config::AA_ENABLED && paymaster != B160::ZERO {
-    let _succeeded = Self::paymaster_post_op::<_, { Config::SPECIAL_ADDRESS_SPACE_BOUND }>(
+let refund_recipient = if Config::AA_ENABLED &amp;&amp; paymaster != B160::ZERO {
+    let _succeeded = Self::paymaster_post_op::&lt;_, { Config::SPECIAL_ADDRESS_SPACE_BOUND }&gt;(
         system,
         system_functions,
         callstack,
@@ -1778,7 +1671,7 @@ let refund_recipient = if Config::AA_ENABLED && paymaster != B160::ZERO {
         validation_pubdata,
         resources,
     )?;
-```
+</code></pre>
 
 The variable `max_refunded_gas` is utilized only in the paymaster flow, and can be moved into that branch. This would improve readability of the function.
 
@@ -2235,9 +2128,8 @@ This run includes the fix for the `bootloader_tx_parser` fuzzing target.
 ## Unit tests coverage
 
 The unit test suite has been executed with the `e2e_proving` feature disabled since enabling it caused the suite to crash (see the description of this issue in the main part of the report). To collect coverage data, `llvm-cov` has been used:
-```sh
-cargo llvm-cov --workspace --html
-```
+<pre class="language-sh"><code>cargo llvm-cov --workspace --html
+</code></pre>
 
 ### Module `basic_bootloader`
 
