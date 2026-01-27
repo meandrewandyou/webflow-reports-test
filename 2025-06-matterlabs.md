@@ -352,14 +352,15 @@ The status of an issue can be one of the following:
 
 The access list parser converts every ABI-encoded value of type `uint256` to the type `usize`, silently discarding the upper bits:
 
-<pre class="language-rust" data-attributes="filepath context line=40"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/transaction/access_list_parser.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">40</span><span style="font-family: monospace !important;">fn new(slice: &amp;'a [u8], offset: usize)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">41</span><span style="font-family: monospace !important;">let bytestring_len = Self::parse_u256(slice, offset)?.as_limbs()[0] as usize;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/transaction/access_list_parser.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=40" data-start-line="40"><code>fn new(slice: &amp;'a [u8], offset: usize)
+let bytestring_len = Self::parse_u256(slice, offset)?.as_limbs()[0] as usize;</code></pre>
 
-<pre class="language-rust" data-attributes="line=52"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">52</span><span style="font-family: monospace !important;">// For now, it only has the access list</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">53</span><span style="font-family: monospace !important;">let outer_offset = Self::parse_u256(slice, offset)?.as_limbs()[0] as usize;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">54</span><span style="font-family: monospace !important;">let outer_base = offset + outer_offset;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">55</span><span style="font-family: monospace !important;">let outer_len = Self::parse_u256(slice, outer_base)?.as_limbs()[0] as usize;</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=52" data-start-line="52"><code>// For now, it only has the access list
+let outer_offset = Self::parse_u256(slice, offset)?.as_limbs()[0] as usize;
+let outer_base = offset + outer_offset;
+let outer_len = Self::parse_u256(slice, outer_base)?.as_limbs()[0] as usize;
+</code></pre>
 
 This truncation affects 8 critical variables: `access_list_rel_offset`, `bytestring_len`, `outer_offset`, `outer_len`, `item_ptr_offset`, `keys_ptr_offset`, `keys_len` and `count`. Transaction hash calculation in the `apply_access_list_encoding_to_hash()` function uses these truncated values instead of the original bytes.
 
@@ -392,19 +393,19 @@ Implement bounds checking in the `parse_u256()` function to reject any value exc
 
 The function `copy_into_return_memory` extends the `returndata_buffer` without validating its final size against the `MAX_RETURNDATA_BUFFER_SIZE` constant, which is currently defined as 128 MB.
 
-<pre class="language-rust" data-attributes="filepath context line=246 highlight=[8]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/memory/basic_memory.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">246</span><span style="font-family: monospace !important;">fn copy_into_return_memory</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">247</span><span style="font-family: monospace !important;">let new_returndata_start = self.returndata_buffer.len();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">248</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">249</span><span style="font-family: monospace !important;">let Some(new_returndata_len) = new_returndata_start.checked_add(source.len()) else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">250</span><span style="font-family: monospace !important;">    return Err(InternalError("OOM"));</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">251</span><span style="font-family: monospace !important;">};</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">252</span><span style="font-family: monospace !important;">let new_returndata_len = new_returndata_len.next_multiple_of(USIZE_SIZE);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">253</span><span style="font-family: monospace !important;">self.returndata_buffer.extend_from_slice(source);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">254</span><span style="font-family: monospace !important;">self.returndata_buffer.resize(new_returndata_len, 0);</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/memory/basic_memory.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=246 highlight=[8]" data-start-line="246"><code>fn copy_into_return_memory
+let new_returndata_start = self.returndata_buffer.len();
 
-<pre class="language-rust" data-attributes="filepath line=15"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/memory/basic_memory.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">15</span><span style="font-family: monospace !important;">pub const MAX_RETURNDATA_BUFFER_SIZE: usize = 1 &lt;&lt; 27; // 128 MB</span></span></code></pre>
+let Some(new_returndata_len) = new_returndata_start.checked_add(source.len()) else {
+    return Err(InternalError("OOM"));
+};
+let new_returndata_len = new_returndata_len.next_multiple_of(USIZE_SIZE);
+self.returndata_buffer.extend_from_slice(source);
+self.returndata_buffer.resize(new_returndata_len, 0);</code></pre>
+
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/memory/basic_memory.rs</div>
+<pre class="language-rust" data-attributes="filepath line=15" data-start-line="15"><code>pub const MAX_RETURNDATA_BUFFER_SIZE: usize = 1 &lt;&lt; 27; // 128 MB</code></pre>
 
 Further, we will abbreviate the `MAX_RETURNDATA_BUFFER_SIZE` constant as _"128 MB."_
 
@@ -414,29 +415,30 @@ In the simplest scenario, a malicious actor can execute a smart contract that pu
 
 Additionally, a more intricate attack is possible that forces reallocations and results in memory corruption, because the `copy_into_return_memory` function returns a structure of type `OSManagedResizableSlice`, which refers to the `returndata_buffer` before its expansion:
 
-<pre class="language-rust" data-attributes="filepath context line=250 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/memory/basic_memory.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">250</span><span style="font-family: monospace !important;">fn copy_into_return_memory</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">251</span><span style="font-family: monospace !important;">self.returndata_buffer.extend_from_slice(source);</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/memory/basic_memory.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=250 highlight=[1]" data-start-line="250"><code>fn copy_into_return_memory
+self.returndata_buffer.extend_from_slice(source);</code></pre>
 
-<pre class="language-rust" data-attributes="line=255 highlight=[7]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">255</span><span style="font-family: monospace !important;">unsafe {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">256</span><span style="font-family: monospace !important;">    let start = self</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">257</span><span style="font-family: monospace !important;">        .returndata_buffer</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">258</span><span style="font-family: monospace !important;">        .as_mut_ptr()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">259</span><span style="font-family: monospace !important;">        .add(new_returndata_start);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">260</span><span style="font-family: monospace !important;">    let slice = OSManagedResizableSlice {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">261</span><span style="font-family: monospace !important;">        ptr: NonNull::new_unchecked(start),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">262</span><span style="font-family: monospace !important;">        len: source.len(),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">263</span><span style="font-family: monospace !important;">    };</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">264</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">265</span><span style="font-family: monospace !important;">    Ok(slice)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">266</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=255 highlight=[7]" data-start-line="255"><code>unsafe {
+    let start = self
+        .returndata_buffer
+        .as_mut_ptr()
+        .add(new_returndata_start);
+    let slice = OSManagedResizableSlice {
+        ptr: NonNull::new_unchecked(start),
+        len: source.len(),
+    };
+
+    Ok(slice)
+}
+</code></pre>
 
 The `returndata_buffer` variable is initialized as follows:
 
-<pre class="language-rust" data-attributes="filepath context line=188 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/memory/basic_memory.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">188</span><span style="font-family: monospace !important;">fn new(allocator: Self::Allocator)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">189</span><span style="font-family: monospace !important;">let returndata_buffer =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">190</span><span style="font-family: monospace !important;">    allocate_vec_usize_aligned(MAX_RETURNDATA_BUFFER_SIZE, allocator.clone());</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/memory/basic_memory.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=188 highlight=[2]" data-start-line="188"><code>fn new(allocator: Self::Allocator)
+let returndata_buffer =
+    allocate_vec_usize_aligned(MAX_RETURNDATA_BUFFER_SIZE, allocator.clone());</code></pre>
 
 When an attempt is made to grow the heap larger than _128 MB_, a call to `Vec::extend_from_slice` reallocates the data of the buffer, rendering all previously returned pointers as dangling. These dangling pointers can still be read later in the same transaction, e.g., when the VM passes the `returndata_buffer` to the caller. Dereferencing the dangling pointers leads to an immediate Use-After-Free condition, resulting in memory corruption potentially under the attacker's control.
 
@@ -512,11 +514,11 @@ Implementing size validation for the `returndata_buffer` or utilizing a pre-allo
 
 The `very_low_copy_cost` function miscalculates the native costs for copy operations. It incorrectly applies the constant `COPY_BASE_NATIVE_COST`, which is `80`, for both the per-byte multiplication and the base addition. The correct approach should utilize `COPY_BYTE_NATIVE_COST`, valued at `1`, for the per-byte cost.
 
-<pre class="language-rust" data-attributes="filepath context line=306 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/utils.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">306</span><span style="font-family: monospace !important;">pub fn very_low_copy_cost</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">307</span><span style="font-family: monospace !important;">let native = crate::native_resource_constants::COPY_BASE_NATIVE_COST</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">308</span><span style="font-family: monospace !important;">    .checked_mul(len)?</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">309</span><span style="font-family: monospace !important;">    .checked_add(crate::native_resource_constants::COPY_BASE_NATIVE_COST)?;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/utils.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=306 highlight=[1]" data-start-line="306"><code>pub fn very_low_copy_cost
+let native = crate::native_resource_constants::COPY_BASE_NATIVE_COST
+    .checked_mul(len)?
+    .checked_add(crate::native_resource_constants::COPY_BASE_NATIVE_COST)?;</code></pre>
 
 This results in significantly inflated native resource costs than intended:
 
@@ -529,10 +531,10 @@ For example, a 1 kilobyte copy operation would incur a charge of 82,000 native u
 
 The intended calculation method is evident from the naming convention and patterns observed elsewhere in the codebase. For instance, heap expansion costs follow a `base + (per_byte * bytes)` pattern, as it is observed in the same file:
 
-<pre class="language-rust" data-attributes="filepath context line=258"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/utils.rsg</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">258</span><span style="font-family: monospace !important;">pub(crate) fn resize_heap</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">259</span><span style="font-family: monospace !important;">let net_cost_native = HEAP_EXPANSION_BASE_NATIVE_COST.saturating_add(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">260</span><span style="font-family: monospace !important;">    HEAP_EXPANSION_PER_BYTE_NATIVE_COST.saturating_mul(net_byte_increase as u64),</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/utils.rsg</div>
+<pre class="language-rust" data-attributes="filepath context line=258" data-start-line="258"><code>pub(crate) fn resize_heap
+let net_cost_native = HEAP_EXPANSION_BASE_NATIVE_COST.saturating_add(
+    HEAP_EXPANSION_PER_BYTE_NATIVE_COST.saturating_mul(net_byte_increase as u64),</code></pre>
 
 This miscalculation causes transactions with large copy operations to consume excessive native resources, risking transaction failure even with ample gas provisioned.
 
@@ -563,21 +565,22 @@ This issue has been identified in two distinct system hooks, each with varying d
 
 In the `l1_messenger_hook_inner` function, the variables `message_offset` and `length` are parsed into the type `usize`:
 
-<pre class="language-rust" data-attributes="filepath context line=154"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l1_messenger.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">154</span><span style="font-family: monospace !important;">fn l1_messenger_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">155</span><span style="font-family: monospace !important;">let message_offset: usize = match U256::from_be_slice(&amp;calldata[4..36]).try_into() {</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l1_messenger.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=154" data-start-line="154"><code>fn l1_messenger_hook_inner
+let message_offset: usize = match U256::from_be_slice(&amp;calldata[4..36]).try_into() {</code></pre>
 
-<pre class="language-rust" data-attributes="line=187"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">187</span><span style="font-family: monospace !important;">let length =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">188</span><span style="font-family: monospace !important;">    match U256::from_be_slice(&amp;calldata[length_encoding_end - 32..length_encoding_end])</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">189</span><span style="font-family: monospace !important;">        .try_into()</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=187" data-start-line="187"><code>let length =
+    match U256::from_be_slice(&amp;calldata[length_encoding_end - 32..length_encoding_end])
+        .try_into()
+</code></pre>
 
 Both conversions are explicitly validated to fit into the `usize` type, and the hook errors out with the message `"L1 messenger failure: sendToL1 called with invalid calldata"` if they do not.
 
 Furthermore, the variables `length_encoding_end` and `message_end`, both of type `usize`, are introduced. The value of `length_encoding_end` is determined by validating `message_offset` to be `32` and then adding `36` to it. The value of `message_end` is calculated as the sum of two `usize` values, with potential overflow being addressed:
 
-<pre class="language-rust" data-attributes="filepath context line=198"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l1_messenger.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">198</span><span style="font-family: monospace !important;">fn l1_messenger_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">199</span><span style="font-family: monospace !important;">let message_end = match length_encoding_end.checked_add(length) {</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l1_messenger.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=198" data-start-line="198"><code>fn l1_messenger_hook_inner
+let message_end = match length_encoding_end.checked_add(length) {</code></pre>
 
 The snippets mentioned each have a potential failure related to the `usize` type: two stem from the `try_into` call and one from the `checked_add` call.
 
@@ -589,17 +592,19 @@ However, values exceeding `u32::MAX` would cause a failure in a node running the
 
 The `l2_base_token.rs` file is subject to similar issues as well, particularly the `WITHDRAW_WITH_MESSAGE_SELECTOR` case. Similarly to the `l1_messenger_hook`, there are 3 failures related to the `usize` type:
 
-<pre class="language-rust" data-attributes="filepath context line=201"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l2_base_token.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">201</span><span style="font-family: monospace !important;">fn l2_base_token_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">202</span><span style="font-family: monospace !important;">let message_offset: usize =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">203</span><span style="font-family: monospace !important;">    match U256::from_be_slice(&amp;calldata[36..68]).try_into() {</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l2_base_token.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=201" data-start-line="201"><code>fn l2_base_token_hook_inner
+let message_offset: usize =
+    match U256::from_be_slice(&amp;calldata[36..68]).try_into() {</code></pre>
 
-<pre class="language-rust" data-attributes="line=222"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">222</span><span style="font-family: monospace !important;">let length =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">223</span><span style="font-family: monospace !important;">    match U256::from_be_slice(&amp;calldata[length_encoding_end - 32..length_encoding_end])</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">224</span><span style="font-family: monospace !important;">        .try_into()</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=222" data-start-line="222"><code>let length =
+    match U256::from_be_slice(&amp;calldata[length_encoding_end - 32..length_encoding_end])
+        .try_into()
+</code></pre>
 
-<pre class="language-rust" data-attributes="line=232"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">232</span><span style="font-family: monospace !important;">let message_end =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">233</span><span style="font-family: monospace !important;">    match length_encoding_end.checked_add(length) {</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=232" data-start-line="232"><code>let message_end =
+    match length_encoding_end.checked_add(length) {
+</code></pre>
 
 For the L1 messenger, the likelihood of exploitation is reduced since the L1 contracts and governance must have validated all transactions before they are processed by the L2 nodes.
 
@@ -632,22 +637,23 @@ In L1 contracts, it is crucial to ensure that L1 transactions and system upgrade
 
 In `l2_base_token.rs`, the `l2_base_token_hook_inner` function interprets the `calldata[4..36]` slice, consisting of 32 bytes, as an Ethereum address by taking the lowest 20 bytes. The slice is correctly validated, in the `WITHDRAW_SELECTOR` case, to not have non-zero bytes among the 12 highest bytes:
 
-<pre class="language-rust" data-attributes="filepath context line=170"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l2_base_token.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">170</span><span style="font-family: monospace !important;">fn l2_base_token_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">171</span><span style="font-family: monospace !important;">// check that first 12 bytes in address encoding are zero</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">172</span><span style="font-family: monospace !important;">if calldata[4..4 + 12].iter().any(|byte| *byte != 0) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">173</span><span style="font-family: monospace !important;">    return Ok(Err(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">174</span><span style="font-family: monospace !important;">        "Contract deployer failure: withdraw called with invalid calldata",</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l2_base_token.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=170" data-start-line="170"><code>fn l2_base_token_hook_inner
+// check that first 12 bytes in address encoding are zero
+if calldata[4..4 + 12].iter().any(|byte| *byte != 0) {
+    return Ok(Err(
+        "Contract deployer failure: withdraw called with invalid calldata",</code></pre>
 
 However, the alternative branch `WITHDRAW_WITH_MESSAGE_SELECTOR` of `l2_base_token_hook_inner` does not include a similar validation:
 
-<pre class="language-rust" data-attributes="line=270 highlight=[4]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">270</span><span style="font-family: monospace !important;">let mut message: alloc::vec::Vec&lt;u8, S::Allocator&gt; =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">271</span><span style="font-family: monospace !important;">    alloc::vec::Vec::with_capacity_in(message_length, system.get_allocator());</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">272</span><span style="font-family: monospace !important;">message.extend_from_slice(FINALIZE_ETH_WITHDRAWAL_SELECTOR);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">273</span><span style="font-family: monospace !important;">message.extend_from_slice(&amp;calldata[16..36]);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">274</span><span style="font-family: monospace !important;">message.extend_from_slice(&amp;nominal_token_value.to_be_bytes::&lt;32&gt;());</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">275</span><span style="font-family: monospace !important;">message.extend_from_slice(&amp;caller.to_be_bytes::&lt;20&gt;());</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">276</span><span style="font-family: monospace !important;">message.extend_from_slice(additional_data);</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=270 highlight=[4]" data-start-line="270"><code>let mut message: alloc::vec::Vec&lt;u8, S::Allocator&gt; =
+    alloc::vec::Vec::with_capacity_in(message_length, system.get_allocator());
+message.extend_from_slice(FINALIZE_ETH_WITHDRAWAL_SELECTOR);
+message.extend_from_slice(&amp;calldata[16..36]);
+message.extend_from_slice(&amp;nominal_token_value.to_be_bytes::&lt;32&gt;());
+message.extend_from_slice(&amp;caller.to_be_bytes::&lt;20&gt;());
+message.extend_from_slice(additional_data);
+</code></pre>
 
 The presence of non-zero bytes in the 12 highest bytes of an address could stem from errors in 3rd-party applications built on the rollup, or simply from a user's mistake. The corresponding Solidity smart contracts of the settlement layer would ignore these bytes, using only the lowest 20 bytes to determine the address. Such an inadvertent mismatch, whether it's an off-by-some offset or residual data in the upper 12 bytes, could result in the interpretation of a 20-byte address that doesn't align with the caller's intentions.
 
@@ -669,17 +675,17 @@ As a consequence of such a mistake, the user's tokens will be silently transferr
 
 The structure `FlatStorageLeaf` implements trait `UsizeSerializable` and its function `iter` returning an iterator or type `ExactSizeIterator`. Such an iterator can provide its consumer with information about its length:
 
-<pre class="language-rust" data-attributes="filepath line=52 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">52</span><span style="font-family: monospace !important;">impl&lt;const N: usize&gt; UsizeSerializable for FlatStorageLeaf&lt;N&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">53</span><span style="font-family: monospace !important;">    const USIZE_LEN: usize =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">54</span><span style="font-family: monospace !important;">        &lt;Bytes32 as UsizeSerializable&gt;::USIZE_LEN * 2 + &lt;u64 as UsizeSerializable&gt;::USIZE_LEN * 2;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">55</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">56</span><span style="font-family: monospace !important;">    fn iter(&amp;self) -&gt; impl ExactSizeIterator&lt;Item = usize&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">57</span><span style="font-family: monospace !important;">        ExactSizeChain::new(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">58</span><span style="font-family: monospace !important;">            UsizeSerializable::iter(&amp;self.key),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">59</span><span style="font-family: monospace !important;">            ExactSizeChain::new(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">60</span><span style="font-family: monospace !important;">                UsizeSerializable::iter(&amp;self.value),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">61</span><span style="font-family: monospace !important;">                UsizeSerializable::iter(&amp;self.next),</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=52 highlight=[3]" data-start-line="52"><code>impl&lt;const N: usize&gt; UsizeSerializable for FlatStorageLeaf&lt;N&gt; {
+    const USIZE_LEN: usize =
+        &lt;Bytes32 as UsizeSerializable&gt;::USIZE_LEN * 2 + &lt;u64 as UsizeSerializable&gt;::USIZE_LEN * 2;
+
+    fn iter(&amp;self) -&gt; impl ExactSizeIterator&lt;Item = usize&gt; {
+        ExactSizeChain::new(
+            UsizeSerializable::iter(&amp;self.key),
+            ExactSizeChain::new(
+                UsizeSerializable::iter(&amp;self.value),
+                UsizeSerializable::iter(&amp;self.next),</code></pre>
 
 While the function `iter` is implemented correctly, the related constant `USIZE_LEN` is defined incorrectly.
 
@@ -722,35 +728,35 @@ _Only because the incorrect definition is involved into serialization of 7 other
   </div>
 </div>
 
-<pre class="language-rust" data-attributes="filepath context line=188 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/interpreter.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">188</span><span style="font-family: monospace !important;">pub fn run</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">189</span><span style="font-family: monospace !important;">opcodes::ADDRESS =&gt; self.address(),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">190</span><span style="font-family: monospace !important;">opcodes::BALANCE =&gt; self.balance(system),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">191</span><span style="font-family: monospace !important;">opcodes::SELFBALANCE =&gt; self.selfbalance(system),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">192</span><span style="font-family: monospace !important;">opcodes::CODESIZE =&gt; self.codesize(),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">193</span><span style="font-family: monospace !important;">opcodes::CODECOPY =&gt; self.codecopy(system),</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/interpreter.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=188 highlight=[3]" data-start-line="188"><code>pub fn run
+opcodes::ADDRESS =&gt; self.address(),
+opcodes::BALANCE =&gt; self.balance(system),
+opcodes::SELFBALANCE =&gt; self.selfbalance(system),
+opcodes::CODESIZE =&gt; self.codesize(),
+opcodes::CODECOPY =&gt; self.codecopy(system),</code></pre>
 
 The function `get_selfbalance`, which handles the opcode `SELFBALANCE`, silently delegates execution to `read_account_balance_assuming_warm`. This function implements only one specific scenario where the account balance is already cached.
 
-<pre class="language-rust" data-attributes="filepath line=329 highlight=[8]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">329</span><span style="font-family: monospace !important;">fn get_selfbalance(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">330</span><span style="font-family: monospace !important;">    &amp;mut self,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">331</span><span style="font-family: monospace !important;">    ee_type: ExecutionEnvironmentType,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">332</span><span style="font-family: monospace !important;">    resources: &amp;mut Self::Resources,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">333</span><span style="font-family: monospace !important;">    address: &amp;&lt;Self::IOTypes as SystemIOTypesConfig&gt;::Address,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">334</span><span style="font-family: monospace !important;">) -&gt; Result&lt;&lt;Self::IOTypes as SystemIOTypesConfig&gt;::NominalTokenValue, SystemError&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">335</span><span style="font-family: monospace !important;">    self.account_data_cache</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">336</span><span style="font-family: monospace !important;">        .read_account_balance_assuming_warm(ee_type, resources, address)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">337</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=329 highlight=[8]" data-start-line="329"><code>fn get_selfbalance(
+    &amp;mut self,
+    ee_type: ExecutionEnvironmentType,
+    resources: &amp;mut Self::Resources,
+    address: &amp;&lt;Self::IOTypes as SystemIOTypesConfig&gt;::Address,
+) -&gt; Result&lt;&lt;Self::IOTypes as SystemIOTypesConfig&gt;::NominalTokenValue, SystemError&gt; {
+    self.account_data_cache
+        .read_account_balance_assuming_warm(ee_type, resources, address)
+}</code></pre>
 
 In the alternative scenario where the cache is cold, the function does not proceed and returns an `InternalError` instead:
 
-<pre class="language-rust" data-attributes="filepath context line=417 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/account_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">417</span><span style="font-family: monospace !important;">pub fn read_account_balance_assuming_warm</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">418</span><span style="font-family: monospace !important;">match self.cache.get(address.into()) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">419</span><span style="font-family: monospace !important;">    Some(cache_item) =&gt; Ok(cache_item.current().value().balance),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">420</span><span style="font-family: monospace !important;">    None =&gt; Err(InternalError("Balance assumed warm but not in cache").into()),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">421</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=417 highlight=[3]" data-start-line="417"><code>pub fn read_account_balance_assuming_warm
+match self.cache.get(address.into()) {
+    Some(cache_item) =&gt; Ok(cache_item.current().value().balance),
+    None =&gt; Err(InternalError("Balance assumed warm but not in cache").into()),
+}</code></pre>
 
 Other locations in the codebase do not insert the balance of the contract before executing its code, so the cache cannot be safely assumed to be warm. Executing `SELFBALANCE` is not guaranteed to succeed, diverging from the EVM specification.
 
@@ -776,31 +782,32 @@ The function `grow_heap` aims to increase the size of the specified region to ma
 
 The function verifies if the region is managed by the `MemoryImpl` instance and positioned at the top of the managed heap; otherwise, it returns `InternalError`. It then aligns `new_size` to a multiple of `USIZE_SIZE` and checks that this aligned `new_size` does not exceed the `MAX_HEAP_BUFFER_SIZE`. If the capacity is exceeded, it returns `Ok(None)`.
 
-<pre class="language-rust" data-attributes="filepath context line=134"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/memory/basic_memory.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">134</span><span style="font-family: monospace !important;">fn grow_heap</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">135</span><span style="font-family: monospace !important;">    new_size: usize,</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/memory/basic_memory.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=134" data-start-line="134"><code>fn grow_heap
+    new_size: usize,</code></pre>
 
-<pre class="language-rust" data-attributes="line=150 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">150</span><span style="font-family: monospace !important;">let new_size = new_size.next_multiple_of(USIZE_SIZE);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">151</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">152</span><span style="font-family: monospace !important;">let current_heap_capacity = unsafe {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">153</span><span style="font-family: monospace !important;">    self.heap_buffer.len()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">154</span><span style="font-family: monospace !important;">        - self</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">155</span><span style="font-family: monospace !important;">            .current_heap_start</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">156</span><span style="font-family: monospace !important;">            .offset_from_unsigned(self.heap_buffer.cast())</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">157</span><span style="font-family: monospace !important;">};</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">158</span><span style="font-family: monospace !important;">if new_size &gt; current_heap_capacity {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">159</span><span style="font-family: monospace !important;">    return Ok(None);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">160</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=150 highlight=[1]" data-start-line="150"><code>let new_size = new_size.next_multiple_of(USIZE_SIZE);
+
+let current_heap_capacity = unsafe {
+    self.heap_buffer.len()
+        - self
+            .current_heap_start
+            .offset_from_unsigned(self.heap_buffer.cast())
+};
+if new_size &gt; current_heap_capacity {
+    return Ok(None);
+}
+</code></pre>
 
 However, the validation against the heap's maximum capacity is ineffective due to the absence of a bounds check on the `new_size` parameter before aligning it to `next_multiple_of(USIZE_SIZE)`. This oversight can cause overflow and silent wrapping to zero in release mode when compiled with `overflow-checks=false`.
 
 Overflow occurs when the caller-provided `new_size` exceeds `usize::MAX - (USIZE_SIZE - 1)`.
 
-<pre class="language-rust" data-attributes="filepath context line=171 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/memory/basic_memory.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">171</span><span style="font-family: monospace !important;">fn grow_heap</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">172</span><span style="font-family: monospace !important;">Ok(Some(OSManagedResizableSlice {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">173</span><span style="font-family: monospace !important;">    ptr: self.current_heap_start,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">174</span><span style="font-family: monospace !important;">    len: new_size,</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/memory/basic_memory.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=171 highlight=[3]" data-start-line="171"><code>fn grow_heap
+Ok(Some(OSManagedResizableSlice {
+    ptr: self.current_heap_start,
+    len: new_size,</code></pre>
 
 As a consequence of `new_size` wrapping to zero, heap expansion does not occur, and an `OSManagedResizableSlice` is returned with `len` set to zero. Any caller expecting the returned buffer to match the specified size would then run into an "Out-of-Bounds" write.
 
@@ -850,23 +857,25 @@ Return a well-typed error when the parameter `new_size` exceeds `usize::MAX - (U
 
 Several preimage cache operations bypass the lifetime limitations of the data stored in the `storage` field of type `BTreeMap`. This is done by employing the unsafe operation `core::mem::transmute`, which extends the lifetime to `'static` without guarantees. If the underlying `BTreeMap` reallocates, or if the actual data is freed, the `'static` reference will become dangling. Subsequent access to such a reference will cause a Use-After-Free condition, potentially leading to memory corruption, arbitrary code execution, or system crashes.
 
-<pre class="language-rust" data-attributes="filepath context line=82 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/preimage_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">82</span><span style="font-family: monospace !important;">fn expose_preimage</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">83</span><span style="font-family: monospace !important;">if let Some(cached) = self.storage.get(hash) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">84</span><span style="font-family: monospace !important;">    unsafe {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">85</span><span style="font-family: monospace !important;">        let cached: &amp;'static [u8] = core::mem::transmute(cached.as_slice());</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/preimage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=82 highlight=[3]" data-start-line="82"><code>fn expose_preimage
+if let Some(cached) = self.storage.get(hash) {
+    unsafe {
+        let cached: &amp;'static [u8] = core::mem::transmute(cached.as_slice());</code></pre>
 
-<pre class="language-rust" data-attributes="line=180 highlight=[5]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">180</span><span style="font-family: monospace !important;">let inserted = self.storage.entry(*hash).or_insert(buffered);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">181</span><span style="font-family: monospace !important;">// Safety: IO implementer that will use it is expected to live beoynd any frame (as it's part of the OS),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">182</span><span style="font-family: monospace !important;">// so we can extend the lifetime</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">183</span><span style="font-family: monospace !important;">unsafe {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">184</span><span style="font-family: monospace !important;">    let cached: &amp;'static [u8] = core::mem::transmute(inserted.as_slice());</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=180 highlight=[5]" data-start-line="180"><code>let inserted = self.storage.entry(*hash).or_insert(buffered);
+// Safety: IO implementer that will use it is expected to live beoynd any frame (as it's part of the OS),
+// so we can extend the lifetime
+unsafe {
+    let cached: &amp;'static [u8] = core::mem::transmute(inserted.as_slice());
+</code></pre>
 
-<pre class="language-rust" data-attributes="context line=199 highlight=[4]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">199</span><span style="font-family: monospace !important;">fn insert_verified_preimage(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">200</span><span style="font-family: monospace !important;">let inserted = self.storage.entry(*hash).or_insert(preimage);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">201</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">202</span><span style="font-family: monospace !important;">unsafe {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">203</span><span style="font-family: monospace !important;">    let cached: &amp;'static [u8] = core::mem::transmute(inserted.as_slice());</span></span></code></pre>
+<pre class="language-rust" data-attributes="context line=199 highlight=[4]" data-start-line="199"><code>fn insert_verified_preimage(
+let inserted = self.storage.entry(*hash).or_insert(preimage);
+
+unsafe {
+    let cached: &amp;'static [u8] = core::mem::transmute(inserted.as_slice());
+</code></pre>
 
 In general, such approach can be considered a bad practice because it circumvents the borrow checker, which is a compiler mechanism designed to catch memory issues.
 
@@ -892,35 +901,35 @@ A more detailed analysis is required to assess the risk posed by the `get_preima
 
 The safety guarantee in the `materialize_element` function is dependent on the assumption that the `init_from_iter` function is correct and that `dst.assume_init()` is safe to call as long as `init_from_iter` has completed successfully:
 
-<pre class="language-rust" data-attributes="filepath context line=177 highlight=[9,12]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/storage_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">177</span><span style="font-family: monospace !important;">fn materialize_element&lt;'a&gt;(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">178</span><span style="font-family: monospace !important;">let mut dst =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">179</span><span style="font-family: monospace !important;">    core::mem::MaybeUninit::&lt;InitialStorageSlotData&lt;EthereumIOTypesConfig&gt;&gt;::uninit(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">180</span><span style="font-family: monospace !important;">    );</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">181</span><span style="font-family: monospace !important;">let mut it = oracle</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">182</span><span style="font-family: monospace !important;">    .create_oracle_access_iterator::&lt;InitialStorageSlotDataIterator&lt;EthereumIOTypesConfig&gt;&gt;(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">183</span><span style="font-family: monospace !important;">        *address,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">184</span><span style="font-family: monospace !important;">    )</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">185</span><span style="font-family: monospace !important;">    .expect("must make an iterator");</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">186</span><span style="font-family: monospace !important;">unsafe { UsizeDeserializable::init_from_iter(&amp;mut dst, &amp;mut it).expect("must initialize") };</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">187</span><span style="font-family: monospace !important;">assert!(it.next().is_none());</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">188</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">189</span><span style="font-family: monospace !important;">// Safety: Since the `init_from_iter` has completed successfully and there's no</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">190</span><span style="font-family: monospace !important;">// outstanding data as per line before, we can assume that the value was read</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">191</span><span style="font-family: monospace !important;">// correctly.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">192</span><span style="font-family: monospace !important;">let data_from_oracle = unsafe { dst.assume_init() } ;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/storage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=177 highlight=[9,12]" data-start-line="177"><code>fn materialize_element&lt;'a&gt;(
+let mut dst =
+    core::mem::MaybeUninit::&lt;InitialStorageSlotData&lt;EthereumIOTypesConfig&gt;&gt;::uninit(
+    );
+let mut it = oracle
+    .create_oracle_access_iterator::&lt;InitialStorageSlotDataIterator&lt;EthereumIOTypesConfig&gt;&gt;(
+        *address,
+    )
+    .expect("must make an iterator");
+unsafe { UsizeDeserializable::init_from_iter(&amp;mut dst, &amp;mut it).expect("must initialize") };
+assert!(it.next().is_none());
+
+// Safety: Since the `init_from_iter` has completed successfully and there's no
+// outstanding data as per line before, we can assume that the value was read
+// correctly.
+let data_from_oracle = unsafe { dst.assume_init() } ;</code></pre>
 
 
 
 The `init_from_iter` function, in its turn, relies on the correct implementation of the `from_iter` method from the trait `UsizeDeserializable`:
 
-<pre class="language-rust" data-attributes="filepath context line=50"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">zk_ee/src/kv_markers/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">50</span><span style="font-family: monospace !important;">pub trait UsizeDeserializable</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">51</span><span style="font-family: monospace !important;">unsafe fn init_from_iter(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">52</span><span style="font-family: monospace !important;">    this: &amp;mut MaybeUninit&lt;Self&gt;,                                        </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">53</span><span style="font-family: monospace !important;">    src: &amp;mut impl ExactSizeIterator&lt;Item = usize&gt;,                      </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">54</span><span style="font-family: monospace !important;">) -&gt; Result&lt;(), InternalError&gt; {                                         </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">55</span><span style="font-family: monospace !important;">    let new = UsizeDeserializable::from_iter(src)?;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/kv_markers/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=50" data-start-line="50"><code>pub trait UsizeDeserializable
+unsafe fn init_from_iter(
+    this: &amp;mut MaybeUninit&lt;Self&gt;,                                        
+    src: &amp;mut impl ExactSizeIterator&lt;Item = usize&gt;,                      
+) -&gt; Result&lt;(), InternalError&gt; {                                         
+    let new = UsizeDeserializable::from_iter(src)?;</code></pre>
 
 This trait is implemented for multiple types but not all implementations enforce length of the output to match the corresponding `USIZE_LEN` constant. Specifically, the `materialize_element` function relies on the correct trait implementation for the `InitialStorageSlotData` structure.
 
@@ -928,45 +937,45 @@ This trait is implemented for multiple types but not all implementations enforce
 
 In this particular case, the implementation does not validate the data being deserialized against the expected length defined by `USIZE_LEN`:
 
-<pre class="language-rust" data-attributes="filepath line=168"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">zk_ee/src/system_io_oracle/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">168</span><span style="font-family: monospace !important;">impl&lt;IOTypes: SystemIOTypesConfig&gt; UsizeSerializable for InitialStorageSlotData&lt;IOTypes&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">169</span><span style="font-family: monospace !important;">    const USIZE_LEN: usize = &lt;bool as UsizeSerializable&gt;::USIZE_LEN</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">170</span><span style="font-family: monospace !important;">        + &lt;u8 as UsizeSerializable&gt;::USIZE_LEN</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">171</span><span style="font-family: monospace !important;">        + &lt;IOTypes::StorageValue as UsizeSerializable&gt;::USIZE_LEN;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">172</span><span style="font-family: monospace !important;">    fn iter(&amp;self) -&gt; impl ExactSizeIterator&lt;Item = usize&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">173</span><span style="font-family: monospace !important;">        ExactSizeChain::new(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">174</span><span style="font-family: monospace !important;">            UsizeSerializable::iter(&amp;self.is_new_storage_slot),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">175</span><span style="font-family: monospace !important;">            UsizeSerializable::iter(&amp;self.initial_value),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">176</span><span style="font-family: monospace !important;">        )</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">177</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">178</span><span style="font-family: monospace !important;">}</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">179</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">180</span><span style="font-family: monospace !important;">impl&lt;IOTypes: SystemIOTypesConfig&gt; UsizeDeserializable for InitialStorageSlotData&lt;IOTypes&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">181</span><span style="font-family: monospace !important;">    const USIZE_LEN: usize = &lt;Self as UsizeSerializable&gt;::USIZE_LEN;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">182</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">183</span><span style="font-family: monospace !important;">    fn from_iter(src: &amp;mut impl ExactSizeIterator&lt;Item = usize&gt;) -&gt; Result&lt;...</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">184</span><span style="font-family: monospace !important;">        let is_new_storage_slot = UsizeDeserializable::from_iter(src)?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">185</span><span style="font-family: monospace !important;">        let initial_value = UsizeDeserializable::from_iter(src)?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">186</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">187</span><span style="font-family: monospace !important;">        let new = Self {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">188</span><span style="font-family: monospace !important;">            is_new_storage_slot,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">189</span><span style="font-family: monospace !important;">            initial_value,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">190</span><span style="font-family: monospace !important;">        };</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">191</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">192</span><span style="font-family: monospace !important;">        Ok(new)</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/system_io_oracle/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=168" data-start-line="168"><code>impl&lt;IOTypes: SystemIOTypesConfig&gt; UsizeSerializable for InitialStorageSlotData&lt;IOTypes&gt; {
+    const USIZE_LEN: usize = &lt;bool as UsizeSerializable&gt;::USIZE_LEN
+        + &lt;u8 as UsizeSerializable&gt;::USIZE_LEN
+        + &lt;IOTypes::StorageValue as UsizeSerializable&gt;::USIZE_LEN;
+    fn iter(&amp;self) -&gt; impl ExactSizeIterator&lt;Item = usize&gt; {
+        ExactSizeChain::new(
+            UsizeSerializable::iter(&amp;self.is_new_storage_slot),
+            UsizeSerializable::iter(&amp;self.initial_value),
+        )
+    }
+}
+
+impl&lt;IOTypes: SystemIOTypesConfig&gt; UsizeDeserializable for InitialStorageSlotData&lt;IOTypes&gt; {
+    const USIZE_LEN: usize = &lt;Self as UsizeSerializable&gt;::USIZE_LEN;
+
+    fn from_iter(src: &amp;mut impl ExactSizeIterator&lt;Item = usize&gt;) -&gt; Result&lt;...
+        let is_new_storage_slot = UsizeDeserializable::from_iter(src)?;
+        let initial_value = UsizeDeserializable::from_iter(src)?;
+
+        let new = Self {
+            is_new_storage_slot,
+            initial_value,
+        };
+
+        Ok(new)</code></pre>
 
 ## Incomplete `UsizeDeserializable` implementations
 
 The `UsizeDeserializable` trait, utilizing the `USIZE_LEN` constant, offers additional protection against malformed data during deserialization by enabling developers to validate the number of bytes read. The constant `USIZE_LEN` is also usually shared with the `UsizeSerializable` trait to ensure data integrity during serialization.
 
-<pre class="language-rust" data-attributes="filepath line=268"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">zk_ee/src/kv_markers/kv_impls.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">268</span><span style="font-family: monospace !important;">impl UsizeDeserializable for B160 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">269</span><span style="font-family: monospace !important;">    const USIZE_LEN: usize = &lt;B160 as UsizeSerializable&gt;::USIZE_LEN;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">270</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">271</span><span style="font-family: monospace !important;">    fn from_iter(src: &amp;mut impl ExactSizeIterator&lt;Item = usize&gt;) -&gt; Result&lt;Self, InternalError&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">272</span><span style="font-family: monospace !important;">        if src.len() &lt; &lt;Self as UsizeDeserializable&gt;::USIZE_LEN {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">273</span><span style="font-family: monospace !important;">            return Err(InternalError("b160 deserialization failed: too short"));</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">274</span><span style="font-family: monospace !important;">        }</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/kv_markers/kv_impls.rs</div>
+<pre class="language-rust" data-attributes="filepath line=268" data-start-line="268"><code>impl UsizeDeserializable for B160 {
+    const USIZE_LEN: usize = &lt;B160 as UsizeSerializable&gt;::USIZE_LEN;
+
+    fn from_iter(src: &amp;mut impl ExactSizeIterator&lt;Item = usize&gt;) -&gt; Result&lt;Self, InternalError&gt; {
+        if src.len() &lt; &lt;Self as UsizeDeserializable&gt;::USIZE_LEN {
+            return Err(InternalError("b160 deserialization failed: too short"));
+        }</code></pre>
 
 Throughout the codebase, many types implement `UsizeSerializable` and `UsizeDeserializable`, including manually maintained values for the `USIZE_LEN` parameter. However, only two of such types implement the validation according to the aforementioned pattern: `B160` and `Bytes32` from the file `zk_ee/src/kv_markers/kv_impls.rs`.
 
@@ -997,29 +1006,29 @@ L1 transactions are initiated on the settlement layer: users can request "priori
 
 Such transactions are labeled using the `L1_L2_TX_TYPE` and `UPGRADE_TX_TYPE` constants and are processed using the `process_l1_transaction` function:
 
-<pre class="language-rust" data-attributes="filepath context line=61 highlight=[8,18]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/process_transaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">61</span><span style="font-family: monospace !important;">pub fn process_transaction</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">62</span><span style="font-family: monospace !important;">let tx_type = transaction.tx_type.read();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">63</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">64</span><span style="font-family: monospace !important;">match tx_type {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">65</span><span style="font-family: monospace !important;">    ZkSyncTransaction::UPGRADE_TX_TYPE =&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">66</span><span style="font-family: monospace !important;">        if !is_first_tx {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">67</span><span style="font-family: monospace !important;">            Err(Validation(InvalidTransaction::UpgradeTxNotFirst))</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">68</span><span style="font-family: monospace !important;">        } else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">69</span><span style="font-family: monospace !important;">            Self::process_l1_transaction(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">70</span><span style="font-family: monospace !important;">                system,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">71</span><span style="font-family: monospace !important;">                system_functions,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">72</span><span style="font-family: monospace !important;">                memories,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">73</span><span style="font-family: monospace !important;">                transaction,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">74</span><span style="font-family: monospace !important;">                false,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">75</span><span style="font-family: monospace !important;">            )</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">76</span><span style="font-family: monospace !important;">        }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">77</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">78</span><span style="font-family: monospace !important;">    ZkSyncTransaction::L1_L2_TX_TYPE =&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">79</span><span style="font-family: monospace !important;">        Self::process_l1_transaction(system, system_functions, memories, transaction, true)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">80</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">81</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">82</span><span style="font-family: monospace !important;">    _ =&gt; Self::process_l2_transaction::&lt;Config&gt;(</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=61 highlight=[8,18]" data-start-line="61"><code>pub fn process_transaction
+let tx_type = transaction.tx_type.read();
+
+match tx_type {
+    ZkSyncTransaction::UPGRADE_TX_TYPE =&gt; {
+        if !is_first_tx {
+            Err(Validation(InvalidTransaction::UpgradeTxNotFirst))
+        } else {
+            Self::process_l1_transaction(
+                system,
+                system_functions,
+                memories,
+                transaction,
+                false,
+            )
+        }
+    }
+    ZkSyncTransaction::L1_L2_TX_TYPE =&gt; {
+        Self::process_l1_transaction(system, system_functions, memories, transaction, true)
+    }
+
+    _ =&gt; Self::process_l2_transaction::&lt;Config&gt;(</code></pre>
 
 For regular L2 transactions, the `process_l2_transaction` function ensures signature verification is performed via the calls to functions `transaction_validation`, `AA::validate` and `EOA::validate`. The latter function is defined in the file `basic_bootloader/src/bootloader/account_models/eoa.rs`.
 
@@ -1051,40 +1060,40 @@ Ensure that users cannot submit transactions with values of the `tx_type` equal 
 
 One of the data structures related to the Merkle tree implementation is `FlatStorageBacking`, serving as a multi-purpose index and incorporating features for testing, such as the `RANDOMIZED` parameter:
 
-<pre class="language-rust" data-attributes="filepath line=901 highlight=[4]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">901</span><span style="font-family: monospace !important;">pub struct FlatStorageBacking&lt;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">902</span><span style="font-family: monospace !important;">    const N: usize,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">903</span><span style="font-family: monospace !important;">    H: FlatStorageHasher,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">904</span><span style="font-family: monospace !important;">    const RANDOMIZED: bool,</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=901 highlight=[4]" data-start-line="901"><code>pub struct FlatStorageBacking&lt;
+    const N: usize,
+    H: FlatStorageHasher,
+    const RANDOMIZED: bool,</code></pre>
 
 <br>
 
 This structure is utilized to define the `TestingTree` type, intended solely for testing purposes:
 
-<pre class="language-rust" data-attributes="filepath line=1667"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1667</span><span style="font-family: monospace !important;">pub type TestingTree&lt;const RANDOMIZED: bool&gt; =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1668</span><span style="font-family: monospace !important;">    FlatStorageBacking&lt;TESTING_TREE_HEIGHT, Blake2sStorageHasher, RANDOMIZED&gt;;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=1667" data-start-line="1667"><code>pub type TestingTree&lt;const RANDOMIZED: bool&gt; =
+    FlatStorageBacking&lt;TESTING_TREE_HEIGHT, Blake2sStorageHasher, RANDOMIZED&gt;;</code></pre>
 
 However, it also underpins the definition of the `InMemoryTree` type, employed in production code for transaction simulation:
 
-<pre class="language-rust" data-attributes="filepath context line=17"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">api/src/lib.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">17</span><span style="font-family: monospace !important;">pub fn run_batch_generate_witness</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">18</span><span style="font-family: monospace !important;">tree: InMemoryTree,</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">api/src/lib.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=17" data-start-line="17"><code>pub fn run_batch_generate_witness
+tree: InMemoryTree,</code></pre>
 
-<pre class="language-rust" data-attributes="filepath line=8"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">forward_system/src/run/test_impl/tree.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">8</span><span style="font-family: monospace !important;">pub struct InMemoryTree&lt;const RANDOMIZED_TREE: bool = false&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">9</span><span style="font-family: monospace !important;">    /// Hash map from a pair of Address, slot into values.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">10</span><span style="font-family: monospace !important;">    pub cold_storage: HashMap&lt;Bytes32, Bytes32&gt;,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">11</span><span style="font-family: monospace !important;">    pub storage_tree: TestingTree&lt;RANDOMIZED_TREE&gt;,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">12</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">forward_system/src/run/test_impl/tree.rs</div>
+<pre class="language-rust" data-attributes="filepath line=8" data-start-line="8"><code>pub struct InMemoryTree&lt;const RANDOMIZED_TREE: bool = false&gt; {
+    /// Hash map from a pair of Address, slot into values.
+    pub cold_storage: HashMap&lt;Bytes32, Bytes32&gt;,
+    pub storage_tree: TestingTree&lt;RANDOMIZED_TREE&gt;,
+}</code></pre>
 
 Beyond concerns over code quality, there is a potential future issue given that the production structure `InMemoryTree` relies on the testing constant `TESTING_TREE_HEIGHT` instead of the production constant `TREE_HEIGHT`. Although both constants are currently set to `64`, this could change in the future and go unnoticed. Simulations of transactions should run against the most current, real state.
 
-<pre class="language-rust" data-attributes="filepath line=55"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">55</span><span style="font-family: monospace !important;">pub const TREE_HEIGHT: usize = 64;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=55" data-start-line="55"><code>pub const TREE_HEIGHT: usize = 64;</code></pre>
 
-<pre class="language-rust" data-attributes="filepath line=1666"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1666</span><span style="font-family: monospace !important;">pub const TESTING_TREE_HEIGHT: usize = 64;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=1666" data-start-line="1666"><code>pub const TESTING_TREE_HEIGHT: usize = 64;</code></pre>
 
 ### Recommendation
 
@@ -1103,55 +1112,57 @@ Besides merely size of the function, the definition also includes several bad pr
 
 While iterating over the `current_hashes_buffer` vector, overlapping windows are used together with custom skipping of every second window. This behaviour can be implemented using the standard iterator operation `chunks`:
 
-<pre class="language-rust" data-attributes="filepath context line=692"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">692</span><span style="font-family: monospace !important;">fn verify_and_apply_batch</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">693</span><span style="font-family: monospace !important;">for (idx, [a, b]) in current_hashes_buffer.array_windows::&lt;2&gt;().enumerate() {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">694</span><span style="font-family: monospace !important;">    if next_merged {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">695</span><span style="font-family: monospace !important;">        next_merged = false;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">696</span><span style="font-family: monospace !important;">        continue;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">697</span><span style="font-family: monospace !important;">    }</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=692" data-start-line="692"><code>fn verify_and_apply_batch
+for (idx, [a, b]) in current_hashes_buffer.array_windows::&lt;2&gt;().enumerate() {
+    if next_merged {
+        next_merged = false;
+        continue;
+    }</code></pre>
 
-<pre class="language-rust" data-attributes="line=746"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">746</span><span style="font-family: monospace !important;">next_hashes_buffer.push((merged_index, a.1, read_hash, write_hash));</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">747</span><span style="font-family: monospace !important;">next_merged = true;</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=746" data-start-line="746"><code>next_hashes_buffer.push((merged_index, a.1, read_hash, write_hash));
+next_merged = true;
+</code></pre>
 
 Using the `chunks` operation would also render the auxiliary function `can_merge` redundant, since it only determines that two leaves belong to the same chunk by validating the `a = b + 1` equation:
 
-<pre class="language-rust" data-attributes="line=628"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">628</span><span style="font-family: monospace !important;">fn can_merge(pair: (u64, u64)) -&gt; bool {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">629</span><span style="font-family: monospace !important;">    let (a, b) = pair;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">630</span><span style="font-family: monospace !important;">    debug_assert_ne!(a, b);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">631</span><span style="font-family: monospace !important;">    a &amp; !1 == b &amp; !1</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=628" data-start-line="628"><code>fn can_merge(pair: (u64, u64)) -&gt; bool {
+    let (a, b) = pair;
+    debug_assert_ne!(a, b);
+    a &amp; !1 == b &amp; !1
+</code></pre>
 
 ## Assertion on the number of writes can be strengthened
 
 After verifying the state changes in a transaction batch, if the root hash remains unchanged, it is asserted that `num_new_writes` is zero. However, the `num_new_writes` variable represents only "non-existing writes." The assertion should instead target the `num_total_writes` variable, as writes to already existing cells must result in a changed root hash, too.
 
-<pre class="language-rust" data-attributes="context filepath line=775 highlight=[2,10]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">775</span><span style="font-family: monospace !important;">fn verify_and_apply_batch</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">776</span><span style="font-family: monospace !important;">if let Some(new_root) = current_hashes_buffer[0].3 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">777</span><span style="font-family: monospace !important;">    if num_total_writes &gt; 0 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">778</span><span style="font-family: monospace !important;">        assert!(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">779</span><span style="font-family: monospace !important;">            new_root != self.root,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">780</span><span style="font-family: monospace !important;">            "hash collision on state root with non-zero number of writes"</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">781</span><span style="font-family: monospace !important;">        );</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">782</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">783</span><span style="font-family: monospace !important;">    self.root = new_root;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">784</span><span style="font-family: monospace !important;">} else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">785</span><span style="font-family: monospace !important;">    assert_eq!(num_new_writes, 0);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">786</span><span style="font-family: monospace !important;">    // root should not change in such case</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">787</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="context filepath line=775 highlight=[2,10]" data-start-line="775"><code>fn verify_and_apply_batch
+if let Some(new_root) = current_hashes_buffer[0].3 {
+    if num_total_writes &gt; 0 {
+        assert!(
+            new_root != self.root,
+            "hash collision on state root with non-zero number of writes"
+        );
+    }
+    self.root = new_root;
+} else {
+    assert_eq!(num_new_writes, 0);
+    // root should not change in such case
+}</code></pre>
 
 ## Miscellaneous code quality concerns
 
-<pre class="language-rust" data-attributes="filepath line=230"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">230</span><span style="font-family: monospace !important;">let num_new_writes = source</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">231</span><span style="font-family: monospace !important;">    .clone()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">232</span><span style="font-family: monospace !important;">    .filter(|(_, v)| v.current_value != v.initial_value &amp;&amp; v.is_new_storage_slot)</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=230" data-start-line="230"><code>let num_new_writes = source
+    .clone()
+    .filter(|(_, v)| v.current_value != v.initial_value &amp;&amp; v.is_new_storage_slot)</code></pre>
 
 Instead of cloning the `source` iterator and filtering out reads again, it would be more efficient to clone the `writes_iter` which contains only writes.
 
-<pre class="language-rust" data-attributes="filepath line=772"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">772</span><span style="font-family: monospace !important;">// if we have new root - use it</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">773</span><span style="font-family: monospace !important;">if let Some(new_root) = current_hashes_buffer[0].3 {</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=772" data-start-line="772"><code>// if we have new root - use it
+if let Some(new_root) = current_hashes_buffer[0].3 {</code></pre>
 
 In multiple locations, getters `.2` and `.3` are used. In mission-critical code such should be replaced with a named field to improve maintainability.
 
@@ -1170,8 +1181,8 @@ In multiple locations, getters `.2` and `.3` are used. In mission-critical code 
 
 The implementation of withdrawals from L2 to L1 relies on the implicit invariant that `nominal_token_value` has been transferred from the `caller` to `L2_BASE_TOKEN_ADDRESS`. Otherwise, any user could crash the node by attempting to withdraw non-existing tokens:
 
-<pre class="language-rust" data-attributes="filepath context lines=147 highlight=[11]"><code>system_hooks/src/l2_base_token.rs
-fn l2_base_token_hook_inner
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l2_base_token.rs</div>
+<pre class="language-rust" data-attributes="filepath context lines=147 highlight=[11]"><code>fn l2_base_token_hook_inner
 // Burn nominal_token_value
 match system.io.update_account_nominal_token_balance(
     ExecutionEnvironmentType::parse_ee_version_byte(caller_ee)
@@ -1183,13 +1194,12 @@ match system.io.update_account_nominal_token_balance(
 ) {
     Ok(_) =&gt; Ok(()),
     Err(UpdateQueryError::NumericBoundsError) =&gt; Err(SystemError::LeafDefect(
-        internal_error!("L2 base token must have withdrawal amount"),
-</code></pre>
+        internal_error!("L2 base token must have withdrawal amount"),</code></pre>
 
 The prerequisite token transfer is ensured earlier in the withdrawal flow, by another function `external_call_before_vm`, which invokes the `transfer_nominal_token_value_inner` function. This is happening right before the `handle_requested_external_call_to_special_address_space` function passes execution to `try_intercept`, which calls the `l2_base_token_hook` handler.
 
-<pre class="language-rust" data-attributes="filepath context lines=425 highlight=[1,3]"><code>system_hooks/src/l2_base_token.rs
-fn external_call_before_vm
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l2_base_token.rs</div>
+<pre class="language-rust" data-attributes="filepath context lines=425 highlight=[1,3]"><code>fn external_call_before_vm
 if let Some(TransferInfo { value, target }) = transfer_to_perform {
     match actual_resources_to_pass.with_infinite_ergs(|inf_resources| {
         self.system.io.transfer_nominal_token_value(
@@ -1197,8 +1207,7 @@ if let Some(TransferInfo { value, target }) = transfer_to_perform {
             inf_resources,
             &amp;call_request.caller,
             &amp;target,
-            &amp;value,
-</code></pre>
+            &amp;value,</code></pre>
 
 However, when `transfer_to_perform` is `None`, no action is taken, despite certain call modifiers potentially setting it to this value. System hooks currently treat such modifiers as errors, thereby preventing `None` values. The concern here is that this invariant is not explicitly enforced in the code.
 
@@ -1228,42 +1237,44 @@ _The following two issues are reported with "Low" severity since only the govern
 
 During system upgrades, the function `set_bytecode_details` is reached from the `contract_deployer_hook` function. The function utilizes parameters `observable_bytecode_hash` and `observable_bytecode_len` to set the corresponding fields of the contract's account:
 
-<pre class="language-rust" data-attributes="filepath context line=795"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/account_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">795</span><span style="font-family: monospace !important;">pub fn set_bytecode_details</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">796</span><span style="font-family: monospace !important;">observable_bytecode_hash: Bytes32,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">797</span><span style="font-family: monospace !important;">observable_bytecode_len: u32,</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=795" data-start-line="795"><code>pub fn set_bytecode_details
+observable_bytecode_hash: Bytes32,
+observable_bytecode_len: u32,</code></pre>
 
-<pre class="language-rust" data-attributes="line=876 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">876</span><span style="font-family: monospace !important;">account_data.update(|cache_record| {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">877</span><span style="font-family: monospace !important;">    cache_record.update(|v, m| {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">878</span><span style="font-family: monospace !important;">        v.observable_bytecode_hash = observable_bytecode_hash;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">879</span><span style="font-family: monospace !important;">        v.observable_bytecode_len = observable_bytecode_len;</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=876 highlight=[3]" data-start-line="876"><code>account_data.update(|cache_record| {
+    cache_record.update(|v, m| {
+        v.observable_bytecode_hash = observable_bytecode_hash;
+        v.observable_bytecode_len = observable_bytecode_len;
+</code></pre>
 
 These parameters receive values retrieved in the `contract_deployer_hook_inner` function as the result of parsing the calldata. The `observable_bytecode_len` parameter corresponds to the exact length of the byte code received, since the same value is used in the `expose_preimage` function, where the buffer is truncated at this length, and hash of the buffer would not match if the length was incorrect.
 
 However, the `observable_bytecode_hash` is not verified against the byte code:
 
-<pre class="language-rust" data-attributes="filepath context line=168"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/contract_deployer.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">168</span><span style="font-family: monospace !important;">let observable_bytecode_hash =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">169</span><span style="font-family: monospace !important;">    Bytes32::from_array(calldata[96..128].try_into().expect("Always valid"));</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/contract_deployer.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=168" data-start-line="168"><code>let observable_bytecode_hash =
+    Bytes32::from_array(calldata[96..128].try_into().expect("Always valid"));</code></pre>
 
-<pre class="language-rust" data-attributes="line=182 highlight=[8]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">182</span><span style="font-family: monospace !important;">system.set_bytecode_details(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">183</span><span style="font-family: monospace !important;">    resources,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">184</span><span style="font-family: monospace !important;">    &amp;address,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">185</span><span style="font-family: monospace !important;">    ExecutionEnvironmentType::EVM,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">186</span><span style="font-family: monospace !important;">    bytecode_hash,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">187</span><span style="font-family: monospace !important;">    bytecode_length,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">188</span><span style="font-family: monospace !important;">    0,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">189</span><span style="font-family: monospace !important;">    observable_bytecode_hash,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">190</span><span style="font-family: monospace !important;">    bytecode_length,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">191</span><span style="font-family: monospace !important;">)?;</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=182 highlight=[8]" data-start-line="182"><code>system.set_bytecode_details(
+    resources,
+    &amp;address,
+    ExecutionEnvironmentType::EVM,
+    bytecode_hash,
+    bytecode_length,
+    0,
+    observable_bytecode_hash,
+    bytecode_length,
+)?;
+</code></pre>
 
 Note that the `bytecode_hash` is a value computed using the _Blake2s_ hash function and is verified in the `expose_preimage` function, while the `observable_bytecode_hash` should be a _Keccak256_ hash but passed into the function `set_bytecode_details` without verification. As a consequence, potential governance mistakes can cause inconcistency in the final account data.
 
 ## Validation of EIP-3541
 
-<pre class="language-rust" data-attributes="filepath context line=179"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/contract_deployer.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">179</span><span style="font-family: monospace !important;">fn contract_deployer_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">180</span><span style="font-family: monospace !important;">// Also EIP-3541(reject code starting with 0xEF) should be validated by governance.</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/contract_deployer.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=179" data-start-line="179"><code>fn contract_deployer_hook_inner
+// Also EIP-3541(reject code starting with 0xEF) should be validated by governance.</code></pre>
 
 Although it is required to be validated by the L1 governance, the extra check would not impose significant performance penalty. Given the rareness and importance of such operation as system upgrade, the extra check is advisable.
 
@@ -1281,32 +1292,32 @@ Additionally, the validations required by governance should be documented.
 
 ## Validate receiver when reading the EVM deployment flag
 
-<pre class="language-rust" data-attributes="filepath context line=485"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/account_models/eoa.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">485</span><span style="font-family: monospace !important;">fn charge_additional_intrinsic_gas</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">486</span><span style="font-family: monospace !important;">let to = transaction.to.read();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">487</span><span style="font-family: monospace !important;">let is_deployment =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">488</span><span style="font-family: monospace !important;">    !transaction.reserved[1].read().is_zero() || to == SPECIAL_ADDRESS_TO_WASM_DEPLOY;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/account_models/eoa.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=485" data-start-line="485"><code>fn charge_additional_intrinsic_gas
+let to = transaction.to.read();
+let is_deployment =
+    !transaction.reserved[1].read().is_zero() || to == SPECIAL_ADDRESS_TO_WASM_DEPLOY;</code></pre>
 
 Validate that `transaction.to == null` when the EVM deployment transaction flag is set. Auxiliary predicate `isDeployment` could be defined that examines value of the `transaction.reserved[1]` flag and also validates the `transaction.to` field.
 
-<pre class="language-rust" data-attributes="filepath context line=65 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/transaction/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">65</span><span style="font-family: monospace !important;">pub struct ZkSyncTransaction</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">66</span><span style="font-family: monospace !important;">/// Now `reserved[0]` is used as a flag to distinguish EIP-155(with chain id) legacy transactions.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">67</span><span style="font-family: monospace !important;">/// `reserved[1]` is used as EVM deployment transaction flag(`to` == null in such case).</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">68</span><span style="font-family: monospace !important;">pub reserved: [ParsedValue&lt;U256&gt;; 4],</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/transaction/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=65 highlight=[2]" data-start-line="65"><code>pub struct ZkSyncTransaction
+/// Now `reserved[0]` is used as a flag to distinguish EIP-155(with chain id) legacy transactions.
+/// `reserved[1]` is used as EVM deployment transaction flag(`to` == null in such case).
+pub reserved: [ParsedValue&lt;U256&gt;; 4],</code></pre>
 
 ## Unsafe function is called without validating preconditions
 
 The function `grow_heap` includes call to the `offset_from_unsigned` function:
 
-<pre class="language-rust" data-attributes="filepath context line=152 highlight=[5]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/memory/basic_memory.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">152</span><span style="font-family: monospace !important;">fn grow_heap</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">153</span><span style="font-family: monospace !important;">let current_heap_capacity = unsafe {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">154</span><span style="font-family: monospace !important;">    self.heap_buffer.len()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">155</span><span style="font-family: monospace !important;">        - self</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">156</span><span style="font-family: monospace !important;">            .current_heap_start</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">157</span><span style="font-family: monospace !important;">            .offset_from_unsigned(self.heap_buffer.cast())</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">158</span><span style="font-family: monospace !important;">};</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/memory/basic_memory.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=152 highlight=[5]" data-start-line="152"><code>fn grow_heap
+let current_heap_capacity = unsafe {
+    self.heap_buffer.len()
+        - self
+            .current_heap_start
+            .offset_from_unsigned(self.heap_buffer.cast())
+};</code></pre>
 
 
 
@@ -1334,17 +1345,18 @@ Otherwise, the call can lead to an Unsafe Behaviour.
 
 The bootloader performs an unchecked downcast of a block-level parameter `base_fee_per_gas` from type `U256` to type `u64` using `try_into().unwrap()`:
 
-<pre class="language-rust" data-attributes="filepath context line=341"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">341</span><span style="font-family: monospace !important;">pub fn run_prepared</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">342</span><span style="font-family: monospace !important;">let block_header = BlockHeader::new(</span></span></code></pre>
-<pre class="language-rust" data-attributes="line=350 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">350</span><span style="font-family: monospace !important;">    base_fee_per_gas.try_into().unwrap(),</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=341" data-start-line="341"><code>pub fn run_prepared
+let block_header = BlockHeader::new(</code></pre>
+<pre class="language-rust" data-attributes="line=350 highlight=[1]" data-start-line="350"><code>    base_fee_per_gas.try_into().unwrap(),
+</code></pre>
 
 The oracle can set arbitrary values without validation, as confirmed by the comment:
 
-<pre class="language-rust" data-attributes="filepath line=117"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/block_header.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">117</span><span style="font-family: monospace !important;">pub fn new</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">118</span><span style="font-family: monospace !important;">// currently operator can set any base_fee_per_gas, in practice it's usually constant</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">119</span><span style="font-family: monospace !important;">base_fee_per_gas,</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/block_header.rs</div>
+<pre class="language-rust" data-attributes="filepath line=117" data-start-line="117"><code>pub fn new
+// currently operator can set any base_fee_per_gas, in practice it's usually constant
+base_fee_per_gas,</code></pre>
 
 If the oracle supplies a `base_fee_per_gas` value exceeding `u64::MAX`, the bootloader will panic and halt all transaction processing. While economically impractical under normal conditions, this creates a real DoS vector if the oracle is misconfigured or compromised.
 
@@ -1374,33 +1386,33 @@ The function `get_resources_to_charge_for_pubdata` computes a fair amount of nat
 
 However, when a value for `base_pubdata` is provided, it is used to adjust the result of the state iteration:
 
-<pre class="language-rust" data-attributes="filepath context line=138 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/gas_helpers.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">138</span><span style="font-family: monospace !important;">pub fn get_resources_to_charge_for_pubdata</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">139</span><span style="font-family: monospace !important;">let current_pubdata_spent = system.net_pubdata_used()? - base_pubdata.unwrap_or(0);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">140</span><span style="font-family: monospace !important;">let native_per_pubdata = u256_to_u64_saturated(&amp;native_per_pubdata);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">141</span><span style="font-family: monospace !important;">let native = current_pubdata_spent</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">142</span><span style="font-family: monospace !important;">    .checked_mul(native_per_pubdata)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">143</span><span style="font-family: monospace !important;">    .ok_or(InternalError("cps*epp"))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">144</span><span style="font-family: monospace !important;">let native = &lt;S::Resources as zk_ee::system::Resources&gt;::Native::from_computational(native);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">145</span><span style="font-family: monospace !important;">Ok((current_pubdata_spent, S::Resources::from_native(native)))</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/gas_helpers.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=138 highlight=[1]" data-start-line="138"><code>pub fn get_resources_to_charge_for_pubdata
+let current_pubdata_spent = system.net_pubdata_used()? - base_pubdata.unwrap_or(0);
+let native_per_pubdata = u256_to_u64_saturated(&amp;native_per_pubdata);
+let native = current_pubdata_spent
+    .checked_mul(native_per_pubdata)
+    .ok_or(InternalError("cps*epp"))?;
+let native = &lt;S::Resources as zk_ee::system::Resources&gt;::Native::from_computational(native);
+Ok((current_pubdata_spent, S::Resources::from_native(native)))</code></pre>
 
 Since unchecked arithmetic is employed, there is a potential risk of underflow.
 
 Initially, the function is utilized by `transaction_validation` to compute `validation_pubdata`. This call is safe because no value is passed as `base_pubdata` yet:
 
-<pre class="language-rust" data-attributes="filepath context line=704"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/process_transaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">704</span><span style="font-family: monospace !important;">fn transaction_validation</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">705</span><span style="font-family: monospace !important;">let (validation_pubdata, to_charge_for_pubdata) =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">706</span><span style="font-family: monospace !important;">    get_resources_to_charge_for_pubdata(system, native_per_pubdata, None)?;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=704" data-start-line="704"><code>fn transaction_validation
+let (validation_pubdata, to_charge_for_pubdata) =
+    get_resources_to_charge_for_pubdata(system, native_per_pubdata, None)?;</code></pre>
 
 The second call, which is more concerning, occurs during the gas refund process and passes the result of the first call, referred to as `validation_pubdata`, as the value for the `base_pubdata` parameter:
 
-<pre class="language-rust" data-attributes="filepath context line=964 highlight=[5]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/process_transaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">964</span><span style="font-family: monospace !important;">fn refund_transaction</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">965</span><span style="font-family: monospace !important;">let (_pubdata_spent, to_charge_for_pubdata) = get_resources_to_charge_for_pubdata(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">966</span><span style="font-family: monospace !important;">    system,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">967</span><span style="font-family: monospace !important;">    native_per_pubdata,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">968</span><span style="font-family: monospace !important;">    Some(validation_pubdata),</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=964 highlight=[5]" data-start-line="964"><code>fn refund_transaction
+let (_pubdata_spent, to_charge_for_pubdata) = get_resources_to_charge_for_pubdata(
+    system,
+    native_per_pubdata,
+    Some(validation_pubdata),</code></pre>
 
 ## Severity of the issue
 
@@ -1431,47 +1443,47 @@ To ensure a future-proof design, consider two approaches:
 
 The function `get_resources_to_charge_for_pubdata` serves as the entry point for computationally intensive calculations defined by the function `net_pubdata_used` and by functions implemented in several types of storage, all named `calculate_pubdata_used_by_tx`. It iterates through all versions of state elements and calculates the amount of change created by the transaction.
 
-<pre class="language-rust" data-attributes="filepath context line=138"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/gas_helpers.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">138</span><span style="font-family: monospace !important;">pub fn get_resources_to_charge_for_pubdata</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">139</span><span style="font-family: monospace !important;">let current_pubdata_spent = system.net_pubdata_used()? - base_pubdata.unwrap_or(0);</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/gas_helpers.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=138" data-start-line="138"><code>pub fn get_resources_to_charge_for_pubdata
+let current_pubdata_spent = system.net_pubdata_used()? - base_pubdata.unwrap_or(0);</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=357"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/system/io_subsystem.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">357</span><span style="font-family: monospace !important;">fn net_pubdata_used</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">358</span><span style="font-family: monospace !important;">Ok(self.storage.pubdata_used_by_tx() as u64</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">359</span><span style="font-family: monospace !important;">    + self.logs_storage.calculate_pubdata_used_by_tx()? as u64)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">360</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/io_subsystem.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=357" data-start-line="357"><code>fn net_pubdata_used
+Ok(self.storage.pubdata_used_by_tx() as u64
+    + self.logs_storage.calculate_pubdata_used_by_tx()? as u64)
+}</code></pre>
 
 Since the `pubdata` calculation involves multiple iterations through a potentially large set of changes, it negatively affects the performance of the node and should be used only when absolutely necessary. However, besides the lightweight `pubdata` calculation during the validation stage and the proper `pubdata` calculation during the refund stage, the `get_resources_to_charge_for_pubdata` function is also called during transaction execution:
 
-<pre class="language-rust" data-attributes="filepath context line=751 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/process_transaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">751</span><span style="font-family: monospace !important;">fn transaction_execution</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">752</span><span style="font-family: monospace !important;">if !check_enough_resources_for_pubdata(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">753</span><span style="font-family: monospace !important;">    system,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">754</span><span style="font-family: monospace !important;">    native_per_pubdata,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">755</span><span style="font-family: monospace !important;">    resources,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">756</span><span style="font-family: monospace !important;">    Some(validation_pubdata),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">757</span><span style="font-family: monospace !important;">)? {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">758</span><span style="font-family: monospace !important;">    let _ = system</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">759</span><span style="font-family: monospace !important;">        .get_logger()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">760</span><span style="font-family: monospace !important;">        .write_fmt(format_args!("Not enough gas for pubdata after execution\n"));</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">761</span><span style="font-family: monospace !important;">    Ok(execution_result.reverted())</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=751 highlight=[1]" data-start-line="751"><code>fn transaction_execution
+if !check_enough_resources_for_pubdata(
+    system,
+    native_per_pubdata,
+    resources,
+    Some(validation_pubdata),
+)? {
+    let _ = system
+        .get_logger()
+        .write_fmt(format_args!("Not enough gas for pubdata after execution\n"));
+    Ok(execution_result.reverted())</code></pre>
 
 
 
-<pre class="language-rust" data-attributes="filepath context line=160 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/gas_helpers.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">160</span><span style="font-family: monospace !important;">pub fn check_enough_resources_for_pubdata</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">161</span><span style="font-family: monospace !important;">    let (_, resources_for_pubdata) =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">162</span><span style="font-family: monospace !important;">        get_resources_to_charge_for_pubdata(system, native_per_pubdata, base_pubdata)?;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/gas_helpers.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=160 highlight=[2]" data-start-line="160"><code>pub fn check_enough_resources_for_pubdata
+    let (_, resources_for_pubdata) =
+        get_resources_to_charge_for_pubdata(system, native_per_pubdata, base_pubdata)?;</code></pre>
 
 The `pubdata` calculation is performed at the end of the actual transaction execution, so the result does not change until the refund stage:
 
-<pre class="language-rust" data-attributes="filepath context line=964"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/process_transaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">964</span><span style="font-family: monospace !important;">fn refund_transaction</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">965</span><span style="font-family: monospace !important;">let (_pubdata_spent, to_charge_for_pubdata) = get_resources_to_charge_for_pubdata(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">966</span><span style="font-family: monospace !important;">    system,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">967</span><span style="font-family: monospace !important;">    native_per_pubdata,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">968</span><span style="font-family: monospace !important;">    Some(validation_pubdata),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">969</span><span style="font-family: monospace !important;">)?;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=964" data-start-line="964"><code>fn refund_transaction
+let (_pubdata_spent, to_charge_for_pubdata) = get_resources_to_charge_for_pubdata(
+    system,
+    native_per_pubdata,
+    Some(validation_pubdata),
+)?;</code></pre>
 
 ## Recommendation
 
@@ -1500,19 +1512,19 @@ Each subsystem declares its own error type for situations when the node runs out
 
 However, since the `OutOfNativeResources` can be reported during transaction validation or execution, this presents deviation from pure EVM semantics:
 
-<pre class="language-rust" data-attributes="filepath context line=131 highlight=[7,10]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">131</span><span style="font-family: monospace !important;">pub fn pure_system_function_hook_impl</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">132</span><span style="font-family: monospace !important;">Err(SystemFunctionError::System(SystemError::OutOfErgs))</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">133</span><span style="font-family: monospace !important;">| Err(SystemFunctionError::InvalidInput) =&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">134</span><span style="font-family: monospace !important;">    let _ = system</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">135</span><span style="font-family: monospace !important;">        .get_logger()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">136</span><span style="font-family: monospace !important;">        .write_fmt(format_args!("Out of gas during system hook\n"));</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">137</span><span style="font-family: monospace !important;">    resources.exhaust_ergs();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">138</span><span style="font-family: monospace !important;">    Ok(make_error_return_state(system, resources))</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">139</span><span style="font-family: monospace !important;">}</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">140</span><span style="font-family: monospace !important;">Err(SystemFunctionError::System(SystemError::OutOfNativeResources)) =&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">141</span><span style="font-family: monospace !important;">    Err(FatalError::OutOfNativeResources)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">142</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/precompiles.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=131 highlight=[7,10]" data-start-line="131"><code>pub fn pure_system_function_hook_impl
+Err(SystemFunctionError::System(SystemError::OutOfErgs))
+| Err(SystemFunctionError::InvalidInput) =&gt; {
+    let _ = system
+        .get_logger()
+        .write_fmt(format_args!("Out of gas during system hook\n"));
+    resources.exhaust_ergs();
+    Ok(make_error_return_state(system, resources))
+}
+Err(SystemFunctionError::System(SystemError::OutOfNativeResources)) =&gt; {
+    Err(FatalError::OutOfNativeResources)
+}</code></pre>
 
 As a consequence, a transaction that executes correctly in EVM, without causing the "Out Of Gas" condition, can still revert or be rejected due to excessive native resources cost. This is expected, according to [the docs](https://github.com/matter-labs/zksync-os/blob/taran-audit-phase-1/docs/double_resource_accounting.md):
 
@@ -1546,12 +1558,12 @@ The `DIFFICULTY`/`PREVRANDAO` opcode in the EVM interpreter returns zero instead
 
 In the `difficulty` handler, the `U256::ZERO` value is pushed onto the stack:
 
-<pre class="language-rust" data-attributes="filepath line=32 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/instructions/environment.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">32</span><span style="font-family: monospace !important;">pub fn difficulty(&amp;mut self) -&gt; InstructionResult {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">33</span><span style="font-family: monospace !important;">    self.spend_gas_and_native(gas_constants::BASE, DIFFICULTY_NATIVE_COST)?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">34</span><span style="font-family: monospace !important;">    self.push_values(&amp;[U256::ZERO])?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">35</span><span style="font-family: monospace !important;">    Ok(())</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">36</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/instructions/environment.rs</div>
+<pre class="language-rust" data-attributes="filepath line=32 highlight=[3]" data-start-line="32"><code>pub fn difficulty(&amp;mut self) -&gt; InstructionResult {
+    self.spend_gas_and_native(gas_constants::BASE, DIFFICULTY_NATIVE_COST)?;
+    self.push_values(&amp;[U256::ZERO])?;
+    Ok(())
+}</code></pre>
 
 This deviation from documented behavior could cause compatibility issues for contracts that check specific difficulty values or use it in non-critical calculations.
 
@@ -1559,17 +1571,17 @@ This deviation from documented behavior could cause compatibility issues for con
 
 The [documentation](https://github.com/matter-labs/zksync-docs/blob/6046caaf61ac52a33cb94791a857addaaf9ae734/content/20.zksync-protocol/70.differences/40.pre-compiles.md?plain=1#L23) lists `p256Verify` as a precompile at address `0x100`. However, the auxiliary function `is_precompile` only recognizes addresses from 1 to 10 as the precompile addresses.
 
-<pre class="language-rust" data-attributes="filepath line=415"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/utils.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">415</span><span style="font-family: monospace !important;">/// Helper to check if an address is an ethereum precompile</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">416</span><span style="font-family: monospace !important;">#[inline(always)]</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">417</span><span style="font-family: monospace !important;">pub fn is_precompile(address: &amp;B160) -&gt; bool {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">418</span><span style="font-family: monospace !important;">    let highest_precompile_address = 10;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">419</span><span style="font-family: monospace !important;">    let limbs = address.as_limbs();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">420</span><span style="font-family: monospace !important;">    if limbs[1] != 0u64 || limbs[2] != 0u64 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">421</span><span style="font-family: monospace !important;">        return false;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">422</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">423</span><span style="font-family: monospace !important;">    limbs[0] &gt; 0 &amp;&amp; limbs[0] &lt;= highest_precompile_address</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">424</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/utils.rs</div>
+<pre class="language-rust" data-attributes="filepath line=415" data-start-line="415"><code>/// Helper to check if an address is an ethereum precompile
+#[inline(always)]
+pub fn is_precompile(address: &amp;B160) -&gt; bool {
+    let highest_precompile_address = 10;
+    let limbs = address.as_limbs();
+    if limbs[1] != 0u64 || limbs[2] != 0u64 {
+        return false;
+    }
+    limbs[0] &gt; 0 &amp;&amp; limbs[0] &lt;= highest_precompile_address
+}</code></pre>
 
 The `p256Verify` function is actually implemented as a system function rather than an EVM precompile, making the documentation incorrect.
 
@@ -1591,14 +1603,14 @@ This discrepancy could mislead developers expecting standard precompile behavior
 
 The opcode `TSTORE` (transient storage) is defined as `0x5d` as it is observed in the `opcodes.rs` file:
 
-<pre class="language-rust" data-attributes="filepath line=52"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/opcodes.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">52</span><span style="font-family: monospace !important;">pub const TSTORE: u8 = 0x5d;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/opcodes.rs</div>
+<pre class="language-rust" data-attributes="filepath line=52" data-start-line="52"><code>pub const TSTORE: u8 = 0x5d;</code></pre>
 
 However, the `OPCODE_JUMPMAP` array, defined in the same file and used for debug string mapping, contains a typo where the opcode `0x5d` is incorrectly labeled as `"STORE"`.
 
-<pre class="language-rust" data-attributes="filepath context line=283"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/opcodes.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">283</span><span style="font-family: monospace !important;">pub const OPCODE_JUMPMAP</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">284</span><span style="font-family: monospace !important;">/* 0x5d */ Some("STORE"),</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/opcodes.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=283" data-start-line="283"><code>pub const OPCODE_JUMPMAP
+/* 0x5d */ Some("STORE"),</code></pre>
 
 This discrepancy only affects debug output and logging --- the actual opcode execution is unaffected since the interpreter uses numeric constants rather than their text labels.
 
@@ -1618,17 +1630,17 @@ Update the string mapping to correctly identify the opcode as `"TSTORE"` for acc
 
 ## Auxiliary function `nb_rounds`
 
-<pre class="language-rust" data-attributes="filepath line=28"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/sha256.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">28</span><span style="font-family: monospace !important;">fn nb_rounds(len: usize) -&gt; u64 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">29</span><span style="font-family: monospace !important;">    let full_chunks = len / SHA256_CHUNK_SIZE;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">30</span><span style="font-family: monospace !important;">    let tail = len % SHA256_CHUNK_SIZE;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">31</span><span style="font-family: monospace !important;">    let num_rounds: u64 = full_chunks as u64;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">32</span><span style="font-family: monospace !important;">    if tail &lt;= 55 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">33</span><span style="font-family: monospace !important;">        num_rounds + 1</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">34</span><span style="font-family: monospace !important;">    } else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">35</span><span style="font-family: monospace !important;">        num_rounds + 2</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">36</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">37</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_functions/sha256.rs</div>
+<pre class="language-rust" data-attributes="filepath line=28" data-start-line="28"><code>fn nb_rounds(len: usize) -&gt; u64 {
+    let full_chunks = len / SHA256_CHUNK_SIZE;
+    let tail = len % SHA256_CHUNK_SIZE;
+    let num_rounds: u64 = full_chunks as u64;
+    if tail &lt;= 55 {
+        num_rounds + 1
+    } else {
+        num_rounds + 2
+    }
+}</code></pre>
 
 Implementations of both `sha256` and `ripemd160` system functions include such auxiliary function.
 
@@ -1636,20 +1648,20 @@ Implementations of both `sha256` and `ripemd160` system functions include such a
 
 The `ElementPool` type implements the `Drop` trait:
 
-<pre class="language-rust" data-attributes="filepath line=17"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">zk_ee/src/common_structs/history_map/element_pool.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">17</span><span style="font-family: monospace !important;">impl&lt;V, A: Allocator + Clone&gt; Drop for ElementPool&lt;V, A&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">18</span><span style="font-family: monospace !important;">    fn drop(&amp;mut self) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">19</span><span style="font-family: monospace !important;">        if let Some(head) = self.head {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">20</span><span style="font-family: monospace !important;">            let mut elem = unsafe { Box::from_raw_in(head.as_ptr(), self.alloc.clone()) };</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">21</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">22</span><span style="font-family: monospace !important;">            while let Some(n) = elem.previous.take() {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">23</span><span style="font-family: monospace !important;">                let n = unsafe { Box::from_raw_in(n.as_ptr(), self.alloc.clone()) };</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">24</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">25</span><span style="font-family: monospace !important;">                elem = n;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">26</span><span style="font-family: monospace !important;">            } // `n` is dropped here.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">27</span><span style="font-family: monospace !important;">        } // Last elem is dropped here.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">28</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">29</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/common_structs/history_map/element_pool.rs</div>
+<pre class="language-rust" data-attributes="filepath line=17" data-start-line="17"><code>impl&lt;V, A: Allocator + Clone&gt; Drop for ElementPool&lt;V, A&gt; {
+    fn drop(&amp;mut self) {
+        if let Some(head) = self.head {
+            let mut elem = unsafe { Box::from_raw_in(head.as_ptr(), self.alloc.clone()) };
+
+            while let Some(n) = elem.previous.take() {
+                let n = unsafe { Box::from_raw_in(n.as_ptr(), self.alloc.clone()) };
+
+                elem = n;
+            } // `n` is dropped here.
+        } // Last elem is dropped here.
+    }
+}</code></pre>
 
 The same code snippet is duplicated for the `Drop` trait implementation of the `ElementWithHistory` type, within lines 23-34 of the `zk_ee/src/common_structs/history_map/element_with_history.rs` file. This code can be extracted into an auxiliary function.
 
@@ -1657,14 +1669,14 @@ The same code snippet is duplicated for the `Drop` trait implementation of the `
 
 The following code copies the `base` value:
 
-<pre class="language-rust" data-attributes="filepath line=131"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/modexp.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">131</span><span style="font-family: monospace !important;">let mut input_it = input.iter();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">132</span><span style="font-family: monospace !important;">let mut base = Vec::try_with_capacity_in(base_len, allocator.clone())</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">133</span><span style="font-family: monospace !important;">	.map_err(|_| SystemError::Internal(InternalError("alloc")))?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">134</span><span style="font-family: monospace !important;">base.resize(base_len, 0);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">135</span><span style="font-family: monospace !important;">for (dst, src) in base.iter_mut().zip(&amp;mut input_it) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">136</span><span style="font-family: monospace !important;">	*dst = *src;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">137</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_functions/modexp.rs</div>
+<pre class="language-rust" data-attributes="filepath line=131" data-start-line="131"><code>let mut input_it = input.iter();
+let mut base = Vec::try_with_capacity_in(base_len, allocator.clone())
+	.map_err(|_| SystemError::Internal(InternalError("alloc")))?;
+base.resize(base_len, 0);
+for (dst, src) in base.iter_mut().zip(&amp;mut input_it) {
+	*dst = *src;
+}</code></pre>
 
 Exactly same code blocks are used in the same file, for `exponent` and `modulus` values:
 
@@ -1673,33 +1685,33 @@ Exactly same code blocks are used in the same file, for `exponent` and `modulus`
 
 ## Derivation of `is_static` flag
 
-<pre class="language-rust" data-attributes="filepath context line=43"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l1_messenger.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">43</span><span style="font-family: monospace !important;">pub fn l1_messenger_hook</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">44</span><span style="font-family: monospace !important;">let mut error = false;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">45</span><span style="font-family: monospace !important;">// There is no "payable" methods</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">46</span><span style="font-family: monospace !important;">error |= nominal_token_value != U256::ZERO;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">47</span><span style="font-family: monospace !important;">let mut is_static = false;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">48</span><span style="font-family: monospace !important;">match modifier {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">49</span><span style="font-family: monospace !important;">    CallModifier::Constructor =&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">50</span><span style="font-family: monospace !important;">        return Err(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">51</span><span style="font-family: monospace !important;">            internal_error!("L1 messenger hook called with constructor modifier").into(),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">52</span><span style="font-family: monospace !important;">        )</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">53</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">54</span><span style="font-family: monospace !important;">    CallModifier::Delegate</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">55</span><span style="font-family: monospace !important;">    | CallModifier::DelegateStatic</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">56</span><span style="font-family: monospace !important;">    | CallModifier::EVMCallcode</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">57</span><span style="font-family: monospace !important;">    | CallModifier::EVMCallcodeStatic =&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">58</span><span style="font-family: monospace !important;">        error = true;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">59</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">60</span><span style="font-family: monospace !important;">    CallModifier::Static | CallModifier::ZKVMSystemStatic =&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">61</span><span style="font-family: monospace !important;">        is_static = true;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">62</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">63</span><span style="font-family: monospace !important;">    _ =&gt; {}</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">64</span><span style="font-family: monospace !important;">}</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">65</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">66</span><span style="font-family: monospace !important;">if error {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">67</span><span style="font-family: monospace !important;">    return Ok((make_error_return_state(available_resources), return_memory));</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">68</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l1_messenger.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=43" data-start-line="43"><code>pub fn l1_messenger_hook
+let mut error = false;
+// There is no "payable" methods
+error |= nominal_token_value != U256::ZERO;
+let mut is_static = false;
+match modifier {
+    CallModifier::Constructor =&gt; {
+        return Err(
+            internal_error!("L1 messenger hook called with constructor modifier").into(),
+        )
+    }
+    CallModifier::Delegate
+    | CallModifier::DelegateStatic
+    | CallModifier::EVMCallcode
+    | CallModifier::EVMCallcodeStatic =&gt; {
+        error = true;
+    }
+    CallModifier::Static | CallModifier::ZKVMSystemStatic =&gt; {
+        is_static = true;
+    }
+    _ =&gt; {}
+}
+
+if error {
+    return Ok((make_error_return_state(available_resources), return_memory));
+}</code></pre>
 
 
 
@@ -1712,24 +1724,24 @@ The same or very similar code snippets can also be observed in:
 
 While there is no immediate impact, the following code snippets are important enough to reduce chance of a mistake during refactoring.
 
-<pre class="language-rust" data-attributes="filepath context line=146"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l2_base_token.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">146</span><span style="font-family: monospace !important;">fn l2_base_token_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">147</span><span style="font-family: monospace !important;">// Burn nominal_token_value</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">148</span><span style="font-family: monospace !important;">match system.io.update_account_nominal_token_balance(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">149</span><span style="font-family: monospace !important;">    ExecutionEnvironmentType::parse_ee_version_byte(caller_ee)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">150</span><span style="font-family: monospace !important;">        .map_err(SystemError::LeafDefect)?,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">151</span><span style="font-family: monospace !important;">    resources,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">152</span><span style="font-family: monospace !important;">    &amp;L2_BASE_TOKEN_ADDRESS,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">153</span><span style="font-family: monospace !important;">    &amp;nominal_token_value,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">154</span><span style="font-family: monospace !important;">    true,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">155</span><span style="font-family: monospace !important;">) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">156</span><span style="font-family: monospace !important;">    Ok(_) =&gt; Ok(()),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">157</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">158</span><span style="font-family: monospace !important;">    Err(UpdateQueryError::NumericBoundsError) =&gt; Err(SystemError::LeafDefect(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">159</span><span style="font-family: monospace !important;">        internal_error!("L2 base token must have withdrawal amount"),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">160</span><span style="font-family: monospace !important;">    )),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">161</span><span style="font-family: monospace !important;">    Err(UpdateQueryError::System(e)) =&gt; Err(e),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">162</span><span style="font-family: monospace !important;">}?;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l2_base_token.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=146" data-start-line="146"><code>fn l2_base_token_hook_inner
+// Burn nominal_token_value
+match system.io.update_account_nominal_token_balance(
+    ExecutionEnvironmentType::parse_ee_version_byte(caller_ee)
+        .map_err(SystemError::LeafDefect)?,
+    resources,
+    &amp;L2_BASE_TOKEN_ADDRESS,
+    &amp;nominal_token_value,
+    true,
+) {
+    Ok(_) =&gt; Ok(()),
+
+    Err(UpdateQueryError::NumericBoundsError) =&gt; Err(SystemError::LeafDefect(
+        internal_error!("L2 base token must have withdrawal amount"),
+    )),
+    Err(UpdateQueryError::System(e)) =&gt; Err(e),
+}?;</code></pre>
 
 The same code snippet can be also observed within lines 246-262 of the same file.
 
@@ -1737,23 +1749,23 @@ The same code snippet can be also observed within lines 246-262 of the same file
 
 The bytecode hash is recomputed and validated against the expected value using this code:
 
-<pre class="language-rust" data-attributes="filepath context line=105"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/preimage_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">105</span><span style="font-family: monospace !important;">fn expose_preimage</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">106</span><span style="font-family: monospace !important;">use crypto::blake2s::Blake2s256;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">107</span><span style="font-family: monospace !important;">use crypto::MiniDigest;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">108</span><span style="font-family: monospace !important;">let digest = Blake2s256::digest(buffered.as_slice());</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">109</span><span style="font-family: monospace !important;">let mut result = Bytes32::uninit();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">110</span><span style="font-family: monospace !important;">let recomputed_hash = unsafe {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">111</span><span style="font-family: monospace !important;">    result</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">112</span><span style="font-family: monospace !important;">        .assume_init_mut()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">113</span><span style="font-family: monospace !important;">        .as_u8_array_mut()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">114</span><span style="font-family: monospace !important;">        .copy_from_slice(digest.as_slice());</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">115</span><span style="font-family: monospace !important;">    result.assume_init()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">116</span><span style="font-family: monospace !important;">};</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">117</span><span style="font-family: monospace !important;"> </span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">118</span><span style="font-family: monospace !important;">if recomputed_hash != *hash {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">119</span><span style="font-family: monospace !important;">    return Err(internal_error!("Account hash mismatch").into());</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">120</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/preimage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=105" data-start-line="105"><code>fn expose_preimage
+use crypto::blake2s::Blake2s256;
+use crypto::MiniDigest;
+let digest = Blake2s256::digest(buffered.as_slice());
+let mut result = Bytes32::uninit();
+let recomputed_hash = unsafe {
+    result
+        .assume_init_mut()
+        .as_u8_array_mut()
+        .copy_from_slice(digest.as_slice());
+    result.assume_init()
+};
+
+if recomputed_hash != *hash {
+    return Err(internal_error!("Account hash mismatch").into());
+}</code></pre>
 
 This code is duplicated without any difference for `PreimageType::AccountData` and `PreimageType::Bytecode` branches of the `match` expression. The whole `match` expression is duplicated again in two branches of the `if PROOF_ENV` statement.
 
@@ -1761,14 +1773,14 @@ This code is duplicated without any difference for `PreimageType::AccountData` a
 
 This code preforms the validation of the 12 highest bytes in Ethereum addresses:
 
-<pre class="language-rust" data-attributes="filepath context line=147"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/contract_deployer.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">147</span><span style="font-family: monospace !important;">fn contract_deployer_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">148</span><span style="font-family: monospace !important;">// check that first 12 bytes in address encoding are zero</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">149</span><span style="font-family: monospace !important;">if calldata[0..12].iter().any(|byte| *byte != 0) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">150</span><span style="font-family: monospace !important;">    return Ok(Err(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">151</span><span style="font-family: monospace !important;">        "Contract deployer failure: setBytecodeDetailsEVM called with invalid calldata",</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">152</span><span style="font-family: monospace !important;">    ));</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">153</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/contract_deployer.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=147" data-start-line="147"><code>fn contract_deployer_hook_inner
+// check that first 12 bytes in address encoding are zero
+if calldata[0..12].iter().any(|byte| *byte != 0) {
+    return Ok(Err(
+        "Contract deployer failure: setBytecodeDetailsEVM called with invalid calldata",
+    ));
+}</code></pre>
 
 Almost exact duplicate is located in `system_hooks/src/l2_base_token.rs:170-175`.
 
@@ -1797,23 +1809,23 @@ Consequently, relying on panics as the primary error-handling mechanism increase
 
 The EVM interpreter contains multiple instances of `panic!` and `assert!` statements, instead of returning proper errors. Although these statements represent internal invariants that should not be violated in correct implementations, relying on panics reduces code robustness and renders the system vulnerable to future changes.
 
-<pre class="language-rust" data-attributes="filepath line=28"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/interpreter.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">28</span><span style="font-family: monospace !important;">if let Some(call) = external_call {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">29</span><span style="font-family: monospace !important;">    assert!(exit_code == ExitCode::ExternalCall);</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/interpreter.rs</div>
+<pre class="language-rust" data-attributes="filepath line=28" data-start-line="28"><code>if let Some(call) = external_call {
+    assert!(exit_code == ExitCode::ExternalCall);</code></pre>
 
-<pre class="language-rust" data-attributes="filepath line=119"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/ee_trait_impl.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">119</span><span style="font-family: monospace !important;">if scratch_space_len != 0 || decommitted_bytecode.len() != bytecode_len as usize {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">120</span><span style="font-family: monospace !important;">    panic!("invalid bytecode supplied, expected padding");</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">121</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/ee_trait_impl.rs</div>
+<pre class="language-rust" data-attributes="filepath line=119" data-start-line="119"><code>if scratch_space_len != 0 || decommitted_bytecode.len() != bytecode_len as usize {
+    panic!("invalid bytecode supplied, expected padding");
+}</code></pre>
 
-<pre class="language-rust" data-attributes="filepath line=182"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/ee_trait_impl.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">182</span><span style="font-family: monospace !important;">a =&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">183</span><span style="font-family: monospace !important;">    panic!("modifier {:?} is not expected", a);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">184</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/ee_trait_impl.rs</div>
+<pre class="language-rust" data-attributes="filepath line=182" data-start-line="182"><code>a =&gt; {
+    panic!("modifier {:?} is not expected", a);
+}</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=28"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/u256.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">28</span><span style="font-family: monospace !important;">pub(crate) fn log2floor</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">29</span><span style="font-family: monospace !important;">    assert!(value != &amp;U256::ZERO);</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/u256.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=28" data-start-line="28"><code>pub(crate) fn log2floor
+    assert!(value != &amp;U256::ZERO);</code></pre>
 
 These panic conditions complicate maintenance. In contrast, other errors in the same files are handled appropriately, returning `FatalError::Internal`.
 
@@ -1821,53 +1833,53 @@ These panic conditions complicate maintenance. In contrast, other errors in the 
 
 ## Examples in the rest of the system
 
-<pre class="language-rust" data-attributes="filepath context line=37"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/runner.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">37</span><span style="font-family: monospace !important;">pub fn run_till_completion</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">38</span><span style="font-family: monospace !important;">assert!(callstack.is_empty());</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=37" data-start-line="37"><code>pub fn run_till_completion
+assert!(callstack.is_empty());</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=477 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/system/io_subsystem.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">477</span><span style="font-family: monospace !important;">fn finish</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">478</span><span style="font-family: monospace !important;">// TODO (EVM-989): read only state commitment</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">479</span><span style="font-family: monospace !important;">let fsm_state =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">480</span><span style="font-family: monospace !important;">    &lt;BasicIOImplementerFSM::&lt;FlatStorageCommitment&lt;TREE_HEIGHT&gt;&gt; as UsizeDeserializable&gt;::from_iter(&amp;mut initialization_iterator).unwrap();</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/io_subsystem.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=477 highlight=[3]" data-start-line="477"><code>fn finish
+// TODO (EVM-989): read only state commitment
+let fsm_state =
+    &lt;BasicIOImplementerFSM::&lt;FlatStorageCommitment&lt;TREE_HEIGHT&gt;&gt; as UsizeDeserializable&gt;::from_iter(&amp;mut initialization_iterator).unwrap();</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=180"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">180</span><span style="font-family: monospace !important;">pub fn set_next</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">181</span><span style="font-family: monospace !important;">assert!(self.next.is_none());</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">182</span><span style="font-family: monospace !important;">self.next = Some(value);</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=180" data-start-line="180"><code>pub fn set_next
+assert!(self.next.is_none());
+self.next = Some(value);</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=97"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/lib.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">97</span><span style="font-family: monospace !important;">pub fn add_hook</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">98</span><span style="font-family: monospace !important;">let existing = self.inner.insert(for_address_low, hook);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">99</span><span style="font-family: monospace !important;">// TODO: internal error?</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">100</span><span style="font-family: monospace !important;">assert!(existing.is_none());</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/lib.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=97" data-start-line="97"><code>pub fn add_hook
+let existing = self.inner.insert(for_address_low, hook);
+// TODO: internal error?
+assert!(existing.is_none());</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=33"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">33</span><span style="font-family: monospace !important;">fn new</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">34</span><span style="font-family: monospace !important;">let buffer = system.memory.empty_managed_region();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">35</span><span style="font-family: monospace !important;">let buffer = system</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">36</span><span style="font-family: monospace !important;">    .memory</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">37</span><span style="font-family: monospace !important;">    .grow_heap(buffer, Self::INITIAL_LEN)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">38</span><span style="font-family: monospace !important;">    .expect("must grow buffer for precompiles")</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">39</span><span style="font-family: monospace !important;">    .expect("must grow buffer for precompiles");</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/precompiles.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=33" data-start-line="33"><code>fn new
+let buffer = system.memory.empty_managed_region();
+let buffer = system
+    .memory
+    .grow_heap(buffer, Self::INITIAL_LEN)
+    .expect("must grow buffer for precompiles")
+    .expect("must grow buffer for precompiles");</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=56"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">56</span><span style="font-family: monospace !important;">fn extend</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">57</span><span style="font-family: monospace !important;">self.buffer = self</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">58</span><span style="font-family: monospace !important;">    .system</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">59</span><span style="font-family: monospace !important;">    .memory</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">60</span><span style="font-family: monospace !important;">    .grow_heap(buffer, new_len)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">61</span><span style="font-family: monospace !important;">    .expect("must grow buffer for precompiles")</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">62</span><span style="font-family: monospace !important;">    .expect("must grow buffer for precompiles");</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">63</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/precompiles.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=56" data-start-line="56"><code>fn extend
+self.buffer = self
+    .system
+    .memory
+    .grow_heap(buffer, new_len)
+    .expect("must grow buffer for precompiles")
+    .expect("must grow buffer for precompiles");
+}</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=117"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">117</span><span style="font-family: monospace !important;">pub fn pure_system_function_hook_impl</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">118</span><span style="font-family: monospace !important;">system</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">119</span><span style="font-family: monospace !important;">    .memory</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">120</span><span style="font-family: monospace !important;">    .copy_into_return_memory(&amp;buffer[..offset])</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">121</span><span style="font-family: monospace !important;">    .expect("must copy into returndata")</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">122</span><span style="font-family: monospace !important;">    .take_slice(0..offset)</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/precompiles.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=117" data-start-line="117"><code>pub fn pure_system_function_hook_impl
+system
+    .memory
+    .copy_into_return_memory(&amp;buffer[..offset])
+    .expect("must copy into returndata")
+    .take_slice(0..offset)</code></pre>
 
 ## Recommendation
 
@@ -1887,67 +1899,73 @@ Unless when it is supposed to be an unbreakable invariant, replace all `panic!` 
 
 Numerous numeric literals are used without proper documentation in files `contract_deployer.rs`, `l1_messenger.rs` and `l2_base_token.rs`. Some of them reflect fundamental properties of Solidity ABI, other are specific to calldata and messages layout and are re-used in similar parts of the codebase.
 
-<pre class="language-rust" data-attributes="filepath context line=140"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/contract_deployer.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">140</span><span style="font-family: monospace !important;">fn contract_deployer_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">141</span><span style="font-family: monospace !important;">calldata = &amp;calldata[4..];</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">142</span><span style="font-family: monospace !important;">if calldata.len() &lt; 128 {</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/contract_deployer.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=140" data-start-line="140"><code>fn contract_deployer_hook_inner
+calldata = &amp;calldata[4..];
+if calldata.len() &lt; 128 {</code></pre>
 
-<pre class="language-rust" data-attributes="line=148"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">148</span><span style="font-family: monospace !important;">if calldata[0..12].iter().any(|byte| *byte != 0) {</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=148" data-start-line="148"><code>if calldata[0..12].iter().any(|byte| *byte != 0) {
+</code></pre>
 
-<pre class="language-rust" data-attributes="line=153"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">153</span><span style="font-family: monospace !important;">let address =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">154</span><span style="font-family: monospace !important;">    B160::try_from_be_slice(&amp;calldata[12..32]).ok_or(SystemError::LeafDefect(</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=153" data-start-line="153"><code>let address =
+    B160::try_from_be_slice(&amp;calldata[12..32]).ok_or(SystemError::LeafDefect(
+</code></pre>
 
-<pre class="language-rust" data-attributes="line=159"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">159</span><span style="font-family: monospace !important;">let bytecode_hash =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">160</span><span style="font-family: monospace !important;">    Bytes32::from_array(calldata[32..64].try_into().expect("Always valid"));</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=159" data-start-line="159"><code>let bytecode_hash =
+    Bytes32::from_array(calldata[32..64].try_into().expect("Always valid"));
+</code></pre>
 
-<pre class="language-rust" data-attributes="line=169"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">169</span><span style="font-family: monospace !important;">let observable_bytecode_hash =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">170</span><span style="font-family: monospace !important;">    Bytes32::from_array(calldata[96..128].try_into().expect("Always valid"));</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=169" data-start-line="169"><code>let observable_bytecode_hash =
+    Bytes32::from_array(calldata[96..128].try_into().expect("Always valid"));
+</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=143"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l2_base_token.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">143</span><span style="font-family: monospace !important;">fn l2_base_token_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">144</span><span style="font-family: monospace !important;">// following solidity abi for withdraw(address)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">145</span><span style="font-family: monospace !important;">if calldata.len() &lt; 36 {</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l2_base_token.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=143" data-start-line="143"><code>fn l2_base_token_hook_inner
+// following solidity abi for withdraw(address)
+if calldata.len() &lt; 36 {</code></pre>
 
 The number `36` means the sum of `32` and `4` but it should be better to adopt the "self-documented code" and explicitly compose the expression from named constants.
 
-<pre class="language-rust" data-attributes="line=169"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">169</span><span style="font-family: monospace !important;">message[0..4].copy_from_slice(FINALIZE_ETH_WITHDRAWAL_SELECTOR);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">170</span><span style="font-family: monospace !important;">// check that first 12 bytes in address encoding are zero</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">171</span><span style="font-family: monospace !important;">if calldata[4..4 + 12].iter().any(|byte| *byte != 0) {</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=169" data-start-line="169"><code>message[0..4].copy_from_slice(FINALIZE_ETH_WITHDRAWAL_SELECTOR);
+// check that first 12 bytes in address encoding are zero
+if calldata[4..4 + 12].iter().any(|byte| *byte != 0) {
+</code></pre>
 
-<pre class="language-rust" data-attributes="line=195"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">195</span><span style="font-family: monospace !important;">// following solidity abi for withdrawWithMessage(address,bytes)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">196</span><span style="font-family: monospace !important;">if calldata.len() &lt; 68 {</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=195" data-start-line="195"><code>// following solidity abi for withdrawWithMessage(address,bytes)
+if calldata.len() &lt; 68 {
+</code></pre>
 
 And multiple other similar issues.
 
 ## Length of word
 
-<pre class="language-rust" data-attributes="filepath context line=161 highlight=[4]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">161</span><span style="font-family: monospace !important;">fn execute</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">162</span><span style="font-family: monospace !important;">cycle_marker::wrap_with_resources!("id", resources, {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">163</span><span style="font-family: monospace !important;">    let cost_ergs =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">164</span><span style="font-family: monospace !important;">        ID_STATIC_COST_ERGS + ID_WORD_COST_ERGS.times((src.len() as u64).div_ceil(32));</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/precompiles.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=161 highlight=[4]" data-start-line="161"><code>fn execute
+cycle_marker::wrap_with_resources!("id", resources, {
+    let cost_ergs =
+        ID_STATIC_COST_ERGS + ID_WORD_COST_ERGS.times((src.len() as u64).div_ceil(32));</code></pre>
 
 While the length of word in EVM is always `32`, it is still worthwhile to declare an explicit constant for better maintainability. This is relevant to implementations of system functions `identity`, `keccak256`, `ripemd160` and `sha256`.
 
 ## Modexp system function
 
-<pre class="language-rust" data-attributes="filepath line=180 highlight=[1,3,6]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/modexp.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">180</span><span style="font-family: monospace !important;">let ic = if exp_size &lt;= 32 &amp;&amp; exp_highp.is_zero() {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">181</span><span style="font-family: monospace !important;">    0</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">182</span><span style="font-family: monospace !important;">} else if exp_size &lt;= 32 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">183</span><span style="font-family: monospace !important;">    exp_highp.bit_len() as u64 - 1</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">184</span><span style="font-family: monospace !important;">} else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">185</span><span style="font-family: monospace !important;">    8u64.checked_mul(exp_size - 32)</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_functions/modexp.rs</div>
+<pre class="language-rust" data-attributes="filepath line=180 highlight=[1,3,6]" data-start-line="180"><code>let ic = if exp_size &lt;= 32 &amp;&amp; exp_highp.is_zero() {
+    0
+} else if exp_size &lt;= 32 {
+    exp_highp.bit_len() as u64 - 1
+} else {
+    8u64.checked_mul(exp_size - 32)</code></pre>
 
 Similarly, in the implementation of the `modexp` system function, the number `32` is used on lines 112, 120, 121, 180, 182, 185.
 
-<pre class="language-rust" data-attributes="filepath context line=197 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/modexp.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">197</span><span style="font-family: monospace !important;">pub fn ergs_cost</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">198</span><span style="font-family: monospace !important;">let gas = core::cmp::max(200, computed_gas);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">199</span><span style="font-family: monospace !important;">let ergs = gas</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">200</span><span style="font-family: monospace !important;">    .checked_mul(ERGS_PER_GAS)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">201</span><span style="font-family: monospace !important;">    .ok_or(SystemError::OutOfErgs)?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">202</span><span style="font-family: monospace !important;">Ok(Ergs(ergs))</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_functions/modexp.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=197 highlight=[1]" data-start-line="197"><code>pub fn ergs_cost
+let gas = core::cmp::max(200, computed_gas);
+let ergs = gas
+    .checked_mul(ERGS_PER_GAS)
+    .ok_or(SystemError::OutOfErgs)?;
+Ok(Ergs(ergs))</code></pre>
 
 Additionally, the number `200` which acts as a minimum base price to charge on EVM could be declared as dedicated constant, too.
 
@@ -1955,75 +1973,77 @@ Additionally, the number `200` which acts as a minimum base price to charge on E
 
 Gas costs `1900` for storage and `2400` for accounts should be declared as named constants:
 
-<pre class="language-rust" data-attributes="filepath context line=68 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/system/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">68</span><span style="font-family: monospace !important;">fn charge_cold_storage_read_extra</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">69</span><span style="font-family: monospace !important;">if is_access_list {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">70</span><span style="font-family: monospace !important;">    Ergs(1900 * ERGS_PER_GAS)</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=68 highlight=[2]" data-start-line="68"><code>fn charge_cold_storage_read_extra
+if is_access_list {
+    Ergs(1900 * ERGS_PER_GAS)</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=129 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/account_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">129</span><span style="font-family: monospace !important;">fn materialize_element</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">130</span><span style="font-family: monospace !important;">if is_access_list {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">131</span><span style="font-family: monospace !important;">    resources.charge(&amp;R::from_ergs(Ergs(2400 * ERGS_PER_GAS)))?</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/account_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=129 highlight=[2]" data-start-line="129"><code>fn materialize_element
+if is_access_list {
+    resources.charge(&amp;R::from_ergs(Ergs(2400 * ERGS_PER_GAS)))?</code></pre>
 
-<pre class="language-rust" data-attributes="line=202 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">202</span><span style="font-family: monospace !important;">if is_access_list {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">203</span><span style="font-family: monospace !important;">    resources.charge(&amp;R::from_ergs(Ergs(2400 * ERGS_PER_GAS)))?</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=202 highlight=[2]" data-start-line="202"><code>if is_access_list {
+    resources.charge(&amp;R::from_ergs(Ergs(2400 * ERGS_PER_GAS)))?
+</code></pre>
 
 ## In pubdata calculation
 
 The number `32` is used in the `calculate_pubdata_used_by_tx` function without proper documentation:
 
-<pre class="language-rust" data-attributes="filepath context line=628 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/storage_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">628</span><span style="font-family: monospace !important;">pub fn calculate_pubdata_used_by_tx</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">629</span><span style="font-family: monospace !important;">if initial_value != current_value {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">630</span><span style="font-family: monospace !important;">    // TODO(EVM-1074): use tree index instead of key for repeated writes</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">631</span><span style="font-family: monospace !important;">    pubdata_used += 32; // key</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/storage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=628 highlight=[3]" data-start-line="628"><code>pub fn calculate_pubdata_used_by_tx
+if initial_value != current_value {
+    // TODO(EVM-1074): use tree index instead of key for repeated writes
+    pubdata_used += 32; // key</code></pre>
 
 ## Undocumented callstack limitation
 
 The number `1024` is used twice in the deployment handler:
 
-<pre class="language-rust" data-attributes="filepath context line=473"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/runner.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">473</span><span style="font-family: monospace !important;">fn handle_requested_deployment</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">474</span><span style="font-family: monospace !important;">if self.callstack_height &gt; 1024 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">475</span><span style="font-family: monospace !important;">    return Ok(Some(CallResult::Failed {</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=473" data-start-line="473"><code>fn handle_requested_deployment
+if self.callstack_height &gt; 1024 {
+    return Ok(Some(CallResult::Failed {</code></pre>
 
-<pre class="language-rust" data-attributes="line=660"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">660</span><span style="font-family: monospace !important;">if self.callstack_height &gt; 1024 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">661</span><span style="font-family: monospace !important;">    resources_for_deployer.reclaim(launch_params.external_call.available_resources);</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=660" data-start-line="660"><code>if self.callstack_height &gt; 1024 {
+    resources_for_deployer.reclaim(launch_params.external_call.available_resources);
+</code></pre>
 
 There is the corresponding constant declared:
 
-<pre class="language-rust" data-attributes="filepath line=25"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">zk_ee/src/system/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">25</span><span style="font-family: monospace !important;">pub const MAX_GLOBAL_CALLS_STACK_DEPTH: usize = 1024; // even though we do not have to formally limit it,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">26</span><span style="font-family: monospace !important;">                                                      // for all practical purposes (63/64) ^ 1024 is 10^-7, and it's unlikely that one can create any new frame</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">27</span><span style="font-family: monospace !important;">                                                      // with such remaining resources</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=25" data-start-line="25"><code>pub const MAX_GLOBAL_CALLS_STACK_DEPTH: usize = 1024; // even though we do not have to formally limit it,
+                                                      // for all practical purposes (63/64) ^ 1024 is 10^-7, and it's unlikely that one can create any new frame
+                                                      // with such remaining resources</code></pre>
 
 However, the constant `MAX_GLOBAL_CALLS_STACK_DEPTH` is not used.
 
 ## Undocumented length of blocks history
 
-<pre class="language-rust" data-attributes="filepath context line=102"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">zk_ee/src/system/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">102</span><span style="font-family: monospace !important;">pub fn get_blockhash</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">103</span><span style="font-family: monospace !important;">let current_block_number = self.metadata.block_level_metadata.block_number;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">104</span><span style="font-family: monospace !important;">if block_number &gt;= current_block_number</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">105</span><span style="font-family: monospace !important;">    || block_number &lt; current_block_number.saturating_sub(256)</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">zk_ee/src/system/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=102" data-start-line="102"><code>pub fn get_blockhash
+let current_block_number = self.metadata.block_level_metadata.block_number;
+if block_number &gt;= current_block_number
+    || block_number &lt; current_block_number.saturating_sub(256)</code></pre>
 
 The number `256` reflects the maximum number of hashes to consider and is chosen arbitrary.
 
 ## Undocumented border of precompile addresses
 
-<pre class="language-rust" data-attributes="filepath context line=165"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/utils.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">165</span><span style="font-family: monospace !important;">pub fn is_precompile</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">166</span><span style="font-family: monospace !important;">let highest_precompile_address = 10;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/utils.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=165" data-start-line="165"><code>pub fn is_precompile
+let highest_precompile_address = 10;</code></pre>
 
 The number `10` means the border between precompile addresses and regular addresses. It should be extracted as a named constant.
 
 ## Keccak256 gas cost
 
-<pre class="language-rust" data-attributes="filepath context line=963"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/transaction/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">963</span><span style="font-family: monospace !important;">fn eip712_tx_calculate_signed_hash</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">964</span><span style="font-family: monospace !important;">let domain_separator = Self::domain_hash_struct(chain_id, resources)?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">965</span><span style="font-family: monospace !important;">let hs = self.hash_struct(resources)?;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">966</span><span style="font-family: monospace !important;">charge_keccak(2 + 2 * U256::BYTES, resources)?;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/transaction/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=963" data-start-line="963"><code>fn eip712_tx_calculate_signed_hash
+let domain_separator = Self::domain_hash_struct(chain_id, resources)?;
+let hs = self.hash_struct(resources)?;
+charge_keccak(2 + 2 * U256::BYTES, resources)?;</code></pre>
 
 The number `2` should represent a computation price for Keccak256 in RISC-V cycles. However, this semantics should be properly documented by using named constants.
 
@@ -2039,77 +2059,79 @@ The number `2` should represent a computation price for Keccak256 in RISC-V cycl
 
 ## The `identity` precompile does not stay in the caller's frame
 
-<pre class="language-rust" data-attributes="filepath line=74 highlight=[4]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">74</span><span style="font-family: monospace !important;">/// It parses call request, calls system function, and creates execution result.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">75</span><span style="font-family: monospace !important;">///</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">76</span><span style="font-family: monospace !important;">/// NOTE: "pure" here means that we do not expect to trigger any state changes (and calling with static flag is ok),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">77</span><span style="font-family: monospace !important;">/// so for all the purposes we remain in the callee frame in terms of memory for efficiency</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/precompiles.rs</div>
+<pre class="language-rust" data-attributes="filepath line=74 highlight=[4]" data-start-line="74"><code>/// It parses call request, calls system function, and creates execution result.
+///
+/// NOTE: "pure" here means that we do not expect to trigger any state changes (and calling with static flag is ok),
+/// so for all the purposes we remain in the callee frame in terms of memory for efficiency</code></pre>
 
-<pre class="language-rust" data-attributes="line=98 highlight=[1]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">98</span><span style="font-family: monospace !important;">// NOTE: we did NOT start a frame here, so we are in the caller frame in terms of memory, and must be extra careful</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">99</span><span style="font-family: monospace !important;">// here on how we will make returndata</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=98 highlight=[1]" data-start-line="98"><code>// NOTE: we did NOT start a frame here, so we are in the caller frame in terms of memory, and must be extra careful
+// here on how we will make returndata
+</code></pre>
 
 In the description of the `identity` system function, it is stated that the execution does not create additional frame and stays in the "caller's" frame. However, besides the typo on the line 77, this note also seems to be incorrect, because there is the frame creation further in the flow:
 
-<pre class="language-rust" data-attributes="line=106"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">106</span><span style="font-family: monospace !important;">// cheat</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">107</span><span style="font-family: monospace !important;">let snapshot = system.memory.start_memory_frame();</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=106" data-start-line="106"><code>// cheat
+let snapshot = system.memory.start_memory_frame();
+</code></pre>
 
 
 
 ## Miscellaneous outdated comments
 
-<pre class="language-rust" data-attributes="filepath line=24 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/modexp.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">24</span><span style="font-family: monospace !important;">/// Returns `InvalidInput` error if `base_len` &gt; usize max value</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">25</span><span style="font-family: monospace !important;">/// or `mod_len` &gt; usize max value</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">26</span><span style="font-family: monospace !important;">/// or (`exp_len` &gt; usize max value and `base_len` != 0 and `mod_len` != 0).</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_functions/modexp.rs</div>
+<pre class="language-rust" data-attributes="filepath line=24 highlight=[3]" data-start-line="24"><code>/// Returns `InvalidInput` error if `base_len` &gt; usize max value
+/// or `mod_len` &gt; usize max value
+/// or (`exp_len` &gt; usize max value and `base_len` != 0 and `mod_len` != 0).</code></pre>
 
 If both `base_len != 0` and `mod_len != 0` are zero, `Ok(())` is returned, otherwise the execution flow proceeds to `exp_len` validation, i.e. if at least one is non-zero, not necessarily both.
 
-<pre class="language-rust" data-attributes="filepath line=18 highlight=[4]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/bn254_ecadd.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">18</span><span style="font-family: monospace !important;">/// If the input size is less than expected - it will be padded with zeroes.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">19</span><span style="font-family: monospace !important;">/// If the input size is greater - redundant bytes will be ignored.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">20</span><span style="font-family: monospace !important;">///</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">21</span><span style="font-family: monospace !important;">/// If output len less than needed(64) returns `InternalError`.</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_functions/bn254_ecadd.rs</div>
+<pre class="language-rust" data-attributes="filepath line=18 highlight=[4]" data-start-line="18"><code>/// If the input size is less than expected - it will be padded with zeroes.
+/// If the input size is greater - redundant bytes will be ignored.
+///
+/// If output len less than needed(64) returns `InternalError`.</code></pre>
 
 Technically, the output is always a vector of 64 bytes, although there can be zero bytes. The `InternalError` error is not utilized in this file.
 
-<pre class="language-rust" data-attributes="filepath line=13"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/p256_verify.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">/// In case of invalid input `Ok(0)` will be returned and resources will be charged.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">14</span><span style="font-family: monospace !important;">///</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">15</span><span style="font-family: monospace !important;">/// If dst len less than needed(1) returns `InternalError`.</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_functions/p256_verify.rs</div>
+<pre class="language-rust" data-attributes="filepath line=13" data-start-line="13"><code>/// In case of invalid input `Ok(0)` will be returned and resources will be charged.
+///
+/// If dst len less than needed(1) returns `InternalError`.</code></pre>
 
 While the docs mention the `Ok(0)` value being returned in case of an invalid input, in fact, the `Ok(())` value is returned. The same inaccuracy affects inline docs of the `ecrecover` system function. Additionally, the `dst` parameter is not validated to be non-empty.
 
-<pre class="language-rust" data-attributes="filepath line=13"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/sha256.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">impl&lt;R: Resources&gt; SystemFunction&lt;R&gt; for Sha256Impl {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">14</span><span style="font-family: monospace !important;">    /// If output len less than needed(32) returns `InternalError`.</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_functions/sha256.rs</div>
+<pre class="language-rust" data-attributes="filepath line=13" data-start-line="13"><code>impl&lt;R: Resources&gt; SystemFunction&lt;R&gt; for Sha256Impl {
+    /// If output len less than needed(32) returns `InternalError`.</code></pre>
 
 The `InternalError` error is not utilized in this file, same as the length of the output buffer is not validated.
 
-<pre class="language-rust" data-attributes="filepath line=56"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/process_transaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">56</span><span style="font-family: monospace !important;">// Safe to unwrap here, as this should have been validated in the</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">57</span><span style="font-family: monospace !important;">// previous call.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">58</span><span style="font-family: monospace !important;">let tx_type = transaction.tx_type.read();</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath line=56" data-start-line="56"><code>// Safe to unwrap here, as this should have been validated in the
+// previous call.
+let tx_type = transaction.tx_type.read();</code></pre>
 
 This states "Safe to unwrap here" but no `unwrap` is actually used.
 
 ## EIP-158 is mentioned instead of EIP-170
 
-<pre class="language-rust" data-attributes="filepath context line=171"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/contract_deployer.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">171</span><span style="font-family: monospace !important;">fn contract_deployer_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">172</span><span style="font-family: monospace !important;">// Although this can be called as a part of protocol upgrade,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">173</span><span style="font-family: monospace !important;">// we are checking the next invariants, just in case</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">174</span><span style="font-family: monospace !important;">// EIP-158: reject code of length &gt; 24576.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">175</span><span style="font-family: monospace !important;">if bytecode_length as usize &gt; MAX_CODE_SIZE {</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/contract_deployer.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=171" data-start-line="171"><code>fn contract_deployer_hook_inner
+// Although this can be called as a part of protocol upgrade,
+// we are checking the next invariants, just in case
+// EIP-158: reject code of length &gt; 24576.
+if bytecode_length as usize &gt; MAX_CODE_SIZE {</code></pre>
 
 The `MAX_CODE_SIZE` cap is defined by EIP-170.
 
 ## Duplicated error message in "L2 Base Token" system hook
 
-<pre class="language-rust" data-attributes="filepath context line=172"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l2_base_token.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">172</span><span style="font-family: monospace !important;">fn l2_base_token_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">173</span><span style="font-family: monospace !important;">return Ok(Err(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">174</span><span style="font-family: monospace !important;">    "Contract deployer failure: withdraw called with invalid calldata",</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">175</span><span style="font-family: monospace !important;">));</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l2_base_token.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=172" data-start-line="172"><code>fn l2_base_token_hook_inner
+return Ok(Err(
+    "Contract deployer failure: withdraw called with invalid calldata",
+));</code></pre>
 
 The message is duplicate from the file `contract_deployer.rs` and contains incorrect prefix `Contract deployer failure`.
 
@@ -2122,10 +2144,10 @@ In [the documentation of system hooks](https://github.com/matter-labs/zksync-os/
 
 However, during system upgrades, only the value `bytecode_hash` is decoded from the `calldata`:
 
-<pre class="language-rust" data-attributes="filepath context line=158"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/contract_deployer.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">158</span><span style="font-family: monospace !important;">fn contract_deployer_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">159</span><span style="font-family: monospace !important;">let bytecode_hash =</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">160</span><span style="font-family: monospace !important;">    Bytes32::from_array(calldata[32..64].try_into().expect("Always valid"))</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/contract_deployer.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=158" data-start-line="158"><code>fn contract_deployer_hook_inner
+let bytecode_hash =
+    Bytes32::from_array(calldata[32..64].try_into().expect("Always valid"))</code></pre>
 
 The bytecode itself is retrieved from the preimage storage.
 
@@ -2151,23 +2173,24 @@ The EVM interpreter contains several unreachable code locations that can never h
 
 In pattern matching expression, implemented in the function `i256_div`, several clauses are impossible because the function returns early when the divisor is zero:
 
-<pre class="language-rust" data-attributes="filepath context line=76 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/i256.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">76</span><span style="font-family: monospace !important;">pub fn i256_div</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">77</span><span style="font-family: monospace !important;">let second_sign = i256_sign::&lt;true&gt;(&amp;mut second);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">78</span><span style="font-family: monospace !important;">if second_sign == Sign::Zero {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">79</span><span style="font-family: monospace !important;">    return U256::ZERO;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">80</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/i256.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=76 highlight=[2]" data-start-line="76"><code>pub fn i256_div
+let second_sign = i256_sign::&lt;true&gt;(&amp;mut second);
+if second_sign == Sign::Zero {
+    return U256::ZERO;
+}</code></pre>
 
-<pre class="language-rust" data-attributes="line=95 highlight=[3,4,9]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">95</span><span style="font-family: monospace !important;">match (first_sign, second_sign) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">96</span><span style="font-family: monospace !important;">    (Sign::Zero, Sign::Plus)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">97</span><span style="font-family: monospace !important;">    | (Sign::Plus, Sign::Zero)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">98</span><span style="font-family: monospace !important;">    | (Sign::Zero, Sign::Zero)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">99</span><span style="font-family: monospace !important;">    | (Sign::Plus, Sign::Plus)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">100</span><span style="font-family: monospace !important;">    | (Sign::Minus, Sign::Minus) =&gt; d,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">101</span><span style="font-family: monospace !important;">    (Sign::Zero, Sign::Minus)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">102</span><span style="font-family: monospace !important;">    | (Sign::Plus, Sign::Minus)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">103</span><span style="font-family: monospace !important;">    | (Sign::Minus, Sign::Zero)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">104</span><span style="font-family: monospace !important;">    | (Sign::Minus, Sign::Plus) =&gt; two_compl(d),</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=95 highlight=[3,4,9]" data-start-line="95"><code>match (first_sign, second_sign) {
+    (Sign::Zero, Sign::Plus)
+    | (Sign::Plus, Sign::Zero)
+    | (Sign::Zero, Sign::Zero)
+    | (Sign::Plus, Sign::Plus)
+    | (Sign::Minus, Sign::Minus) =&gt; d,
+    (Sign::Zero, Sign::Minus)
+    | (Sign::Plus, Sign::Minus)
+    | (Sign::Minus, Sign::Zero)
+    | (Sign::Minus, Sign::Plus) =&gt; two_compl(d),
+</code></pre>
 
 Since the function returns early when `second_sign` is `Sign::Zero`, these clauses can be removed.
 
@@ -2175,41 +2198,41 @@ Since the function returns early when `second_sign` is `Sign::Zero`, these claus
 
 Similarly, the return statement of the `log2floor` function is unreachable because all paths through the loop return before reaching it.
 
-<pre class="language-rust" data-attributes="filepath line=27 highlight=[2, 7,11,13]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">evm_interpreter/src/u256.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">27</span><span style="font-family: monospace !important;">pub(crate) fn log2floor(value: &amp;U256) -&gt; u64 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">28</span><span style="font-family: monospace !important;">    assert!(value != &amp;U256::ZERO);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">29</span><span style="font-family: monospace !important;">    let mut l: u64 = 256;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">30</span><span style="font-family: monospace !important;">    for i in 0..4 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">31</span><span style="font-family: monospace !important;">        let i = 3 - i;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">32</span><span style="font-family: monospace !important;">        if value.as_limbs()[i] == 0u64 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">33</span><span style="font-family: monospace !important;">            l -= 64;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">34</span><span style="font-family: monospace !important;">        } else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">35</span><span style="font-family: monospace !important;">            l -= value.as_limbs()[i].leading_zeros() as u64;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">36</span><span style="font-family: monospace !important;">            if l == 0 {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">37</span><span style="font-family: monospace !important;">                return l;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">38</span><span style="font-family: monospace !important;">            } else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">39</span><span style="font-family: monospace !important;">                return l - 1;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">40</span><span style="font-family: monospace !important;">            }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">41</span><span style="font-family: monospace !important;">        }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">42</span><span style="font-family: monospace !important;">    }</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">43</span><span style="font-family: monospace !important;">    l</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">44</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">evm_interpreter/src/u256.rs</div>
+<pre class="language-rust" data-attributes="filepath line=27 highlight=[2, 7,11,13]" data-start-line="27"><code>pub(crate) fn log2floor(value: &amp;U256) -&gt; u64 {
+    assert!(value != &amp;U256::ZERO);
+    let mut l: u64 = 256;
+    for i in 0..4 {
+        let i = 3 - i;
+        if value.as_limbs()[i] == 0u64 {
+            l -= 64;
+        } else {
+            l -= value.as_limbs()[i].leading_zeros() as u64;
+            if l == 0 {
+                return l;
+            } else {
+                return l - 1;
+            }
+        }
+    }
+    l
+}</code></pre>
 
 The line 33 may look like there can be a scenario, in which the loop does not return early. However, if all the 4 iteration of the loop reach the line 33, that means that the `value` is zero what contradicts to the assertion on line 28.
 
 ## Potential for simplification
 
-<pre class="language-rust" data-attributes="filepath line=106 highlight=[2]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">106</span><span style="font-family: monospace !important;">// cheat</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">107</span><span style="font-family: monospace !important;">let snapshot = system.memory.start_memory_frame();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">108</span><span style="font-family: monospace !important;">let mut buffer = QuasiVec::new(system);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">109</span><span style="font-family: monospace !important;">let result = F::execute(&amp;calldata, &amp;mut buffer, &amp;mut resources, allocator);</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/precompiles.rs</div>
+<pre class="language-rust" data-attributes="filepath line=106 highlight=[2]" data-start-line="106"><code>// cheat
+let snapshot = system.memory.start_memory_frame();
+let mut buffer = QuasiVec::new(system);
+let result = F::execute(&amp;calldata, &amp;mut buffer, &amp;mut resources, allocator);</code></pre>
 
-<pre class="language-rust" data-attributes="filepath line=122 highlight=[4]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/precompiles.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">122</span><span style="font-family: monospace !important;">} else {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">123</span><span style="font-family: monospace !important;">    system.memory.empty_immutable_slice()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">124</span><span style="font-family: monospace !important;">};</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">125</span><span style="font-family: monospace !important;">system.memory.finish_memory_frame(Some(snapshot));</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/precompiles.rs</div>
+<pre class="language-rust" data-attributes="filepath line=122 highlight=[4]" data-start-line="122"><code>} else {
+    system.memory.empty_immutable_slice()
+};
+system.memory.finish_memory_frame(Some(snapshot));</code></pre>
 
 The value `snapshot` is not actually utilized, since no other frames are being started between the frame creation and release. The `snapshot` value is simply the number of frames on the stack at the moment of opening new fram. Passing `None` during the frame release would have the same effect, in the current scenario. It is possible to discard the `snapshot` variable completely and simplify the flow:
 
@@ -2222,35 +2245,35 @@ system.memory.finish_memory_frame(None);
 
 ## Unnecessary validations
 
-<pre class="language-rust" data-attributes="filepath line=18 highlight=[3]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_functions/mod.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">18</span><span style="font-family: monospace !important;">#[inline(always)]</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">19</span><span style="font-family: monospace !important;">fn bytereverse(input: &amp;mut [u8]) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">20</span><span style="font-family: monospace !important;">    assert!(input.len() % 2 == 0);</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_functions/mod.rs</div>
+<pre class="language-rust" data-attributes="filepath line=18 highlight=[3]" data-start-line="18"><code>#[inline(always)]
+fn bytereverse(input: &amp;mut [u8]) {
+    assert!(input.len() % 2 == 0);</code></pre>
 
 This validation does not prevent any issue. If the `input` slice contains odd number of elements, the central element remains on its place, as expected.
 
 ## Structure `WarmStorageValue` and its field `initial_value_used`
 
-<pre class="language-rust" data-attributes="filepath context line=571 highlight=[1,2,7]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/storage_cache.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">571</span><span style="font-family: monospace !important;">pub fn iter_as_storage_types(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">572</span><span style="font-family: monospace !important;">// Using the WarmStorageValue temporarily till it's outed from the codebase. We're</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">573</span><span style="font-family: monospace !important;">// not actually 'using' it.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">574</span><span style="font-family: monospace !important;">WarmStorageValue {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">575</span><span style="font-family: monospace !important;">    current_value: *current_record.value(),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">576</span><span style="font-family: monospace !important;">    is_new_storage_slot: initial_record.appearance() == Appearance::Unset,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">577</span><span style="font-family: monospace !important;">    initial_value: *initial_record.value(),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">578</span><span style="font-family: monospace !important;">    initial_value_used: true,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">579</span><span style="font-family: monospace !important;">    ..Default::default()</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">580</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/storage_cache.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=571 highlight=[1,2,7]" data-start-line="571"><code>pub fn iter_as_storage_types(
+// Using the WarmStorageValue temporarily till it's outed from the codebase. We're
+// not actually 'using' it.
+WarmStorageValue {
+    current_value: *current_record.value(),
+    is_new_storage_slot: initial_record.appearance() == Appearance::Unset,
+    initial_value: *initial_record.value(),
+    initial_value_used: true,
+    ..Default::default()
+}</code></pre>
 
 The `initial_value_used` field of the `WarmStorageValue` structure is never initialized with values other than `true`. Additionally, the comment, located in the only location where the `WarmStorageValue` structure is constructed, states that this structure should be removed.
 
-<pre class="language-rust" data-attributes="filepath line=242 highlight=[5]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">242</span><span style="font-family: monospace !important;">for (key, value) in reads_iter {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">243</span><span style="font-family: monospace !important;">    let flat_key = derive_flat_storage_key(&amp;key.address, &amp;key.key);</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">244</span><span style="font-family: monospace !important;">    // reads</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">245</span><span style="font-family: monospace !important;">    let expect_new = value.is_new_storage_slot;</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">246</span><span style="font-family: monospace !important;">    assert!(value.initial_value_used);</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=242 highlight=[5]" data-start-line="242"><code>for (key, value) in reads_iter {
+    let flat_key = derive_flat_storage_key(&amp;key.address, &amp;key.key);
+    // reads
+    let expect_new = value.is_new_storage_slot;
+    assert!(value.initial_value_used);</code></pre>
 
 As a consequence, the validation of the `initial_value_used` field, located in the batch verification code, is redundant.
 
@@ -2258,39 +2281,43 @@ As a consequence, the validation of the `initial_value_used` field, located in t
 
 ## Commented-out code
 
-<pre class="language-rust" data-attributes="filepath line=247 highlight=[2,3,4,5,6]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">247</span><span style="font-family: monospace !important;">if expect_new {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">248</span><span style="font-family: monospace !important;">    // assert_eq!(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">249</span><span style="font-family: monospace !important;">    //     value.initial_value,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">250</span><span style="font-family: monospace !important;">    //     WarmStorageValue::TRIVIAL_VALUE,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">251</span><span style="font-family: monospace !important;">    //     "initial value of empty slot must be trivial"</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">252</span><span style="font-family: monospace !important;">    // );</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">253</span><span style="font-family: monospace !important;">    num_nonexisting_reads += 1;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/flat_storage_model/simple_growable_storage.rs</div>
+<pre class="language-rust" data-attributes="filepath line=247 highlight=[2,3,4,5,6]" data-start-line="247"><code>if expect_new {
+    // assert_eq!(
+    //     value.initial_value,
+    //     WarmStorageValue::TRIVIAL_VALUE,
+    //     "initial value of empty slot must be trivial"
+    // );
+    num_nonexisting_reads += 1;</code></pre>
 
 ## Unused error messages
 
 These error variants are not utilized in the codebase. This is not only a redundancy but, sometimes, can indicate a missed corner case:
 
-<pre class="language-rust" data-attributes="filepath context line=28"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/errors.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">28</span><span style="font-family: monospace !important;">pub enum InvalidTransaction</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">29</span><span style="font-family: monospace !important;">/// EIP-1559: `gas_price` is less than `basefee`.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">30</span><span style="font-family: monospace !important;">GasPriceLessThanBasefee,</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/errors.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=28" data-start-line="28"><code>pub enum InvalidTransaction
+/// EIP-1559: `gas_price` is less than `basefee`.
+GasPriceLessThanBasefee,</code></pre>
 
-<pre class="language-rust" data-attributes="line=32"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">32</span><span style="font-family: monospace !important;">/// Initial gas for a Call is bigger than `gas_limit`.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">33</span><span style="font-family: monospace !important;">///</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">34</span><span style="font-family: monospace !important;">/// Initial gas for a Call contains:</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">35</span><span style="font-family: monospace !important;">/// - initial stipend gas</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">36</span><span style="font-family: monospace !important;">/// - gas for access list and input data</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">37</span><span style="font-family: monospace !important;">CallGasCostMoreThanGasLimit,</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=32" data-start-line="32"><code>/// Initial gas for a Call is bigger than `gas_limit`.
+///
+/// Initial gas for a Call contains:
+/// - initial stipend gas
+/// - gas for access list and input data
+CallGasCostMoreThanGasLimit,
+</code></pre>
 
-<pre class="language-rust" data-attributes="line=45"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">45</span><span style="font-family: monospace !important;">/// Overflow payment in transaction.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">46</span><span style="font-family: monospace !important;">OverflowPaymentInTransaction,</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=45" data-start-line="45"><code>/// Overflow payment in transaction.
+OverflowPaymentInTransaction,
+</code></pre>
 
-<pre class="language-rust" data-attributes="line=64"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">64</span><span style="font-family: monospace !important;">/// Transaction chain id does not match the config chain id.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">65</span><span style="font-family: monospace !important;">InvalidChainId,</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=64" data-start-line="64"><code>/// Transaction chain id does not match the config chain id.
+InvalidChainId,
+</code></pre>
 
-<pre class="language-rust" data-attributes="line=66"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">66</span><span style="font-family: monospace !important;">/// Access list is not supported for blocks before the Berlin hardfork.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">67</span><span style="font-family: monospace !important;">AccessListNotSupported,</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=66" data-start-line="66"><code>/// Access list is not supported for blocks before the Berlin hardfork.
+AccessListNotSupported,
+</code></pre>
 
 
 
@@ -2310,72 +2337,75 @@ Remove unreachable code branches to improve code clarity and maintainability. Co
 
 ## Block timestamp and state root hash validation
 
-<pre class="language-rust" data-attributes="filepath context line=486 highlight=[7]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_system/src/system_implementation/system/io_subsystem.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">486</span><span style="font-family: monospace !important;">fn finish</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">487</span><span style="font-family: monospace !important;">// chain state before</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">488</span><span style="font-family: monospace !important;">let chain_state_commitment_before = ChainStateCommitment {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">489</span><span style="font-family: monospace !important;">    state_root: state_commitment.root,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">490</span><span style="font-family: monospace !important;">    next_free_slot: state_commitment.next_free_slot,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">491</span><span style="font-family: monospace !important;">    block_number: block_metadata.block_number - 1,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">492</span><span style="font-family: monospace !important;">    last_256_block_hashes_blake: blocks_hasher.finalize().into(),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">493</span><span style="font-family: monospace !important;">    // TODO(EVM-1080): we should set and validate that current block timestamp &gt;= previous</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">494</span><span style="font-family: monospace !important;">    last_block_timestamp: 0,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">495</span><span style="font-family: monospace !important;">};</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_system/src/system_implementation/system/io_subsystem.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=486 highlight=[7]" data-start-line="486"><code>fn finish
+// chain state before
+let chain_state_commitment_before = ChainStateCommitment {
+    state_root: state_commitment.root,
+    next_free_slot: state_commitment.next_free_slot,
+    block_number: block_metadata.block_number - 1,
+    last_256_block_hashes_blake: blocks_hasher.finalize().into(),
+    // TODO(EVM-1080): we should set and validate that current block timestamp &gt;= previous
+    last_block_timestamp: 0,
+};</code></pre>
 
-<pre class="language-rust" data-attributes="line=526 highlight=[7]"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">526</span><span style="font-family: monospace !important;">// chain state after</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">527</span><span style="font-family: monospace !important;">let chain_state_commitment_after = ChainStateCommitment {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">528</span><span style="font-family: monospace !important;">    state_root: state_commitment.root,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">529</span><span style="font-family: monospace !important;">    next_free_slot: state_commitment.next_free_slot,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">530</span><span style="font-family: monospace !important;">    block_number: block_metadata.block_number,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">531</span><span style="font-family: monospace !important;">    last_256_block_hashes_blake: blocks_hasher.finalize().into(),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">532</span><span style="font-family: monospace !important;">    // TODO(EVM-1080): we should set and validate that current block timestamp &gt;= previous</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">533</span><span style="font-family: monospace !important;">    last_block_timestamp: 0,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">534</span><span style="font-family: monospace !important;">};</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=526 highlight=[7]" data-start-line="526"><code>// chain state after
+let chain_state_commitment_after = ChainStateCommitment {
+    state_root: state_commitment.root,
+    next_free_slot: state_commitment.next_free_slot,
+    block_number: block_metadata.block_number,
+    last_256_block_hashes_blake: blocks_hasher.finalize().into(),
+    // TODO(EVM-1080): we should set and validate that current block timestamp &gt;= previous
+    last_block_timestamp: 0,
+};
+</code></pre>
 
-<pre class="language-rust" data-attributes="filepath context line=620"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">let mut full_root_hasher = crypto::sha3::Keccak256::new();</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">620</span><span style="font-family: monospace !important;">full_root_hasher.update(self.logs_storage.tree_root().as_u8_ref());</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">621</span><span style="font-family: monospace !important;">full_root_hasher.update([0u8; 32]); // aggregated root 0 for now</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">let mut full_root_hasher = crypto::sha3::Keccak256::new();</div>
+<pre class="language-rust" data-attributes="filepath context line=620" data-start-line="620"><code>full_root_hasher.update(self.logs_storage.tree_root().as_u8_ref());
+full_root_hasher.update([0u8; 32]); // aggregated root 0 for now</code></pre>
 
 ## Backward-compatibility events related to withdrawals
 
-<pre class="language-rust" data-attributes="filepath context line=186"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/l2_base_token.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">186</span><span style="font-family: monospace !important;">// TODO: emit event for withdrawal for Era compatibility</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">187</span><span style="font-family: monospace !important;">Ok(Ok(&amp;[]))</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/l2_base_token.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=186" data-start-line="186"><code>// TODO: emit event for withdrawal for Era compatibility
+Ok(Ok(&amp;[]))</code></pre>
 
-<pre class="language-rust" data-attributes="filepath line=286"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">fn l2_base_token_hook_inner</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">286</span><span style="font-family: monospace !important;">// TODO: emit event for Era compatibility</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">287</span><span style="font-family: monospace !important;">Ok(Ok(&amp;[]))</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">fn l2_base_token_hook_inner</div>
+<pre class="language-rust" data-attributes="filepath line=286" data-start-line="286"><code>// TODO: emit event for Era compatibility
+Ok(Ok(&amp;[]))</code></pre>
 
 ## Nonce holder
 
-<pre class="language-rust" data-attributes="filepath line=56"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/lib.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">56</span><span style="font-family: monospace !important;">// Temporarily disabled, only used for AA.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">57</span><span style="font-family: monospace !important;">// pub mod nonce_holder;</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/lib.rs</div>
+<pre class="language-rust" data-attributes="filepath line=56" data-start-line="56"><code>// Temporarily disabled, only used for AA.
+// pub mod nonce_holder;</code></pre>
 
-<pre class="language-rust" data-attributes="line=212"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">212</span><span style="font-family: monospace !important;">// /// Adds nonce holder system hook.</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">213</span><span style="font-family: monospace !important;">// ///</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">214</span><span style="font-family: monospace !important;">// pub fn add_nonce_holder(&amp;mut self) {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">215</span><span style="font-family: monospace !important;">//     self.add_hook(NONCE_HOLDER_HOOK_ADDRESS_LOW, nonce_holder_hook)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">216</span><span style="font-family: monospace !important;">// }</span></span></code></pre>
+<pre class="language-rust" data-attributes="line=212" data-start-line="212"><code>// /// Adds nonce holder system hook.
+// ///
+// pub fn add_nonce_holder(&amp;mut self) {
+//     self.add_hook(NONCE_HOLDER_HOOK_ADDRESS_LOW, nonce_holder_hook)
+// }
+</code></pre>
 
-<pre class="language-rust" data-attributes="filepath line=13"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/nonce_holder.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">13</span><span style="font-family: monospace !important;">// it's actually stateless since we can immediately delegate a functionality to system itself</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/nonce_holder.rs</div>
+<pre class="language-rust" data-attributes="filepath line=13" data-start-line="13"><code>// it's actually stateless since we can immediately delegate a functionality to system itself</code></pre>
 
 The contract is not actually utilized. During transaction processing, account nonces are retreived from the oracle via the `basic_system` layer. Constants `NONCE_HOLDER_HOOK_ADDRESS` and `ACCOUNT_PROPERTIES_STORAGE_ADDRESS` have the same value of `x8003`.
 
-<pre class="language-rust" data-attributes="filepath context line=61"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">system_hooks/src/nonce_holder.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">61</span><span style="font-family: monospace !important;">pub fn nonce_holder_hook</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">62</span><span style="font-family: monospace !important;">// TODO: ensure onlySystemCall</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">system_hooks/src/nonce_holder.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=61" data-start-line="61"><code>pub fn nonce_holder_hook
+// TODO: ensure onlySystemCall</code></pre>
 
 ## Factory deps during L1 transaction preparation
 
-<pre class="language-rust" data-attributes="filepath context line=147"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/process_transaction.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">147</span><span style="font-family: monospace !important;">fn process_l1_transaction</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">148</span><span style="font-family: monospace !important;">// TODO: l1 transaction preparation (marking factory deps)</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">149</span><span style="font-family: monospace !important;">let chain_id = system.get_chain_id();</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/process_transaction.rs</div>
+<pre class="language-rust" data-attributes="filepath context line=147" data-start-line="147"><code>fn process_l1_transaction
+// TODO: l1 transaction preparation (marking factory deps)
+let chain_id = system.get_chain_id();</code></pre>
 
-<pre class="language-rust" data-attributes="context line=771"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">771</span><span style="font-family: monospace !important;">fn transaction_execution</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">772</span><span style="font-family: monospace !important;">// TODO: factory deps? Probably fine to ignore for now</span></span></code></pre>
+<pre class="language-rust" data-attributes="context line=771" data-start-line="771"><code>fn transaction_execution
+// TODO: factory deps? Probably fine to ignore for now
+</code></pre>
 
 <div id="issue-28-QA-using-raw-u8" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 2rem; margin-bottom: 16px;">
   <h2 style="color: #e5e7eb; margin: 0 0 12px 0; font-size: 1.25rem; font-weight: 600;">28. Using raw `u8` type instead of `enum`</h2>
@@ -2393,15 +2423,15 @@ The contract is not actually utilized. During transaction processing, account no
 
 In `runner.rs:1001-1009`, raw `u8` values is used for `ExecutionEnvironmentType` instead of enum:
 
-<pre class="language-rust" data-attributes="filepath line=1001"><code><span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; margin-right: 1rem !important; box-sizing: border-box !important;"></span><span style="font-family: monospace !important;">basic_bootloader/src/bootloader/runner.rs</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1001</span><span style="font-family: monospace !important;">fn create_ee&lt;S: EthereumLikeTypes&gt;(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1002</span><span style="font-family: monospace !important;">    ee_type: u8,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1003</span><span style="font-family: monospace !important;">    system: &amp;mut System&lt;S&gt;,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1004</span><span style="font-family: monospace !important;">) -&gt; Result&lt;Box&lt;SupportedEEVMState&lt;'static, S&gt;, S::Allocator&gt;, InternalError&gt; {</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1005</span><span style="font-family: monospace !important;">    Ok(Box::new_in(</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1006</span><span style="font-family: monospace !important;">        SupportedEEVMState::create_initial(ee_type, system)?,</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1007</span><span style="font-family: monospace !important;">        system.get_allocator(),</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1008</span><span style="font-family: monospace !important;">    ))</span></span>
-<span style="display: block !important;"><span style="display: inline-block !important; width: 4em !important; color: #6b7280 !important; text-align: right !important; margin-right: 1rem !important; user-select: none !important; font-family: monospace !important; box-sizing: border-box !important;">1009</span><span style="font-family: monospace !important;">}</span></span></code></pre>
+<div class="hljs-filepath" style="color: #9ca3af; font-family: monospace; margin-bottom: 0.5em;">basic_bootloader/src/bootloader/runner.rs</div>
+<pre class="language-rust" data-attributes="filepath line=1001" data-start-line="1001"><code>fn create_ee&lt;S: EthereumLikeTypes&gt;(
+    ee_type: u8,
+    system: &amp;mut System&lt;S&gt;,
+) -&gt; Result&lt;Box&lt;SupportedEEVMState&lt;'static, S&gt;, S::Allocator&gt;, InternalError&gt; {
+    Ok(Box::new_in(
+        SupportedEEVMState::create_initial(ee_type, system)?,
+        system.get_allocator(),
+    ))
+}</code></pre>
 
 Consider using `ExecutionEnvironmentType` enum throughout for better type safety and code maintainability.
